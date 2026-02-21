@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiLearn — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Comic Neue', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px 40px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .star {
+      position: fixed;
+      pointer-events: none;
+      animation: twinkle 3s infinite;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.2;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.4)
+      }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.25s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateX(-3px);
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(14px);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 28px;
+      padding: 36px 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.7s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #fff;
+      text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+      margin-bottom: 28px;
+    }
+
+    .section {
+      margin-bottom: 26px;
+    }
+
+    .section-title {
+      font-size: 1.15em;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .row-label {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1em;
+    }
+
+    /* Toggle */
+    .toggle-wrap {
+      position: relative;
+      width: 52px;
+      height: 28px;
+    }
+
+    .toggle-wrap input {
+      display: none;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 28px;
+      cursor: pointer;
+      transition: background 0.3s;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .toggle-track::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .toggle-wrap input:checked+.toggle-track {
+      background: linear-gradient(135deg, #00c6ff, #9933ff);
+      border-color: #00ffff;
+    }
+
+    .toggle-wrap input:checked+.toggle-track::after {
+      transform: translateX(24px);
+    }
+
+    /* Select */
+    select {
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 0.95em;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select option {
+      color: #000;
+    }
+
+    /* Range */
+    input[type="range"] {
+      width: 140px;
+      accent-color: #00ffff;
+      cursor: pointer;
+    }
+
+    /* Action buttons */
+    .action-btn {
+      padding: 10px 22px;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 0.95em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .action-btn.danger {
+      background: linear-gradient(135deg, #ff6666, #ff3333);
+      border-color: #ff6666;
+    }
+
+    .action-btn.warning {
+      background: linear-gradient(135deg, #ffaa00, #ff7700);
+      border-color: #ffaa00;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 1em;
+      opacity: 0;
+      transition: all 0.4s;
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
+  <div class="star" style="top:18%;right:8%;font-size:18px;animation-delay:0.6s;">⭐</div>
+  <div class="star" style="top:70%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
+  <div class="star" style="top:82%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅ Home</button>
+  <div id="toast"></div>
+
+  <div class="card">
+    <h1>⚙️ Settings</h1>
+
+    <!-- App Preferences -->
+    <div class="section">
+      <div class="section-title">📱 App Preferences</div>
+      <div class="row">
+        <span class="row-label">Language</span>
+        <select id="langSelect">
+          <option>English</option>
+          <option>Tamil</option>
+          <option>Hindi</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Accessibility -->
+    <div class="section">
+      <div class="section-title">🧩 Accessibility</div>
+      <div class="row">
+        <span class="row-label">Font Size</span>
+        <select id="fontSizeSelect">
+          <option value="14px">Small</option>
+          <option value="16px" selected>Medium</option>
+          <option value="20px">Large</option>
+        </select>
+      </div>
+      <div class="row">
+        <span class="row-label">Dyslexia-Friendly Font</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="dyslexiaToggle">
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Sound -->
+    <div class="section">
+      <div class="section-title">🔊 Sound</div>
+      <div class="row">
+        <span class="row-label">Volume</span>
+        <input type="range" id="volumeRange" min="0" max="100" value="70">
+      </div>
+      <div class="row">
+        <span class="row-label">Sound Effects</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="soundToggle" checked>
+          <div class="toggle-track"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="section">
+      <div class="section-title">🔒 Account</div>
+      <div class="row">
+        <span class="row-label">Change Password</span>
+        <button class="action-btn warning" id="changePwBtn">Update</button>
+      </div>
+      <div class="row">
+        <span class="row-label">Logged in as</span>
+        <span id="userEmailDisplay" style="color:rgba(255,255,255,0.7);font-size:0.9em;"></span>
+      </div>
+      <div class="row">
+        <span class="row-label">Sign Out</span>
+        <button class="action-btn danger" id="logoutBtn" onclick="logoutUser()">Logout 🚪</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // ✅ Import ONLY from shared config — NO API keys here
+    import { auth } from "./firebase-config.js";
+    import {
+      onAuthStateChanged, signOut, sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    function toast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2500);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) { window.location.href = "login.html"; return; }
+      document.getElementById("userEmailDisplay").textContent = user.email || "";
+    });
+
+    // Logout
+    window.logoutUser = async () => {
+      try {
+        localStorage.setItem("justLoggedOut", "true");
+        await signOut(auth);
+      } catch (err) {
+        console.warn("Sign out error (proceeding regardless):", err);
+      }
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("uid");
+      window.location.href = "login.html";
+    };
+
+    // Change Password
+    document.getElementById("changePwBtn").addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user?.email) return;
+      await sendPasswordResetEmail(auth, user.email);
+      toast("✅ Password reset email sent to " + user.email);
+    });
+  </script>
+
+  <script>
+    // Font size
+    document.getElementById("fontSizeSelect").addEventListener("change", e => {
+      document.body.style.fontSize = e.target.value;
+    });
+    // Dyslexia font
+    document.getElementById("dyslexiaToggle").addEventListener("change", e => {
+      document.body.style.fontFamily = e.target.checked
+        ? "'Comic Neue', cursive" : "'Comic Neue', sans-serif";
+    });
+    // Language
+    document.getElementById("langSelect").addEventListener("change", e => {
+      const el = document.getElementById("toast");
+      el.textContent = "Language set to: " + e.target.value;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2000);
+    });
+
+    // Stars
+    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("div"); s.className = "star";
+      s.textContent = syms[Math.floor(Math.random() * syms.length)];
+      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
+      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
+      document.body.appendChild(s);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Story Sequencer Game</title>
+    <style>
+        body {
+            font-family: "Comic Sans MS", sans-serif;
+            background: linear-gradient(to right, #ffecd2, #fcb69f);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.55);
+            border-radius: 12px;
+            color: #333;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.25s;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(-3px);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-size: 50px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease;
+            background: white;
+        }
+
+        .card:hover {
+            transform: scale(1.1);
+        }
+
+        .dropzone {
+            width: 120px;
+            height: 120px;
+            border: 3px dashed #555;
+            border-radius: 16px;
+            background: #fff6e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dropzone.filled {
+            border: 3px solid #28a745;
+            background: #e2fbe2;
+        }
+
+        button {
+            margin: 10px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        #congratsOverlay,
+        #winOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: "Comic Sans MS", sans-serif;
+            font-size: 36px;
+            color: #28a745;
+            background: rgba(255, 223, 130, 0.95);
+            z-index: 1000;
+            display: none;
+        }
+
+        #congratsOverlay button,
+        #winOverlay button {
+            margin-top: 30px;
+            font-size: 24px;
+            padding: 15px 30px;
+        }
+
+        .hintGlow {
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px gold;
+                transform: scale(1);
+            }
+
+            to {
+                box-shadow: 0 0 25px orange;
+                transform: scale(1.1);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 24px;
+            animation: sparkleAnim 1s ease-out forwards;
+        }
+
+        @keyframes sparkleAnim {
+            0% {
+                opacity: 1;
+                transform: scale(0.5) rotate(0deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(2) rotate(180deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+
+    <h2 id="instruction">🧩 Arrange the story in the correct order!</h2>
+    <div class="container" id="cards"></div>
+    <div class="container" id="dropzones"></div>
+    <button onclick="checkOrder()">✅ Check Order</button>
+    <button onclick="nextQuestion()">⏭ Next Question</button>
+    <button onclick="showHint()">💡 Hint</button>
+    <div id="feedback"></div>
+
+    <div id="congratsOverlay">🎊 Congratulations! 🎊<button onclick="continueGame()">Continue</button></div>
+    <div id="winOverlay">🏆 You Win! 🏆<button onclick="restartGame()">Play Again</button></div>
+
+    <script>
+        const questionBank = {
+            easy: [
+                { instruction: "Arrange the morning routine.", story: ["🌞", "🍳", "🏫"] },
+                { instruction: "Arrange brushing teeth.", story: ["🪥", "💧", "😁"] },
+                { instruction: "Feeding your pet.", story: ["🐶", "🍲", "🐕‍🦺"] }
+            ],
+            medium: [
+                { instruction: "Get ready for school.", story: ["🛁", "👕", "🎒", "🏫"] },
+                { instruction: "Plant a tree.", story: ["🌱", "💧", "🌞", "🌳"] },
+                { instruction: "Prepare for birthday party.", story: ["🎂", "🎈", "🎁", "🥳"] }
+            ],
+            hard: [
+                { instruction: "Go shopping and return home.", story: ["🚲", "🏬", "🛍️", "🍎", "🏠"] },
+                { instruction: "Picnic trip.", story: ["🎒", "🚗", "🥪", "🏞️", "😀"] },
+                { instruction: "Play a football match.", story: ["👟", "⚽", "🥅", "🏆", "🎉"] }
+            ]
+        };
+
+        let currentLevel = "easy", currentQuestionIndex = 0, questionsAnswered = 0;
+
+        function loadQuestion() {
+            const q = questionBank[currentLevel][currentQuestionIndex];
+            document.getElementById("instruction").innerText = `${currentLevel.toUpperCase()} Level: ${q.instruction}`;
+            const cardsContainer = document.getElementById("cards");
+            const dropzonesContainer = document.getElementById("dropzones");
+            const feedback = document.getElementById("feedback");
+            cardsContainer.innerHTML = ""; dropzonesContainer.innerHTML = ""; feedback.innerText = "";
+            const shuffled = [...q.story].map((val, i) => ({ val, order: i + 1 })).sort(() => Math.random() - 0.5);
+            shuffled.forEach(item => {
+                const card = document.createElement("div"); card.className = "card"; card.innerText = item.val; card.dataset.order = item.order; card.draggable = true;
+                cardsContainer.appendChild(card);
+            });
+            for (let i = 0; i < q.story.length; i++) { const zone = document.createElement("div"); zone.className = "dropzone"; dropzonesContainer.appendChild(zone); }
+            enableDragAndDrop();
+        }
+
+        function continueGame() { document.getElementById('congratsOverlay').style.display = 'none'; loadQuestion(); }
+        function restartGame() { document.getElementById('winOverlay').style.display = 'none'; currentLevel = "easy"; currentQuestionIndex = 0; questionsAnswered = 0; loadQuestion(); }
+
+        function nextQuestion() {
+            currentQuestionIndex++; questionsAnswered++;
+            const levelQuestions = questionBank[currentLevel];
+            if (currentQuestionIndex >= levelQuestions.length) {
+                if (currentLevel === "easy") currentLevel = "medium";
+                else if (currentLevel === "medium") currentLevel = "hard";
+                else { document.getElementById('winOverlay').style.display = 'flex'; return; }
+                currentQuestionIndex = 0;
+            }
+            if (questionsAnswered % 3 === 0) { document.getElementById('congratsOverlay').style.display = 'flex'; return; }
+            loadQuestion();
+        }
+
+        function enableDragAndDrop() {
+            const cardsContainer = document.getElementById('cards');
+            const cards = document.querySelectorAll('.card');
+            const dropzones = document.querySelectorAll('.dropzone');
+            cards.forEach(card => {
+                card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', null); e.dataTransfer.setDragImage(card, 60, 60); card.classList.add('dragging'); });
+                card.addEventListener('dragend', e => { card.classList.remove('dragging'); });
+            });
+            dropzones.forEach(zone => {
+                zone.addEventListener('dragover', e => e.preventDefault());
+                zone.addEventListener('drop', e => {
+                    e.preventDefault(); const draggingCard = document.querySelector('.dragging'); if (!draggingCard) return;
+                    if (zone.children.length > 0) { const oldCard = zone.children[0]; cardsContainer.appendChild(oldCard); }
+                    zone.innerHTML = ""; zone.appendChild(draggingCard); zone.classList.add("filled");
+                });
+            });
+        }
+
+        function checkOrder() {
+            const dropzones = document.querySelectorAll('.dropzone'); let correct = true;
+            dropzones.forEach((zone, index) => { if (zone.children.length === 0 || zone.children[0].dataset.order != index + 1) correct = false; });
+            const feedback = document.getElementById('feedback');
+            if (correct) { feedback.innerText = "🎉 Correct! Well done!"; feedback.style.color = "green"; }
+            else { feedback.innerText = "❌ Oops! Resetting..."; feedback.style.color = "red"; setTimeout(loadQuestion, 2000); }
+        }
+
+        function showHint() {
+            const dropzones = document.querySelectorAll('.dropzone');
+            const cards = document.querySelectorAll('.card');
+            for (let i = 0; i < dropzones.length; i++) {
+                const zone = dropzones[i];
+                if (zone.children.length === 0 || zone.children[0].dataset.order != i + 1) {
+                    const correctCard = [...cards].find(c => c.dataset.order == i + 1); if (!correctCard) return;
+                    correctCard.classList.add("hintGlow"); zone.classList.add("hintGlow");
+                    for (let j = 0; j < 5; j++) {
+                        const sparkle = document.createElement("div"); sparkle.className = "sparkle"; sparkle.innerText = "✨";
+                        sparkle.style.left = (zone.getBoundingClientRect().left + Math.random() * 100) + "px";
+                        sparkle.style.top = (zone.getBoundingClientRect().top + Math.random() * 100) + "px";
+                        sparkle.style.position = "fixed"; document.body.appendChild(sparkle);
+                        setTimeout(() => sparkle.remove(), 1000);
+                    }
+                    setTimeout(() => { correctCard.classList.remove("hintGlow"); zone.classList.remove("hintGlow"); }, 2000);
+                    break;
+                }
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+
+</html>

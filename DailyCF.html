@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiLearn — Daily Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0533 0%, #6e1bb5 50%, #ff66aa 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .star {
+            position: fixed;
+            pointer-events: none;
+            animation: twinkle 3s infinite;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.4)
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 750px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.25s;
+            z-index: 999;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateX(-3px);
+        }
+
+        .header-title {
+            text-align: center;
+            margin: 30px 0 4px;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 20px #ffff00, 0 0 40px rgba(255, 200, 0, 0.5);
+        }
+
+        .header-sub {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1em;
+            margin-bottom: 28px;
+        }
+
+        /* Streak badge */
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 12px 24px;
+            margin-bottom: 26px;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .streak-badge span {
+            color: #ffff00;
+            text-shadow: 0 0 10px gold;
+        }
+
+        /* Tab buttons */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 22px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .tab-btn:hover,
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.28);
+            border-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Challenge card */
+        .card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(14px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 26px;
+            padding: 30px 26px;
+            margin-bottom: 20px;
+        }
+
+        /* Tracer canvas */
+        #tracerSection {
+            display: block;
+        }
+
+        .tracer-instructions {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .target-letter {
+            font-size: 5em;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.18);
+            text-align: center;
+            display: block;
+            margin: 0 auto 8px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 0;
+        }
+
+        .canvas-wrap {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        canvas#tracerCanvas {
+            border: 3px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.25);
+            touch-action: none;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .canvas-hint {
+            font-size: 5em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.15;
+        }
+
+        .tracer-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 8px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+        }
+
+        .ctrl-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .ctrl-btn.submit {
+            background: linear-gradient(135deg, #00cc66, #00ff99);
+            color: #000;
+            border-color: #00ff99;
+        }
+
+        .ctrl-btn.clear {
+            background: linear-gradient(135deg, #ff6666, #ff3333);
+            border-color: #ff6666;
+        }
+
+        /* Word unscramble section */
+        #wordSection {
+            display: none;
+        }
+
+        .word-prompt {
+            font-size: 1.5em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .scrambled {
+            font-size: 2.5em;
+            letter-spacing: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffff99;
+            text-shadow: 0 0 15px gold;
+        }
+
+        .word-input {
+            width: 100%;
+            padding: 14px 18px;
+            font-size: 1.4em;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            text-align: center;
+            outline: none;
+            margin-bottom: 14px;
+            letter-spacing: 6px;
+        }
+
+        .word-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0;
+        }
+
+        /* Quiz section */
+        #quizSection {
+            display: none;
+        }
+
+        .quiz-q {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .quiz-opts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .quiz-opt {
+            padding: 16px 8px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1.15em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .quiz-opt:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.03);
+        }
+
+        .quiz-opt.correct {
+            background: rgba(0, 220, 80, 0.35);
+            border-color: #00e050;
+        }
+
+        .quiz-opt.wrong {
+            background: rgba(255, 60, 60, 0.35);
+            border-color: #ff4444;
+        }
+
+        /* Result overlay */
+        #resultOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #resultOverlay.show {
+            display: flex;
+        }
+
+        .result-emoji {
+            font-size: 5em;
+            margin-bottom: 16px;
+        }
+
+        .result-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #ffff99;
+            text-shadow: 0 0 20px gold;
+            margin-bottom: 12px;
+        }
+
+        .result-msg {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+        }
+
+        .result-btn {
+            padding: 16px 44px;
+            background: linear-gradient(135deg, #ff66cc, #9933ff);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(153, 0, 255, 0.4);
+        }
+
+        /* Completed banner */
+        #doneBanner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #doneBanner.show {
+            display: block;
+        }
+
+        @media (max-width: 500px) {
+            .quiz-opts {
+                grid-template-columns: 1fr;
+            }
+
+            .tracer-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ Home</button>
+
+    <!-- Stars -->
+    <div class="star" style="top:5%;left:8%;font-size:22px;">✨</div>
+    <div class="star" style="top:18%;right:10%;font-size:18px;animation-delay:0.5s;">⭐</div>
+    <div class="star" style="top:60%;left:4%;font-size:20px;animation-delay:1.2s;">✦</div>
+    <div class="star" style="top:80%;right:6%;font-size:16px;animation-delay:1.8s;">💫</div>
+
+    <div class="container">
+        <div class="header-title">🏆 Daily Challenge</div>
+        <div class="header-sub">Complete today's challenge to keep your streak! 🔥</div>
+
+        <!-- Streak -->
+        <div class="streak-badge">🔥 Current Streak: <span id="streakNum">0</span> days</div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tracer')">✏️ Tracer</button>
+            <button class="tab-btn" onclick="switchTab('word')">🔤 Unscramble</button>
+            <button class="tab-btn" onclick="switchTab('quiz')">🧠 Quiz</button>
+        </div>
+
+        <!-- Already done banner -->
+        <div class="card" id="doneBanner">
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:4em;margin-bottom:16px;">✅</div>
+                <h2 style="font-size:1.8em;color:#ffff99;text-shadow:0 0 20px gold;margin-bottom:12px;">Challenge
+                    Complete!</h2>
+                <p style="font-size:1.1em;color:rgba(255,255,255,0.85);margin-bottom:6px;">You've completed today's
+                    challenge. Come back tomorrow!</p>
+                <p style="color:#ffff99;font-size:1.5em;margin-top:12px;">🔥 Streak: <span
+                        id="doneBannerStreak">0</span> days</p>
+            </div>
+        </div>
+
+        <!-- Tracer Section -->
+        <div class="card" id="tracerSection">
+            <p class="tracer-instructions">📝 <b>Trace the letter</b> shown below. Draw over it with your finger or
+                mouse!</p>
+            <div class="canvas-wrap">
+                <canvas id="tracerCanvas" width="400" height="260"></canvas>
+                <div class="canvas-hint" id="canvasHint">A</div>
+            </div>
+            <div class="tracer-controls">
+                <button class="ctrl-btn clear" onclick="clearCanvas()">🗑️ Clear</button>
+                <button class="ctrl-btn" onclick="newLetter()">🔄 New Letter</button>
+                <button class="ctrl-btn submit" onclick="submitTracer()">✅ Done!</button>
+            </div>
+        </div>
+
+        <!-- Word Unscramble Section -->
+        <div class="card" id="wordSection">
+            <div class="word-prompt">🔤 Unscramble the letters to make a word!</div>
+            <div class="scrambled" id="scrambledWord"></div>
+            <input class="word-input" id="wordInput" type="text" placeholder="Type your answer..." autocomplete="off">
+            <button class="ctrl-btn submit" style="width:100%;" onclick="checkWord()">✅ Check!</button>
+            <p id="wordFeedback" style="text-align:center;margin-top:12px;font-size:1.1em;font-weight:700;"></p>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="card" id="quizSection">
+            <div class="quiz-q" id="quizQuestion">Loading...</div>
+            <div class="quiz-opts" id="quizOpts"></div>
+            <p id="quizFeedback" style="text-align:center;margin-top:14px;font-size:1.1em;font-weight:700;"></p>
+        </div>
+    </div>
+
+    <!-- Result overlay -->
+    <div id="resultOverlay">
+        <div class="result-emoji">🌟</div>
+        <div class="result-title">Challenge Complete!</div>
+        <div class="result-msg">Amazing work! You earned points & kept your streak going! 🔥</div>
+        <button class="result-btn" onclick="window.location.href='index.html'">🏠 Back to Home</button>
+    </div>
+
+    <script type="module">
+        import { auth, db, doc, getDoc, updateDoc, increment, onSnapshot } from "./firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        let currentUser = null;
+        const todayStr = new Date().toDateString();
+
+        // ── Auth & Challenge Logic ───────────────────────────────────────────────────
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "login.html"; return; }
+            currentUser = user;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            const data = snap.exists() ? snap.data() : {};
+            document.getElementById("streakNum").textContent = data.streakDays || 0;
+
+            if (data.lastChallenge === todayStr) {
+                document.getElementById("doneBanner").classList.add("show");
+                document.getElementById("tracerSection").style.display = "none";
+                document.getElementById("doneBannerStreak").textContent = data.streakDays || 0;
+            }
+        });
+
+        window.submitChallenge = async () => {
+            if (!currentUser) {
+                alert("Loading user data, please wait a moment... ⏳");
+                return;
+            }
+            try {
+                const btn = document.querySelector(".submit");
+                if (btn) btn.disabled = true;
+
+                const snap = await getDoc(doc(db, "users", currentUser.uid));
+                const data = snap.exists() ? snap.data() : {};
+                const lastStr = data.lastChallenge || "";
+
+                // Streak logic
+                const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+                const isConsecutive = lastStr === yesterday.toDateString();
+                const isAlreadyDoneToday = lastStr === todayStr;
+
+                if (isAlreadyDoneToday) {
+                    alert("You've already done today's challenge! 🌟");
+                    if (btn) btn.disabled = false;
+                    return;
+                }
+
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    lastChallenge: todayStr,
+                    totalPoints: increment(50),
+                    streakDays: isConsecutive ? increment(1) : 1
+                });
+
+                document.getElementById("resultOverlay").classList.add("show");
+            } catch (err) {
+                console.error("Submission error:", err);
+                alert("Oops! Something went wrong. Check your connection.");
+                const btn = document.querySelector(".submit");
+                if (btn) btn.disabled = false;
+            }
+        };
+
+        // ── Tracer ────────────────────────────────────────────────────────────────────
+        const canvas = document.getElementById("tracerCanvas");
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+            let drawing = false;
+            let strokes = 0;
+
+            let letterHint = letters[Math.floor(Math.random() * letters.length)];
+            const hintEl = document.getElementById("canvasHint");
+            if (hintEl) hintEl.textContent = letterHint;
+
+            ctx.strokeStyle = "#ff99ff";
+            ctx.lineWidth = 5;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+                return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            };
+
+            canvas.addEventListener("pointerdown", e => { drawing = true; ctx.beginTransaction ? ctx.beginTransaction() : ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+            canvas.addEventListener("pointermove", e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
+            canvas.addEventListener("pointerup", () => { drawing = false; strokes++; });
+
+            window.clearCanvas = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); strokes = 0; };
+            window.newLetter = () => { letterHint = letters[Math.floor(Math.random() * letters.length)]; if (hintEl) hintEl.textContent = letterHint; window.clearCanvas(); };
+            window.submitTracer = () => {
+                if (strokes < 1) { alert("Please trace the letter first! ✏️"); return; }
+                window.submitChallenge();
+            };
+        }
+
+        // ── Word Unscramble ───────────────────────────────────────────────────────────
+        const wordList = [
+            { word: "CAT", hint: "🐱" }, { word: "DOG", hint: "🐶" }, { word: "SUN", hint: "☀️" },
+            { word: "HAT", hint: "🎩" }, { word: "BEE", hint: "🐝" }, { word: "MAP", hint: "🗺️" },
+            { word: "PEN", hint: "✏️" }, { word: "CUP", hint: "☕" }, { word: "FAN", hint: "💨" },
+            { word: "JAM", hint: "🍓" }, { word: "LOG", hint: "🪵" }, { word: "FIG", hint: "🫐" }
+        ];
+        let currentWord = "";
+        window.loadWord = () => {
+            const w = wordList[Math.floor(Math.random() * wordList.length)];
+            currentWord = w.word;
+            const sc = w.word.split("").sort(() => Math.random() - 0.5).join("  ");
+            const scEl = document.getElementById("scrambledWord");
+            if (scEl) scEl.textContent = w.hint + "  " + sc;
+            const inp = document.getElementById("wordInput");
+            if (inp) inp.value = "";
+            const fb = document.getElementById("wordFeedback");
+            if (fb) fb.textContent = "";
+        };
+
+        window.checkWord = () => {
+            const inp = document.getElementById("wordInput");
+            const ans = inp ? inp.value.trim().toUpperCase() : "";
+            const fb = document.getElementById("wordFeedback");
+            if (ans === currentWord) {
+                if (fb) { fb.textContent = "✅ Correct! Great job!"; fb.style.color = "#00ff99"; }
+                setTimeout(() => { window.submitChallenge(); }, 1000);
+            } else {
+                if (fb) { fb.textContent = "❌ Try again!"; fb.style.color = "#ff6666"; }
+            }
+        };
+        window.loadWord();
+
+        // ── Quiz ──────────────────────────────────────────────────────────────────────
+        const quizBank = [
+            { q: "Which letter comes AFTER 'D'?", opts: ["C", "E", "B", "F"], correct: 1 },
+            { q: "How many syllables in 'BUTTERFLY'?", opts: ["2", "3", "4", "1"], correct: 1 },
+            { q: "Pick the word that RHYMES with CAT:", opts: ["Car", "Bat", "Cup", "Dog"], correct: 1 },
+            { q: "Which letter is 'b' flipped left-right?", opts: ["p", "d", "q", "n"], correct: 1 },
+            { q: "What is the LAST letter of the alphabet?", opts: ["Y", "X", "Z", "W"], correct: 2 },
+            { q: "How many letters in 'HOUSE'?", opts: ["4", "5", "6", "3"], correct: 1 },
+            { q: "Which word starts with a VOWEL?", opts: ["Cat", "Dog", "Apple", "Run"], correct: 2 },
+        ];
+        let quizQ = {}; let quizAnswered = false;
+        window.loadQuiz = () => {
+            quizQ = quizBank[Math.floor(Math.random() * quizBank.length)];
+            const qEl = document.getElementById("quizQuestion");
+            if (qEl) qEl.textContent = quizQ.q;
+            const opts = document.getElementById("quizOpts");
+            if (opts) {
+                opts.innerHTML = "";
+                quizAnswered = false;
+                quizQ.opts.forEach((o, i) => {
+                    const b = document.createElement("button");
+                    b.className = "quiz-opt"; b.textContent = o;
+                    b.addEventListener("click", () => {
+                        if (quizAnswered) return; quizAnswered = true;
+                        opts.querySelectorAll(".quiz-opt").forEach(btn => btn.disabled = true);
+                        const fb = document.getElementById("quizFeedback");
+                        if (i === quizQ.correct) {
+                            b.classList.add("correct"); if (fb) { fb.textContent = "✅ Correct! +10 points!"; fb.style.color = "#00ff99"; }
+                            setTimeout(() => window.submitChallenge(), 1000);
+                        } else {
+                            b.classList.add("wrong"); opts.querySelectorAll(".quiz-opt")[quizQ.correct].classList.add("correct");
+                            if (fb) { fb.textContent = "❌ Oops! That's wrong."; fb.style.color = "#ff6666"; }
+                        }
+                    });
+                    opts.appendChild(b);
+                });
+            }
+            const fb = document.getElementById("quizFeedback");
+            if (fb) fb.textContent = "";
+        };
+        window.loadQuiz();
+
+        // ── Tab switching ─────────────────────────────────────────────────────────────
+        window.switchTab = (tab) => {
+            document.querySelectorAll(".tab-btn").forEach((b, i) => b.classList.toggle("active", ["tracer", "word", "quiz"][i] === tab));
+            document.getElementById("tracerSection").style.display = tab === "tracer" ? "block" : "none";
+            document.getElementById("wordSection").style.display = tab === "word" ? "block" : "none";
+            document.getElementById("quizSection").style.display = tab === "quiz" ? "block" : "none";
+            if (tab === "word") window.loadWord();
+            if (tab === "quiz") window.loadQuiz();
+        };
+
+        // Stars
+        const syms = ["✦", "✨", "⭐", "💫"];
+        for (let i = 0; i < 12; i++) {
+            const s = document.createElement("div"); s.className = "star";
+            s.textContent = syms[Math.floor(Math.random() * syms.length)];
+            s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
+            s.style.fontSize = (Math.random() * 10 + 12) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
+            document.body.appendChild(s);
+        }
+    </script>
+</body>
+
+</html>

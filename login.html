@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiLearn — Sign In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Comic Neue', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px 20px 70px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Sparkly stars */
+    .star {
+      position: fixed;
+      pointer-events: none;
+      animation: twinkle 3s infinite;
+      font-size: 18px;
+      opacity: 0.7;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.3);
+      }
+    }
+
+    /* Glass card */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 28px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 2.4em;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 20px #00ffff;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 1em;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 1.6em;
+      color: #fff;
+      margin-bottom: 18px;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 18px;
+      margin: 8px 0;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 1em;
+      outline: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    input:focus {
+      border-color: #00ffff;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 1.1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(0, 114, 255, 0.5);
+    }
+
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 0;
+      margin-top: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 1em;
+      font-weight: 700;
+      color: #444;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .google-btn:hover {
+      background: #fff;
+      transform: translateY(-2px);
+    }
+
+    .google-btn img {
+      height: 22px;
+      width: 22px;
+    }
+
+    .toggle-link {
+      display: block;
+      font-size: 0.95em;
+      margin-top: 16px;
+      color: #d0f0ff;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .toggle-link:hover {
+      color: #fff;
+    }
+
+    .info-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(74, 20, 140, 0.95);
+      color: #fff;
+      padding: 12px 0;
+      text-align: center;
+      font-size: 0.9em;
+      font-weight: 700;
+      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+
+    #signupFields {
+      display: none;
+    }
+
+    /* Loading overlay */
+    #loader {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(100, 0, 150, 0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+      font-size: 1.4em;
+      font-weight: 700;
+      gap: 16px;
+    }
+
+    #loader.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #00ffff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 460px) {
+      .card {
+        padding: 28px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sparkly background stars -->
+  <div class="star" style="top:8%;left:10%;">✨</div>
+  <div class="star" style="top:15%;right:12%;animation-delay:0.5s;">⭐</div>
+  <div class="star" style="top:55%;left:5%;animation-delay:1s;">✦</div>
+  <div class="star" style="top:70%;right:8%;animation-delay:1.5s;">💫</div>
+  <div class="star" style="top:35%;left:85%;animation-delay:0.8s;">✨</div>
+  <div class="star" style="top:88%;left:30%;animation-delay:2s;">⭐</div>
+  <div class="star" style="top:25%;left:50%;animation-delay:1.2s;">✦</div>
+  <div class="star" style="top:80%;right:35%;animation-delay:0.3s;">💫</div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <span>Loading LexiLearn...</span>
+  </div>
+
+  <div class="card">
+    <div class="logo">🌟 LexiLearn</div>
+    <div class="subtitle">Fun learning for every child ✨</div>
+
+    <h1 id="formTitle">Sign In</h1>
+
+    <!-- Sign-in fields only -->
+    <div id="signinFields">
+      <input type="email" id="emailSignin" placeholder="Email" autocomplete="email">
+    </div>
+
+    <!-- Sign-up extra fields -->
+    <div id="signupFields" style="display:none;">
+      <input type="text" id="firstName" placeholder="First Name">
+      <input type="text" id="lastName" placeholder="Last Name">
+      <input type="number" id="ageInput" placeholder="Age">
+      <input type="email" id="emailSignup" placeholder="Email" autocomplete="email">
+      <input type="text" id="nickname" placeholder="Nickname (display name)">
+    </div>
+
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <button class="primary-btn" id="authBtn">Sign In</button>
+
+    <button class="google-btn" id="googleBtn">
+      <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
+      Continue with Google
+    </button>
+
+    <span class="toggle-link" id="toggleForm">Don't have an account? Sign Up</span>
+  </div>
+
+  <div class="info-bar">⚠️ Designed for children — Parental supervision recommended ⚠️</div>
+
+  <script type="module">
+    // ✅ Import ONLY from shared firebase-config.js — NO API keys here
+    import { auth, db, doc, getDoc, setDoc } from "./firebase-config.js";
+    import {
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      updateProfile,
+      onAuthStateChanged,
+      GoogleAuthProvider,
+      signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const loader = document.getElementById("loader");
+    const authBtn = document.getElementById("authBtn");
+    const googleBtn = document.getElementById("googleBtn");
+    const toggleForm = document.getElementById("toggleForm");
+    const formTitle = document.getElementById("formTitle");
+    const signinFields = document.getElementById("signinFields");
+    const signupFields = document.getElementById("signupFields");
+    let isSignIn = true;
+
+    // ── Redirect if already logged in ──────────────────────────────────────────
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Prevent auto-redirect if we just logged out
+        if (localStorage.getItem("justLoggedOut") === "true") {
+          return;
+        }
+        loader.classList.add("show");
+        await redirectAfterLogin(user);
+      }
+    });
+
+    // Clear justLoggedOut flag on any click or input (user interaction)
+    window.addEventListener("mousedown", () => localStorage.removeItem("justLoggedOut"));
+    window.addEventListener("keydown", () => localStorage.removeItem("justLoggedOut"));
+
+    // ── After login: check screening status ────────────────────────────────────
+    async function redirectAfterLogin(user) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("nickname", user.displayName || user.email);
+      localStorage.setItem("uid", user.uid);
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists() && snap.data().screeningComplete) {
+          window.location.href = "index.html";
+        } else {
+          window.location.href = "ScreeningTest.html";
+        }
+      } catch {
+        window.location.href = "ScreeningTest.html";
+      }
+    }
+
+    // ── Toggle between Sign In / Sign Up ───────────────────────────────────────
+    toggleForm.addEventListener("click", () => {
+      isSignIn = !isSignIn;
+      formTitle.textContent = isSignIn ? "Sign In" : "Sign Up";
+      authBtn.textContent = isSignIn ? "Sign In" : "Sign Up";
+      toggleForm.textContent = isSignIn
+        ? "Don't have an account? Sign Up"
+        : "Already have an account? Sign In";
+      signinFields.style.display = isSignIn ? "block" : "none";
+      signupFields.style.display = isSignIn ? "none" : "block";
+    });
+
+    // ── Email / Password handler ────────────────────────────────────────────────
+    authBtn.addEventListener("click", async () => {
+      const password = document.getElementById("password").value.trim();
+
+      if (isSignIn) {
+        const email = document.getElementById("emailSignin").value.trim();
+        if (!email || !password) { alert("Please enter your email and password!"); return; }
+        try {
+          loader.classList.add("show");
+          const cred = await signInWithEmailAndPassword(auth, email, password);
+          await redirectAfterLogin(cred.user);
+        } catch (e) {
+          loader.classList.remove("show");
+          alert("Sign-in failed: " + e.message);
+        }
+      } else {
+        const firstName = document.getElementById("firstName").value.trim();
+        const lastName = document.getElementById("lastName").value.trim();
+        const age = document.getElementById("ageInput").value.trim();
+        const email = document.getElementById("emailSignup").value.trim();
+        const nickname = document.getElementById("nickname").value.trim();
+        if (!firstName || !lastName || !age || !email || !nickname || !password) {
+          alert("Please fill in all fields!"); return;
+        }
+        try {
+          loader.classList.add("show");
+          const cred = await createUserWithEmailAndPassword(auth, email, password);
+          await updateProfile(cred.user, { displayName: nickname });
+          await setDoc(doc(db, "users", cred.user.uid), {
+            firstName, lastName, age: Number(age), email,
+            nickname, screeningComplete: false, screeningDay: 0,
+            gamesPlayed: 0, accuracy: 0, streakDays: 0, totalPoints: 0,
+            createdAt: new Date().toISOString()
+          });
+          window.location.href = "ScreeningTest.html";
+        } catch (e) {
+          loader.classList.remove("show");
+          alert("Sign-up failed: " + e.message);
+        }
+      }
+    });
+
+    // ── Google Sign-In ──────────────────────────────────────────────────────────
+    const provider = new GoogleAuthProvider();
+    googleBtn.addEventListener("click", async () => {
+      try {
+        loader.classList.add("show");
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (!snap.exists()) {
+          await setDoc(doc(db, "users", user.uid), {
+            nickname: user.displayName || user.email,
+            email: user.email,
+            screeningComplete: false, screeningDay: 0,
+            gamesPlayed: 0, accuracy: 0, streakDays: 0, totalPoints: 0,
+            createdAt: new Date().toISOString()
+          });
+        }
+        await redirectAfterLogin(user);
+      } catch (e) {
+        loader.classList.remove("show");
+        alert("Google sign-in failed: " + e.message);
+      }
+    });
+  </script>
+
+  <script>
+    // Add random extra stars
+    const starSymbols = ["✦", "✨", "⭐", "💫", "🌟"];
+    for (let i = 0; i < 12; i++) {
+      const s = document.createElement("div");
+      s.className = "star";
+      s.textContent = starSymbols[Math.floor(Math.random() * starSymbols.length)];
+      s.style.top = Math.random() * 100 + "%";
+      s.style.left = Math.random() * 100 + "%";
+      s.style.fontSize = (Math.random() * 12 + 12) + "px";
+      s.style.animationDelay = Math.random() * 3 + "s";
+      document.body.appendChild(s);
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,183 @@
+<!-- Phonics Pop -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Phonics Pop Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #8a7bd7;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.25s;
+            font-family: 'Comic Neue', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+
+    <script>
+        // ✅ Speech function
+        function playLetter(letter) {
+            let utter = new SpeechSynthesisUtterance(letter);
+            utter.lang = "en-US"; utter.rate = 0.9; utter.pitch = 1.1;
+            speechSynthesis.speak(utter);
+        }
+
+        const LETTER_COLORS = {
+            "P": 0xff99cc, "Q": 0xff6666, "O": 0xffff99, "R": 0x99ccff
+        };
+
+        const CHEER_MESSAGES = ["🌟 Great Job!", "⚡ Excellent!", "✨ You Rock!", "💫 Awesome!", "🎉 Well Done!"];
+
+        const FRIENDLY_TEXT = {
+            fontFamily: "Comic Neue, Comic Sans, Arial",
+            fontSize: "34px", fill: "#fff", stroke: "#000",
+            strokeThickness: 5, shadow: { color: "#00ffff", blur: 20, fill: true }
+        };
+
+        function popEffect(scene, x, y) {
+            let star = scene.add.text(x, y, "✨", { fontSize: "50px" }).setOrigin(0.5);
+            scene.tweens.add({ targets: star, y: y - 60, alpha: { from: 1, to: 0 }, duration: 800, onComplete: () => star.destroy() });
+        }
+
+        function shakeEffect(scene, target) {
+            scene.tweens.add({ targets: target, x: target.x + 10, duration: 100, yoyo: true, repeat: 3 });
+        }
+
+        function createBackgroundStars(scene) {
+            for (let i = 0; i < 30; i++) {
+                let star = scene.add.text(
+                    Phaser.Math.Between(0, scene.scale.width), Phaser.Math.Between(0, scene.scale.height),
+                    "✦", { fontSize: "18px", fill: "#ffffff", alpha: 0.5 }
+                );
+                scene.tweens.add({ targets: star, alpha: { from: 0.3, to: 1 }, duration: Phaser.Math.Between(2000, 4000), yoyo: true, repeat: -1 });
+            }
+        }
+
+        class PhonicsPop extends Phaser.Scene {
+            constructor() { super("PhonicsPop"); }
+
+            create() {
+                this.score = 0; this.correctStreak = 0; this.level = "Easy";
+                createBackgroundStars(this);
+                this.levelText = this.add.text(20, 20, "Level: Easy", FRIENDLY_TEXT);
+                this.scoreText = this.add.text(this.scale.width - 200, 20, "Score: 0", FRIENDLY_TEXT);
+                this.replayBtn = this.add.text(this.scale.width / 2, 70, "🔊 Replay Sound", FRIENDLY_TEXT)
+                    .setOrigin(0.5).setInteractive().on("pointerdown", () => { if (this.targetLetter) playLetter(this.targetLetter); });
+                ["Easy", "Medium", "Hard"].forEach((lvl, i) => {
+                    this.add.text(this.scale.width / 2 + (i - 1) * 200, this.scale.height - 50, lvl, FRIENDLY_TEXT)
+                        .setOrigin(0.5).setInteractive()
+                        .on("pointerdown", () => { this.level = lvl; this.levelText.setText("Level: " + lvl); this.startRound(); });
+                });
+                this.startRound();
+            }
+
+            startRound() {
+                if (this.bubbles) this.bubbles.forEach(b => b.destroy());
+                if (this.lettersText) this.lettersText.forEach(t => t.destroy());
+                if (this.resultText) this.resultText.destroy();
+                this.bubbles = []; this.lettersText = [];
+                let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+                this.targetLetter = Phaser.Utils.Array.GetRandom(letters);
+                if (this.instructionText) this.instructionText.destroy();
+                this.instructionText = this.add.text(this.scale.width / 2, 130, "⚡ Find '" + this.targetLetter + "'!", FRIENDLY_TEXT).setOrigin(0.5);
+                playLetter(this.targetLetter);
+                let bubbleCount = (this.level === "Easy") ? 8 : (this.level === "Medium") ? 12 : 20;
+                let rows = Math.ceil(Math.sqrt(bubbleCount)), cols = Math.ceil(bubbleCount / rows);
+                let gridWidth = this.scale.width * 0.8, gridHeight = this.scale.height * 0.6;
+                let gapX = gridWidth / cols, gapY = gridHeight / rows;
+                let startX = (this.scale.width - gridWidth) / 2 + gapX / 2, startY = 200;
+                let correctIndex = Phaser.Math.Between(0, bubbleCount - 1);
+                for (let i = 0; i < bubbleCount; i++) {
+                    let row = Math.floor(i / cols), col = i % cols;
+                    let x = startX + col * gapX, y = startY + row * gapY;
+                    let letter = (i === correctIndex) ? this.targetLetter : Phaser.Utils.Array.GetRandom(letters.filter(l => l !== this.targetLetter));
+                    let color = LETTER_COLORS[letter] || 0x99ccff;
+                    let bubble = this.add.circle(x, y, Math.min(gapX, gapY) / 3, color).setInteractive();
+                    bubble.setStrokeStyle(6, 0xffffff); bubble.letter = letter;
+                    let text = this.add.text(x, y, letter, FRIENDLY_TEXT).setOrigin(0.5);
+                    this.bubbles.push(bubble); this.lettersText.push(text);
+                    this.tweens.add({ targets: [bubble, text], y: y - 10, duration: 1000, yoyo: true, repeat: -1 });
+                    bubble.on("pointerdown", () => {
+                        if (bubble.letter === this.targetLetter) {
+                            popEffect(this, bubble.x, bubble.y);
+                            this.score++; this.scoreText.setText("Score: " + this.score);
+                            this.correctStreak++;
+                            if (this.correctStreak % 3 === 0) this.showCheerMessage();
+                            this.time.delayedCall(1500, () => this.startRound());
+                        } else {
+                            shakeEffect(this, bubble);
+                            this.resultText = this.add.text(this.scale.width / 2, this.scale.height - 100, "❌ Wrong!", FRIENDLY_TEXT).setOrigin(0.5);
+                            this.correctStreak = 0;
+                        }
+                    });
+                }
+            }
+
+            showCheerMessage() {
+                let msg = Phaser.Utils.Array.GetRandom(CHEER_MESSAGES);
+                let cheer = this.add.text(this.scale.width / 2, this.scale.height / 2, msg, FRIENDLY_TEXT).setOrigin(0.5);
+                this.tweens.add({ targets: cheer, scale: { from: 0.5, to: 1.3 }, alpha: { from: 0, to: 1 }, duration: 800, yoyo: true, repeat: 1, onComplete: () => cheer.destroy() });
+            }
+        }
+
+        let config = {
+            type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight,
+            backgroundColor: 0x8a7bd7,
+            scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
+            scene: [PhonicsPop]
+        };
+        let game = new Phaser.Game(config);
+    </script>
+
+    <script type="module">
+        // ✅ Import from shared config — NO API keys here
+        import { auth, db, doc, updateDoc, increment } from "../firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // Save stats when game completes
+        window.saveGameStats = async (accuracy, points) => {
+            const user = auth.currentUser;
+            if (!user) return;
+            await updateDoc(doc(db, "users", user.uid), {
+                gamesPlayed: increment(1),
+                accuracy: accuracy,
+                totalPoints: increment(points)
+            });
+        };
+    </script>
+</body>
+
+</html>

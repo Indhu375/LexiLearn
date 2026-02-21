@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiLearn — Choose a Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 20px 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .star {
+            position: fixed;
+            pointer-events: none;
+            animation: twinkle 3s infinite;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.4)
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 999;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.25s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateX(-3px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.6em;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            text-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 36px;
+            font-size: 1.15em;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 26px;
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-icon {
+            font-size: 3.2em;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .game-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .game-desc {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.75);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+
+        .play-chip {
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1.5px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .game-card:hover .play-chip {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* individual card accent colors */
+        .card-1:hover {
+            border-color: #ff99cc;
+            box-shadow: 0 18px 40px rgba(255, 102, 204, 0.3);
+        }
+
+        .card-2:hover {
+            border-color: #99ffcc;
+            box-shadow: 0 18px 40px rgba(0, 255, 150, 0.3);
+        }
+
+        .card-3:hover {
+            border-color: #ffff99;
+            box-shadow: 0 18px 40px rgba(255, 220, 0, 0.3);
+        }
+
+        .card-4:hover {
+            border-color: #99ccff;
+            box-shadow: 0 18px 40px rgba(0, 150, 255, 0.3);
+        }
+
+        .card-5:hover {
+            border-color: #ffcc99;
+            box-shadow: 0 18px 40px rgba(255, 150, 0, 0.3);
+        }
+
+        .card-6:hover {
+            border-color: #cc99ff;
+            box-shadow: 0 18px 40px rgba(150, 0, 255, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
+    <div class="star" style="top:15%;right:8%;font-size:18px;animation-delay:0.5s;">⭐</div>
+    <div class="star" style="top:70%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
+    <div class="star" style="top:82%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+    <div class="star" style="top:45%;right:2%;font-size:16px;animation-delay:0.9s;">🌟</div>
+
+    <button class="back-btn" onclick="window.location.href='../index.html'">⬅ Home</button>
+
+    <div class="container">
+        <h1>🎮 Choose a Game!</h1>
+        <p class="subtitle">Pick your adventure and start learning ✨</p>
+
+        <div class="games-grid">
+            <a class="game-card card-1" href="PhonicsF.html">
+                <span class="game-icon">🎵</span>
+                <div class="game-title">Phonics Pop</div>
+                <div class="game-desc">Pop bubbles to match letters and sounds!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+
+            <a class="game-card card-2" href="LetterSeqF.html">
+                <span class="game-icon">🔤</span>
+                <div class="game-title">Letter Sequence</div>
+                <div class="game-desc">Find all the matching letters as fast as you can!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+
+            <a class="game-card card-3" href="ShadowF.html">
+                <span class="game-icon">🔢</span>
+                <div class="game-title">Number & Letter Quest</div>
+                <div class="game-desc">Match letters and numbers to their shadows!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+
+            <a class="game-card card-4" href="LettermazeF.html">
+                <span class="game-icon">🌀</span>
+                <div class="game-title">Letter Maze</div>
+                <div class="game-desc">Navigate the maze by finding the right letters!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+
+            <a class="game-card card-5" href="VocabularyF.html">
+                <span class="game-icon">📖</span>
+                <div class="game-title">Vocabulary Race</div>
+                <div class="game-desc">Unscramble words and match emojis to build your vocabulary!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+
+            <a class="game-card card-6" href="StorySeqF.html">
+                <span class="game-icon">📣</span>
+                <div class="game-title">Story Sequencer</div>
+                <div class="game-desc">Put the story cards in the right order to tell a tale!</div>
+                <span class="play-chip">▶ Play</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const syms = ["✦", "✨", "⭐", "💫", "🌟"];
+        for (let i = 0; i < 14; i++) {
+            const s = document.createElement("div"); s.className = "star";
+            s.textContent = syms[Math.floor(Math.random() * syms.length)];
+            s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
+            s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
+            document.body.appendChild(s);
+        }
+    </script>
+</body>
+
+</html>

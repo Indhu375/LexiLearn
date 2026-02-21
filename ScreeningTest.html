@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiLearn — Screening Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0533 0%, #3d0d6e 50%, #6a1fb5 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .star {
+            position: fixed;
+            pointer-events: none;
+            animation: twinkle 3s infinite;
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin: 30px 0 30px;
+        }
+
+        .header h1 {
+            font-size: 2.4em;
+            color: #fff;
+            text-shadow: 0 0 20px #ff99ff, 0 0 40px #cc00ff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            height: 18px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff66cc, #cc33ff, #00ccff);
+            border-radius: 30px;
+            transition: width 0.6s ease;
+        }
+
+        .progress-label {
+            text-align: right;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+        }
+
+        /* Day display */
+        .day-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff66cc, #9933ff);
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-size: 1em;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(255, 102, 204, 0.4);
+            margin-bottom: 20px;
+        }
+
+        /* Question card */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 32px 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 30px rgba(153, 0, 255, 0.2);
+        }
+
+        .question-num {
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(255, 200, 255, 0.5);
+        }
+
+        /* Options */
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .opt-btn {
+            padding: 18px 10px;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+        }
+
+        .opt-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.04);
+            border-color: #ff99ff;
+        }
+
+        .opt-btn.correct {
+            background: rgba(0, 230, 80, 0.35);
+            border-color: #00e050;
+        }
+
+        .opt-btn.wrong {
+            background: rgba(255, 60, 60, 0.35);
+            border-color: #ff4444;
+        }
+
+        .opt-btn:disabled {
+            cursor: default;
+        }
+
+        /* Day complete screen */
+        .day-complete {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .day-complete.show {
+            display: flex;
+        }
+
+        .day-complete .emoji {
+            font-size: 5em;
+            margin-bottom: 16px;
+        }
+
+        .day-complete h2 {
+            font-size: 2em;
+            color: #ffff99;
+            text-shadow: 0 0 20px gold;
+            margin-bottom: 12px;
+        }
+
+        .day-complete p {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 28px;
+        }
+
+        .next-btn {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #ff66cc, #9933ff);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-family: 'Comic Neue', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(153, 0, 255, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(153, 0, 255, 0.5);
+        }
+
+        /* Completed all 7 days */
+        #allDoneScreen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #allDoneScreen.show {
+            display: flex;
+        }
+
+        /* Week dots */
+        .week-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .week-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .week-dot.done {
+            background: linear-gradient(135deg, #00cc66, #00ff99);
+            border-color: #00ff99;
+        }
+
+        .week-dot.today {
+            background: linear-gradient(135deg, #ff66cc, #9933ff);
+            border-color: #ff99ff;
+            animation: pulse 1.5s infinite;
+        }
+
+        .week-dot.future {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(153, 0, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 0 10px rgba(153, 0, 255, 0);
+            }
+        }
+
+        /* Already done today */
+        #alreadyDoneToday {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        #alreadyDoneToday.show {
+            display: flex;
+        }
+
+        @media (max-width: 500px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 24px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Stars -->
+    <div class="star" style="top:5%;left:8%;font-size:22px;">✨</div>
+    <div class="star" style="top:12%;right:10%;font-size:18px;animation-delay:0.7s;">⭐</div>
+    <div class="star" style="top:60%;left:4%;font-size:20px;animation-delay:1.2s;">✦</div>
+    <div class="star" style="top:75%;right:6%;font-size:16px;animation-delay:1.8s;">💫</div>
+    <div class="star" style="top:40%;right:3%;font-size:24px;animation-delay:0.4s;">🌟</div>
+    <div class="star" style="top:88%;left:20%;font-size:18px;animation-delay:2.2s;">✨</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Brain Screening</h1>
+            <p>7-day journey to understand how you learn best!</p>
+        </div>
+
+        <!-- Week progress dots -->
+        <div class="week-dots" id="weekDots"></div>
+
+        <!-- Progress bar -->
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-label" id="progressLabel">Day 0 of 7</div>
+
+        <!-- Main question area -->
+        <div id="mainArea">
+            <div class="card">
+                <div class="question-num" id="questionNum">Question 1 of 5</div>
+                <div class="question-text" id="questionText">Loading...</div>
+                <div class="options" id="optionsGrid"></div>
+            </div>
+        </div>
+
+        <!-- Day complete screen (inside card area) -->
+        <div class="card day-complete" id="dayComplete">
+            <div class="emoji" id="dayEmoji">🌟</div>
+            <h2 id="dayCompleteTitle">Day 1 Done!</h2>
+            <p id="dayCompleteMsg">Great job! Come back tomorrow for Day 2.</p>
+            <button class="next-btn" id="dayContinueBtn">🏠 Go to Home</button>
+        </div>
+
+        <!-- Already done today -->
+        <div class="card" id="alreadyDoneToday">
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:4em;margin-bottom:16px;">⏰</div>
+                <h2 style="font-size:1.8em;color:#ffff99;text-shadow:0 0 20px gold;margin-bottom:12px;">Come Back
+                    Tomorrow!</h2>
+                <p style="font-size:1.1em;color:rgba(255,255,255,0.85);margin-bottom:20px;">You've already completed
+                    today's screening. See you again tomorrow! 🌟</p>
+                <button class="next-btn" onclick="window.location.href='index.html'">🏠 Go to Home</button>
+            </div>
+        </div>
+
+        <!-- All 7 days done screen -->
+        <div class="card" id="allDoneScreen">
+            <div style="text-align:center;padding:20px 0;">
+                <div style="font-size:4em;margin-bottom:16px;animation:pulse 2s infinite;">🎉</div>
+                <h2 style="font-size:2em;color:#ffff99;text-shadow:0 0 20px gold;margin-bottom:12px;">Screening
+                    Complete!</h2>
+                <p id="screeningResult" style="font-size:1.1em;color:rgba(255,255,255,0.9);margin-bottom:28px;"></p>
+                <button class="next-btn" onclick="window.location.href='index.html'">🎮 Let's Play!</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ✅ Import from shared config — NO API keys here
+        import { auth, db, doc, getDoc, setDoc, updateDoc } from "./firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // ── Question bank (5 questions per day, 7 days) ─────────────────────────────
+        const questionBank = [
+            // Day 1 — Letter recognition
+            [
+                { q: "Which letter is different from the others?", opts: ["b", "d", "b", "b"], correct: 1 },
+                { q: "Which word starts with the 'P' sound?", opts: ["🍎 Apple", "🐧 Penguin", "🌙 Moon", "🐟 Fish"], correct: 1 },
+                { q: "How many letters are in the word CAT?", opts: ["2", "3", "4", "5"], correct: 1 },
+                { q: "Which pair shows the SAME letter?", opts: ["b & d", "p & q", "b & b", "d & p"], correct: 2 },
+                { q: "What sound does the letter 'M' make?", opts: ["Sss", "Mmm", "Rrr", "Fff"], correct: 1 }
+            ],
+            // Day 2 — Phonics
+            [
+                { q: "Which word rhymes with CAT?", opts: ["Cup", "Bat", "Dog", "Sun"], correct: 1 },
+                { q: "What is the first sound in BALL?", opts: ["L", "A", "B", "P"], correct: 2 },
+                { q: "Which word has the short 'A' sound?", opts: ["Cake", "Rain", "Hat", "Play"], correct: 2 },
+                { q: "Pick the ODD one out:", opts: ["🐱 Cat", "🐶 Dog", "🍎 Apple", "🐟 Fish"], correct: 2 },
+                { q: "How many syllables in BUTTERFLY?", opts: ["1", "2", "3", "4"], correct: 2 }
+            ],
+            // Day 3 — Letter reversal
+            [
+                { q: "Which letter is 'b' mirrored left-right?", opts: ["p", "q", "d", "n"], correct: 2 },
+                { q: "Look: 'was' — Which word is this read backwards?", opts: ["saw", "law", "raw", "jaw"], correct: 0 },
+                { q: "Which two letters look most similar?", opts: ["A & Z", "b & d", "C & O", "S & L"], correct: 1 },
+                { q: "Which letter comes AFTER 'N' in the alphabet?", opts: ["M", "O", "P", "L"], correct: 1 },
+                { q: "Which word is spelled correctly?", opts: ["Hpoe", "Hope", "Hoep", "Hopp"], correct: 1 }
+            ],
+            // Day 4 — Word recognition
+            [
+                { q: "Which word means the opposite of HOT?", opts: ["Warm", "Cool", "Cold", "Icy"], correct: 2 },
+                { q: "Pick the correctly spelled word:", opts: ["Techer", "Teachre", "Teacher", "Teahcer"], correct: 2 },
+                { q: "Which word completes: 'The cat sat on the ___'?", opts: ["jump", "mat", "run", "fly"], correct: 1 },
+                { q: "How many words in: 'I love to read'?", opts: ["3", "4", "5", "6"], correct: 1 },
+                { q: "Which of these is NOT a number?", opts: ["Seven", "Three", "Red", "Nine"], correct: 2 }
+            ],
+            // Day 5 — Memory & sequencing
+            [
+                { q: "What comes next: A, B, C, __?", opts: ["E", "F", "D", "G"], correct: 2 },
+                { q: "What comes next: 1, 2, 3, __?", opts: ["5", "4", "6", "2"], correct: 1 },
+                { q: "Which picture tells a story in the right ORDER?", opts: ["🌱→🌷→🌻", "🌻→🌱→🌷", "🌷→🌻→🌱", "🌱→🌻→🌷"], correct: 0 },
+                { q: "Read then recall: 'Sun Moon Star'. What was FIRST?", opts: ["Moon", "Star", "Sun", "Sky"], correct: 2 },
+                { q: "Which sequence is CORRECT?", opts: ["Cat Bat Hat", "Hat Cat Bat", "Bat Hat Cat", "Hat Bat Cat"], correct: 0 }
+            ],
+            // Day 6 — Reading comprehension (simple)
+            [
+                { q: "'The red ball is big.' What color is the ball?", opts: ["Blue", "Green", "Red", "Yellow"], correct: 2 },
+                { q: "'Sam has 3 apples.' How many apples?", opts: ["2", "4", "3", "5"], correct: 2 },
+                { q: "Which word is a NAME?", opts: ["Run", "Big", "Emma", "Jump"], correct: 2 },
+                { q: "'The dog runs fast.' Who runs fast?", opts: ["Cat", "Dog", "Bird", "Fish"], correct: 1 },
+                { q: "Complete: 'I can ___ my hands.'", opts: ["wash", "big", "tall", "blue"], correct: 0 }
+            ],
+            // Day 7 — Mixed review
+            [
+                { q: "Which letter looks like 'b' flipped upside-down?", opts: ["d", "p", "q", "n"], correct: 1 },
+                { q: "How many letters in 'ELEPHANT'?", opts: ["6", "7", "8", "9"], correct: 2 },
+                { q: "Pick the word that DOESN'T belong:", opts: ["Red", "Blue", "Chair", "Green"], correct: 2 },
+                { q: "What is 2 + 3?", opts: ["4", "5", "6", "7"], correct: 1 },
+                { q: "Which animal can fly?", opts: ["🐠 Fish", "🦈 Shark", "🦋 Butterfly", "🐢 Turtle"], correct: 2 }
+            ]
+        ];
+
+        // ── State ─────────────────────────────────────────────────────────────────────
+        let currentUser = null;
+        let screeningDay = 0; // 0-based: day 0 = first test (Day 1)
+        let qIndex = 0;
+        let wrongCount = 0;
+        let answered = false;
+        let todayDone = false;
+
+        // ── DOM refs ──────────────────────────────────────────────────────────────────
+        const mainArea = document.getElementById("mainArea");
+        const questionNum = document.getElementById("questionNum");
+        const questionText = document.getElementById("questionText");
+        const optionsGrid = document.getElementById("optionsGrid");
+        const progressBar = document.getElementById("progressBar");
+        const progressLabel = document.getElementById("progressLabel");
+        const dayComplete = document.getElementById("dayComplete");
+        const allDoneScreen = document.getElementById("allDoneScreen");
+        const alreadyDone = document.getElementById("alreadyDoneToday");
+        const weekDotsEl = document.getElementById("weekDots");
+
+        function buildWeekDots(doneCount, todayIdx) {
+            weekDotsEl.innerHTML = "";
+            for (let i = 0; i < 7; i++) {
+                const d = document.createElement("div");
+                if (i < doneCount) d.className = "week-dot done", d.textContent = "✓";
+                else if (i === todayIdx) d.className = "week-dot today", d.textContent = i + 1;
+                else d.className = "week-dot future", d.textContent = i + 1;
+                weekDotsEl.appendChild(d);
+            }
+        }
+
+        function updateProgress(dayNum) {
+            const pct = (dayNum / 7) * 100;
+            progressBar.style.width = pct + "%";
+            progressLabel.textContent = `Day ${dayNum} of 7 complete`;
+        }
+
+        function loadQuestion() {
+            const questions = questionBank[screeningDay];
+            const q = questions[qIndex];
+            questionNum.textContent = `Question ${qIndex + 1} of ${questions.length}`;
+            questionText.textContent = q.q;
+
+            optionsGrid.innerHTML = "";
+            q.opts.forEach((opt, i) => {
+                const btn = document.createElement("button");
+                btn.className = "opt-btn";
+                btn.textContent = opt;
+                btn.addEventListener("click", () => handleAnswer(i, q.correct, btn));
+                optionsGrid.appendChild(btn);
+            });
+
+            answered = false;
+        }
+
+        function handleAnswer(chosen, correct, clickedBtn) {
+            if (answered) return;
+            answered = true;
+
+            const allBtns = optionsGrid.querySelectorAll(".opt-btn");
+            allBtns.forEach(b => b.disabled = true);
+
+            if (chosen === correct) {
+                clickedBtn.classList.add("correct");
+            } else {
+                clickedBtn.classList.add("wrong");
+                allBtns[correct].classList.add("correct");
+                wrongCount++;
+            }
+
+            setTimeout(() => {
+                qIndex++;
+                if (qIndex < questionBank[screeningDay].length) {
+                    loadQuestion();
+                } else {
+                    finishDay();
+                }
+            }, 900);
+        }
+
+        async function finishDay() {
+            const dayNum = screeningDay + 1;
+            const isLastDay = dayNum === 7;
+
+            // Mark this day complete in Firestore
+            const updates = {
+                screeningDay: screeningDay + 1,
+                [`screeningWrong_day${dayNum}`]: wrongCount,
+                [`screeningDone_day${dayNum}`]: new Date().toDateString()
+            };
+
+            if (isLastDay) {
+                // Tally total wrong answers
+                const snap = await getDoc(doc(db, "users", currentUser.uid));
+                let totalWrong = wrongCount;
+                if (snap.exists()) {
+                    const d = snap.data();
+                    for (let i = 1; i < 7; i++) {
+                        totalWrong += (d[`screeningWrong_day${i}`] || 0);
+                    }
+                }
+                const hasDyslexia = totalWrong >= 12; // threshold: ≥12 wrong out of 35
+                updates.screeningComplete = true;
+                updates.hasDyslexia = hasDyslexia;
+                await updateDoc(doc(db, "users", currentUser.uid), updates);
+                showAllDone(hasDyslexia);
+            } else {
+                await updateDoc(doc(db, "users", currentUser.uid), updates);
+                showDayComplete(dayNum);
+            }
+        }
+
+        function showDayComplete(dayNum) {
+            mainArea.style.display = "none";
+            dayComplete.classList.add("show");
+            document.getElementById("dayCompleteTitle").textContent =
+                dayNum === 7 ? "🎉 All 7 Days Done!" : `🌟 Day ${dayNum} Complete!`;
+            document.getElementById("dayCompleteMsg").textContent =
+                dayNum < 7
+                    ? `Fantastic! Come back tomorrow for Day ${dayNum + 1} of your screening.`
+                    : `You finished all 7 days! Amazing work!`;
+            buildWeekDots(dayNum, dayNum);
+            updateProgress(dayNum);
+            document.getElementById("dayContinueBtn").onclick = () => { window.location.href = "index.html"; };
+        }
+
+        function showAllDone(hasDyslexia) {
+            mainArea.style.display = "none";
+            allDoneScreen.classList.add("show");
+            buildWeekDots(7, 7);
+            updateProgress(7);
+            document.getElementById("screeningResult").textContent = hasDyslexia
+                ? "We've tailored some special games and exercises to help you shine! 🌟 Ready to play?"
+                : "Your learning profile looks great! Let's explore all the fun games. 🎮";
+        }
+
+        // ── Auth guard ────────────────────────────────────────────────────────────────
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "login.html"; return; }
+            currentUser = user;
+
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if (snap.exists() && snap.data().screeningComplete) {
+                window.location.href = "index.html"; return;
+            }
+
+            const data = snap.exists() ? snap.data() : {};
+            screeningDay = data.screeningDay || 0;
+            const lastDoneDay = data[`screeningDone_day${screeningDay}`];
+            const todayStr = new Date().toDateString();
+
+            updateProgress(screeningDay);
+            buildWeekDots(screeningDay, screeningDay);
+
+            if (screeningDay >= 7) { showAllDone(data.hasDyslexia); return; }
+
+            // Check if user already completed today's test
+            if (lastDoneDay === todayStr) {
+                mainArea.style.display = "none";
+                alreadyDone.classList.add("show");
+                buildWeekDots(screeningDay, screeningDay);
+                return;
+            }
+
+            wrongCount = 0;
+            qIndex = 0;
+            loadQuestion();
+        });
+    </script>
+
+    <script>
+        const syms = ["✦", "✨", "⭐", "💫", "🌟"];
+        for (let i = 0; i < 14; i++) {
+            const s = document.createElement("div");
+            s.className = "star";
+            s.textContent = syms[Math.floor(Math.random() * syms.length)];
+            s.style.top = Math.random() * 100 + "%";
+            s.style.left = Math.random() * 100 + "%";
+            s.style.fontSize = (Math.random() * 10 + 14) + "px";
+            s.style.animationDelay = Math.random() * 3 + "s";
+            document.body.appendChild(s);
+        }
+    </script>
+</body>
+
+</html>

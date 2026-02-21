@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiLearn — Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Comic Neue', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a0533 0%, #3d0d6e 50%, #764ba2 100%);
+      color: #fff;
+      padding: 80px 20px 40px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .star {
+      position: fixed;
+      pointer-events: none;
+      animation: twinkle 3s infinite;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: 0.2;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.4)
+      }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Comic Neue', sans-serif;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.25s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateX(-3px);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 2.4em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px #ff99ff;
+    }
+
+    .sub {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 36px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .summary-card {
+      background: rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .summary-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .summary-card .val {
+      font-size: 2.2em;
+      font-weight: 700;
+    }
+
+    .summary-card .lbl {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95em;
+      margin-top: 4px;
+    }
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      gap: 24px;
+    }
+
+    .chart-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .chart-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .chart-card h2 {
+      font-size: 1.2em;
+      margin-bottom: 16px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .chart-wrap {
+      height: 260px;
+    }
+
+    /* Calendar grid */
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    .cal-day {
+      height: 20px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .cal-day.l1 {
+      background: rgba(0, 200, 100, 0.25);
+    }
+
+    .cal-day.l2 {
+      background: rgba(0, 200, 100, 0.50);
+    }
+
+    .cal-day.l3 {
+      background: rgba(0, 200, 100, 0.75);
+    }
+
+    .cal-day.l4 {
+      background: rgba(0, 200, 100, 1.00);
+    }
+
+    @media (max-width: 700px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
+  <div class="star" style="top:15%;right:8%;font-size:18px;animation-delay:0.5s;">⭐</div>
+  <div class="star" style="top:65%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
+  <div class="star" style="top:82%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+
+  <button class="back-btn" onclick="window.location.href='Dashboard.html'">⬅ Dashboard</button>
+
+  <div class="container">
+    <h1>📈 Analytics Dashboard</h1>
+    <p class="sub">Track your weekly progress and skills 🌟</p>
+
+    <!-- Summary cards -->
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="val" id="statGames" style="color:#ff99cc;">0</div>
+        <div class="lbl">Games This Week</div>
+      </div>
+      <div class="summary-card">
+        <div class="val" id="statAccuracy" style="color:#99ffcc;">0%</div>
+        <div class="lbl">Overall Accuracy</div>
+      </div>
+      <div class="summary-card">
+        <div class="val" id="statStreak" style="color:#ffff99;">0🔥</div>
+        <div class="lbl">Day Streak</div>
+      </div>
+      <div class="summary-card">
+        <div class="val" id="statPoints" style="color:#99ccff;">0</div>
+        <div class="lbl">Total Points</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h2>📊 Weekly Activity</h2>
+        <div class="chart-wrap"><canvas id="weeklyLine"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h2>📈 Improvement Trend</h2>
+        <div class="chart-wrap"><canvas id="trendLine"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h2>🕸️ Skills Comparison</h2>
+        <div class="chart-wrap"><canvas id="skills"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h2>🎮 Games Breakdown</h2>
+        <div class="chart-wrap"><canvas id="donut"></canvas></div>
+      </div>
+      <div class="chart-card" style="grid-column:1/-1;">
+        <h2>📅 Activity Heatmap (Last 12 Weeks)</h2>
+        <div class="calendar" id="calGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, doc, onSnapshot } from "./firebase-config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    let weeklyChart, trendChart, skillsChart, donutChart;
+
+    const chartDefaults = {
+      plugins: { legend: { labels: { color: 'rgba(255,255,255,0.8)', font: { size: 13, family: "'Comic Neue'" } } } },
+      scales: {
+        x: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+        y: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+      }
+    };
+
+    function initCharts() {
+      weeklyChart = new Chart(document.getElementById("weeklyLine"), {
+        type: 'bar',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [
+            { label: 'Activity', data: [3, 5, 4, 8, 5, 6, 4], backgroundColor: '#AB47BC' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins,
+          scales: { x: chartDefaults.scales.x, y: { ...chartDefaults.scales.y, beginAtZero: true } }
+        }
+      });
+
+      trendChart = new Chart(document.getElementById("trendLine"), {
+        type: 'line',
+        data: {
+          labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6'],
+          datasets: [{
+            label: 'Accuracy %', data: [50, 55, 60, 65, 70, 75],
+            borderColor: '#00ffcc', backgroundColor: 'rgba(0,255,204,0.15)',
+            tension: 0.4, fill: true, pointBackgroundColor: '#00ffcc', pointRadius: 5
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins, scales: chartDefaults.scales }
+      });
+
+      skillsChart = new Chart(document.getElementById("skills"), {
+        type: 'radar',
+        data: {
+          labels: ['Phonics', 'Letter Seq', 'Vocabulary', 'Story Seq', 'Letter Maze', 'Memory'],
+          datasets: [
+            {
+              label: 'Progress', data: [70, 60, 80, 55, 65, 75],
+              borderColor: '#ff66cc', backgroundColor: 'rgba(255,102,204,0.2)', pointBackgroundColor: '#ff66cc'
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: chartDefaults.plugins,
+          scales: {
+            r: {
+              ticks: { color: 'rgba(255,255,255,0.7)', backdropColor: 'transparent' },
+              grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' },
+              pointLabels: { color: 'rgba(255,255,255,0.8)', font: { size: 12 } }, min: 0, max: 100
+            }
+          }
+        }
+      });
+
+      donutChart = new Chart(document.getElementById("donut"), {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'Remaining'],
+          datasets: [{
+            data: [0, 100],
+            backgroundColor: ['#ff66cc', 'rgba(255,255,255,0.1)'],
+            borderWidth: 2, borderColor: 'rgba(255,255,255,0.1)'
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { ...chartDefaults.plugins, tooltip: { bodyColor: '#fff', titleColor: '#fff' } }
+        }
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) { window.location.href = "login.html"; return; }
+
+      initCharts();
+
+      onSnapshot(doc(db, "users", user.uid), (snap) => {
+        if (!snap.exists()) return;
+        const d = snap.data();
+
+        // Update summary cards with animation
+        animateCount("statGames", d.gamesPlayed || 0);
+        animateCount("statAccuracy", d.accuracy || 0, true);
+        animateCount("statStreak", d.streakDays || 0, false, "🔥");
+        animateCount("statPoints", d.totalPoints || 0);
+
+        // Update charts slightly based on real data to make it feel alive
+        const acc = d.accuracy || 0;
+        trendChart.data.datasets[0].data[5] = acc;
+        trendChart.update();
+
+        skillsChart.data.datasets[0].data = [
+          Math.min(100, (d.gamesPlayed || 0) * 5 + 40),
+          Math.min(100, acc + 10),
+          Math.min(100, (d.totalPoints || 0) / 10 + 30),
+          Math.min(100, (d.streakDays || 0) * 10 + 20),
+          65, 75
+        ];
+        skillsChart.update();
+
+        donutChart.data.datasets[0].data = [acc, 100 - acc];
+        donutChart.update();
+      });
+    });
+
+    function animateCount(id, target, isPct = false, suffix = "") {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let cur = parseInt(el.textContent.replace(/[^0-9]/g, "")) || 0;
+      if (cur === target) {
+        el.textContent = target + (isPct ? "%" : suffix);
+        return;
+      }
+
+      const step = Math.max(1, Math.round(Math.abs(target - cur) / 25));
+      const timer = setInterval(() => {
+        if (cur < target) cur = Math.min(cur + step, target);
+        else cur = Math.max(cur - step, target);
+
+        el.textContent = cur + (isPct ? "%" : suffix);
+        if (cur === target) clearInterval(timer);
+      }, 30);
+    }
+
+    // Calendar heatmap
+    const grid = document.getElementById("calGrid");
+    for (let i = 0; i < 84; i++) {
+      const d = document.createElement("div");
+      const r = Math.random();
+      d.className = "cal-day" + (r > 0.85 ? " l4" : r > 0.7 ? " l3" : r > 0.5 ? " l2" : r > 0.3 ? " l1" : "");
+      grid.appendChild(d);
+    }
+
+    // Stars
+    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("div"); s.className = "star";
+      s.textContent = syms[Math.floor(Math.random() * syms.length)];
+      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
+      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
+      document.body.appendChild(s);
+    }
+  </script>
+</body>
+
+</html>

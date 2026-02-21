@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Vocabulary Race</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        body {
+            margin: 0;
+            font-family: "Comic Sans MS", sans-serif;
+            background: linear-gradient(180deg, #a1c4fd, #c2e9fb);
+            text-align: center;
+            padding: 20px 20px 40px;
+        }
+
+        h1 {
+            color: #ff4081;
+            text-shadow: 2px 2px #fff;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            color: #333;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.25s;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.55);
+            transform: translateX(-3px);
+        }
+
+        #game {
+            max-width: 900px;
+            margin: auto;
+            background: #fffdfd;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .emoji-wrap {
+            margin: 18px auto;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 6px solid #ff4081;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            background: #fff;
+            box-shadow: 0 0 25px #ff80ab;
+        }
+
+        .word-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 8px;
+            color: #333;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background: #4caf50;
+            color: #fff;
+            padding: 12px 26px;
+            border-radius: 25px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all .2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .option:hover {
+            background: #2e7d32;
+            transform: scale(1.08);
+        }
+
+        .hint {
+            border-color: gold !important;
+            box-shadow: 0 0 20px gold !important;
+        }
+
+        #feedback {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        #score {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        .letter-bank,
+        .answer-boxes {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .letter {
+            background: #00bcd4;
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            user-select: none;
+            transition: .2s;
+        }
+
+        .letter:hover {
+            transform: scale(1.1);
+            background: #008c9e;
+        }
+
+        .answer-slot {
+            width: 50px;
+            height: 60px;
+            border: 3px dashed #999;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            background: #f9f9f9;
+        }
+
+        #frontPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        #frontPage h1 {
+            font-size: 3rem;
+            color: #ff4081;
+            text-shadow: 3px 3px white;
+            margin-bottom: 20px;
+        }
+
+        #startBtn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #startBtn:hover {
+            background: #2e7d32;
+            transform: scale(1.05);
+        }
+
+        .restartBtn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .restartBtn:hover {
+            background: #0b79d0;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+
+    <div id="frontPage">
+        <h1>🏁 VOCABULARY RACE 🏁</h1>
+        <button id="startBtn">Start Game</button>
+    </div>
+
+    <div id="game">
+        <h1>Vocabulary Race</h1>
+        <div class="emoji-wrap" id="emoji"></div>
+        <div class="word-text" id="wordText"></div>
+        <div class="options" id="options"></div>
+        <div id="traceArea"></div>
+        <div id="feedback"></div>
+        <div id="score">Score: 0</div>
+    </div>
+
+    <script>
+        const level1 = [
+            { letter: "A", label: "A for Apple", emoji: "🍎", options: ["A", "B", "C", "D"] },
+            { letter: "B", label: "B for Ball", emoji: "⚽", options: ["A", "B", "C", "D"] },
+            { letter: "C", label: "C for Cat", emoji: "🐱", options: ["C", "A", "B", "D"] },
+            { letter: "D", label: "D for Dog", emoji: "🐶", options: ["A", "D", "C", "E"] },
+            { letter: "E", label: "E for Elephant", emoji: "🐘", options: ["E", "A", "C", "B"] },
+            { letter: "F", label: "F for Fish", emoji: "🐟", options: ["F", "G", "H", "I"] },
+            { letter: "G", label: "G for Goat", emoji: "🐐", options: ["A", "G", "H", "I"] },
+            { letter: "H", label: "H for Hen", emoji: "🐔", options: ["H", "I", "J", "K"] },
+            { letter: "I", label: "I for Ice Cream", emoji: "🍦", options: ["I", "J", "K", "L"] },
+            { letter: "J", label: "J for Jug", emoji: "🏺", options: ["J", "K", "L", "M"] }
+        ];
+        const level2 = [
+            { word: "APPLE", label: "Apple", emoji: "🍎" }, { word: "BALL", label: "Ball", emoji: "⚽" },
+            { word: "CAT", label: "Cat", emoji: "🐱" }, { word: "DOG", label: "Dog", emoji: "🐶" },
+            { word: "ELEPHANT", label: "Elephant", emoji: "🐘" }, { word: "FISH", label: "Fish", emoji: "🐟" },
+            { word: "GOAT", label: "Goat", emoji: "🐐" }, { word: "HEN", label: "Hen", emoji: "🐔" },
+            { word: "ICECREAM", label: "Ice Cream", emoji: "🍦" }, { word: "JUG", label: "Jug", emoji: "🏺" }
+        ];
+        const level3 = [
+            { emoji: "🍎", answer: "Apple", options: ["Apple", "Box", "Dog", "Fish"] },
+            { emoji: "⚽", answer: "Ball", options: ["Ball", "Goat", "Hen", "Cat"] },
+            { emoji: "🐱", answer: "Cat", options: ["Cat", "Dog", "Jug", "Ice Cream"] },
+            { emoji: "🐶", answer: "Dog", options: ["Dog", "Hen", "Apple", "Fish"] },
+            { emoji: "🐘", answer: "Elephant", options: ["Goat", "Ice Cream", "Elephant", "Ball"] },
+            { emoji: "🐟", answer: "Fish", options: ["Cat", "Fish", "Jug", "Hen"] },
+            { emoji: "🐐", answer: "Goat", options: ["Goat", "Dog", "Apple", "Jug"] },
+            { emoji: "🐔", answer: "Hen", options: ["Hen", "Ball", "Fish", "Cat"] },
+            { emoji: "🍦", answer: "Ice Cream", options: ["Ice Cream", "Dog", "Jug", "Goat"] },
+            { emoji: "🏺", answer: "Jug", options: ["Jug", "Apple", "Elephant", "Hen"] }
+        ];
+
+        let currentLevel = 0, idx = 0, score = 0, currentWord = "", answerSlots = [], filled = [];
+        const emojiEl = document.getElementById("emoji");
+        const wordTextEl = document.getElementById("wordText");
+        const optionsEl = document.getElementById("options");
+        const traceArea = document.getElementById("traceArea");
+        const feedbackEl = document.getElementById("feedback");
+        const scoreEl = document.getElementById("score");
+
+        function speak(txt, rate = 0.9) { if (!("speechSynthesis" in window)) return; let u = new SpeechSynthesisUtterance(txt); u.rate = rate; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { let j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+        function loadLevel1() {
+            emojiEl.style.display = "flex"; traceArea.innerHTML = ""; feedbackEl.textContent = "";
+            let q = level1[idx]; emojiEl.textContent = q.emoji; wordTextEl.textContent = q.label; speak(q.label);
+            optionsEl.innerHTML = "";
+            shuffle(q.options.slice()).forEach(opt => { let b = document.createElement("div"); b.className = "option"; b.textContent = opt; b.onclick = () => checkAns(b, opt, q.letter, q.label); optionsEl.appendChild(b); });
+        }
+
+        function checkAns(btn, sel, correct, label) {
+            if (sel === correct) { feedbackEl.textContent = "✅ Correct! +10"; feedbackEl.style.color = "green"; score += 10; scoreEl.textContent = "Score: " + score; speak("Correct! " + label); setTimeout(() => nextQuestion(), 1000); }
+            else { feedbackEl.textContent = "❌ Wrong! Try again."; feedbackEl.style.color = "red"; score -= 5; scoreEl.textContent = "Score: " + score; speak("The correct answer is " + correct, 0.85);[...optionsEl.children].forEach(b => { if (b.textContent === correct) b.classList.add("hint"); }); }
+        }
+
+        function loadLevel2() {
+            emojiEl.style.display = "flex"; optionsEl.innerHTML = ""; feedbackEl.textContent = ""; traceArea.innerHTML = "";
+            let q = level2[idx]; emojiEl.textContent = q.emoji; wordTextEl.textContent = "Unscramble: " + q.label; speak("Unscramble " + q.label);
+            currentWord = q.word; filled = [];
+            let ans = document.createElement("div"); ans.className = "answer-boxes";
+            currentWord.split("").forEach(() => { let slot = document.createElement("div"); slot.className = "answer-slot"; ans.appendChild(slot); });
+            traceArea.appendChild(ans); answerSlots = [...ans.children];
+            let bank = document.createElement("div"); bank.className = "letter-bank";
+            shuffle(currentWord.split("")).forEach(letter => { let l = document.createElement("div"); l.className = "letter"; l.textContent = letter; l.onclick = () => placeLetter(letter, l); bank.appendChild(l); });
+            traceArea.appendChild(bank);
+            let hint = document.createElement("button"); hint.textContent = "💡 Hint"; hint.style.cssText = "margin-top:15px;padding:8px 18px;border:none;border-radius:10px;background:#ff9800;color:white;font-weight:bold;cursor:pointer;"; hint.onclick = showHint; traceArea.appendChild(hint);
+        }
+
+        function placeLetter(letter, el) {
+            for (let i = 0; i < answerSlots.length; i++) {
+                if (answerSlots[i].textContent === "") {
+                    answerSlots[i].textContent = letter; filled.push(letter); el.style.visibility = "hidden";
+                    let prefix = filled.join("");
+                    if (currentWord.startsWith(prefix)) {
+                        if (prefix === currentWord) { feedbackEl.textContent = "✅ Correct! Word: " + currentWord + " +15"; feedbackEl.style.color = "blue"; score += 15; scoreEl.textContent = "Score: " + score; speak("Great! " + currentWord); setTimeout(() => nextQuestion(), 1500); }
+                    } else {
+                        feedbackEl.textContent = "❌ Wrong letter! Try again."; feedbackEl.style.color = "red"; score -= 2; scoreEl.textContent = "Score: " + score; speak("Wrong letter. Try again.", 0.85);
+                        answerSlots[i].style.background = "#ffb3b3";
+                        setTimeout(() => { answerSlots[i].textContent = ""; filled.pop(); answerSlots[i].style.background = "#f9f9f9"; el.style.visibility = "visible"; }, 800);
+                    }
+                    break;
+                }
+            }
+        }
+
+        function showHint() { feedbackEl.textContent = "💡 Hint: " + currentWord; feedbackEl.style.color = "orange"; speak("The word is " + currentWord); }
+
+        function loadLevel3() {
+            emojiEl.style.display = "flex"; traceArea.innerHTML = ""; feedbackEl.textContent = "";
+            let q = level3[idx]; emojiEl.textContent = q.emoji; wordTextEl.textContent = "What is this?"; speak("What is this?");
+            optionsEl.innerHTML = "";
+            shuffle(q.options.slice()).forEach(opt => { let b = document.createElement("div"); b.className = "option"; b.textContent = opt; b.onclick = () => checkLevel3(b, opt, q.answer); optionsEl.appendChild(b); });
+        }
+
+        function checkLevel3(btn, sel, correct) {
+            speak(sel);
+            if (sel === correct) { feedbackEl.textContent = "✅ Correct! +20"; feedbackEl.style.color = "green"; score += 20; scoreEl.textContent = "Score: " + score; speak("Correct! " + correct); setTimeout(() => nextQuestion(), 1200); }
+            else { feedbackEl.textContent = "❌ Wrong! Try again."; feedbackEl.style.color = "red"; score -= 5; scoreEl.textContent = "Score: " + score; speak("The correct answer is " + correct, 0.85);[...optionsEl.children].forEach(b => { if (b.textContent === correct) b.classList.add("hint"); }); }
+        }
+
+        function nextQuestion() {
+            idx++;
+            if (currentLevel === 1) { if (idx < level1.length) { loadLevel1(); } else { showLevelCompleted("Congratulations! 🎉 You have moved to Level 2!", 2); } }
+            else if (currentLevel === 2) { if (idx < level2.length) { loadLevel2(); } else { showLevelCompleted("Awesome! 🎊 Get ready for Level 3!", 3); } }
+            else if (currentLevel === 3) {
+                if (idx < level3.length) { loadLevel3(); }
+                else { emojiEl.style.display = "none"; wordTextEl.textContent = ""; feedbackEl.innerHTML = `<h2 style="color:green;font-size:2rem;">🏆 Congratulations! Final Score: ${score}</h2>`; speak("Congratulations! You finished all levels!"); optionsEl.innerHTML = ""; traceArea.innerHTML = ""; let r = document.createElement("button"); r.textContent = "🔄 Restart Game"; r.className = "restartBtn"; r.onclick = restartGame; traceArea.appendChild(r); }
+            }
+        }
+
+        function showLevelCompleted(msg, nextLvl) {
+            emojiEl.style.display = "none"; wordTextEl.textContent = ""; optionsEl.innerHTML = ""; traceArea.innerHTML = "";
+            feedbackEl.innerHTML = `<h2 style="color:#ff4081;font-size:2rem;margin-top:20px;">${msg}</h2>`; speak(msg);
+            let c = document.createElement("button"); c.textContent = "▶ Continue"; c.className = "restartBtn";
+            c.onclick = () => { currentLevel = nextLvl; idx = 0; emojiEl.style.display = "flex"; if (nextLvl === 2) loadLevel2(); else if (nextLvl === 3) loadLevel3(); };
+            traceArea.appendChild(c);
+        }
+
+        function restartGame() { idx = 0; score = 0; currentLevel = 1; scoreEl.textContent = "Score: 0"; feedbackEl.textContent = ""; loadLevel1(); }
+
+        document.getElementById("startBtn").onclick = function () {
+            document.getElementById("frontPage").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            currentLevel = 1; idx = 0; score = 0; loadLevel1();
+        };
+    </script>
+</body>
+
+</html>

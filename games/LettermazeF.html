@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Maze Game</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            padding: 10px 18px;
+            font-size: 1em;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.25s;
+            font-family: 'Comic Neue', sans-serif;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateX(-3px);
+        }
+
+        #homeScreen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+
+        #homeScreen h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        #playBtn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: #ff9800;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #playBtn:hover {
+            background: #e65100;
+            transform: scale(1.1);
+        }
+
+        #instructionPage {
+            display: none;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #1f2937;
+            text-align: center;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        #instructionPage h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .instructions h2 {
+            margin-bottom: 10px;
+            color: #2563eb;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .instructions li {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        #startGameBtn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: #22c55e;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #startGameBtn:hover {
+            background: #15803d;
+            transform: scale(1.05);
+        }
+
+        #gameWrapper {
+            display: none;
+            height: 100%;
+            width: 100%;
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #1f2937;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        #sidebar h2 {
+            margin-bottom: 20px;
+        }
+
+        .level-btn,
+        #hintBtn {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .easy {
+            background: #22c55e;
+        }
+
+        .medium {
+            background: #facc15;
+            color: black;
+        }
+
+        .hard {
+            background: #ef4444;
+        }
+
+        #hintBtn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            align-items: center;
+        }
+
+        #centerMessage {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #levelSelectBtn {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background: #f59e0b;
+            color: white;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        #maze {
+            display: grid;
+            grid-gap: 5px;
+            justify-content: center;
+            margin: 20px auto;
+            padding: 10px;
+            touch-action: none;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            background: #f3f4f6;
+            color: black;
+            border-radius: 8px;
+            transition: background 0.3s, border 0.3s;
+            cursor: pointer;
+            border: 2px solid #d1d5db;
+        }
+
+        .player {
+            background: #38bdf8 !important;
+            color: white;
+        }
+
+        .goal {
+            background: #22c55e !important;
+            color: white;
+        }
+
+        .visited {
+            background: #f59e0b !important;
+            color: white !important;
+        }
+
+        .wrong {
+            background: #ef4444 !important;
+            color: white !important;
+        }
+
+        .hint {
+            border: 3px dashed #3b82f6 !important;
+            background: #e0f2fe !important;
+        }
+
+        #info {
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        #congratsPage {
+            display: none;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            color: white;
+        }
+
+        #congratsPage h1 {
+            font-size: 2.5rem;
+        }
+
+        #congratsPage p {
+            font-size: 1.3rem;
+        }
+
+        #congratsPage button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #22c55e;
+            color: white;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 var(--pulse-color);
+            }
+
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+            }
+        }
+
+        .player.correct-move {
+            animation: pulse 0.6s ease-out;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+
+    <div id="homeScreen">
+        <h1>🎉 Letter Maze Adventure 🎉</h1>
+        <button id="playBtn" onclick="showInstructions()">▶ Play</button>
+    </div>
+
+    <div id="instructionPage">
+        <h1>🎮 Welcome to Letter Maze 🎮</h1>
+        <div class="instructions">
+            <h2>📜 How to Play:</h2>
+            <ul>
+                <li>👉 Move the player 👦 using <b>Arrow Keys</b>, <b>Click</b>, or <b>Swipe</b>.</li>
+                <li>👉 Follow the correct <b>Target Letter</b> shown at the top bar.</li>
+                <li>👉 Reach the <b>🏁 Goal</b> by stepping only on correct target letters.</li>
+                <li>👉 You can use the <b>💡 Hint button</b> up to 5 times per level.</li>
+                <li>👉 Stepping on a wrong letter ❌ sends you back!</li>
+            </ul>
+        </div>
+        <button id="startGameBtn" onclick="enterGame()">▶ Start Game</button>
+    </div>
+
+    <div id="gameWrapper">
+        <div id="sidebar">
+            <h2>Levels</h2>
+            <button class="level-btn easy" onclick="startLevel('easy')">Easy</button>
+            <button class="level-btn medium" onclick="startLevel('medium')">Medium</button>
+            <button class="level-btn hard" onclick="startLevel('hard')">Hard</button>
+            <button id="hintBtn" onclick="showHint()" disabled>💡 Hint (5 left)</button>
+        </div>
+        <div id="main">
+            <div id="gamePage">
+                <div id="centerMessage"><button id="levelSelectBtn">Select a Level to Begin 🎮</button></div>
+                <div id="maze"></div>
+                <div id="info">🌟 Welcome, Adventurer! 🌟<br><br>Guide your hero 👦 through the letter maze.</div>
+            </div>
+            <div id="congratsPage">
+                <h1 id="msg">🎉 Congratulations!</h1>
+                <p id="detail"></p>
+                <button id="nextBtn" onclick="goNextLevel()">➡️ Next Level</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showInstructions() { document.getElementById("homeScreen").style.display = "none"; document.getElementById("instructionPage").style.display = "block"; }
+        function enterGame() { document.getElementById("instructionPage").style.display = "none"; document.getElementById("gameWrapper").style.display = "flex"; }
+
+        const letters = ["b", "d", "p", "q", "m", "n", "u", "v", "w"];
+        const levelOrder = ["easy", "medium", "hard"];
+        let puzzles = { easy: 2, medium: 2, hard: 2 };
+        let currentLevel = null, currentPuzzle = 0;
+        let rows, cols, maze, playerPos, visited, target;
+        let isAnimating = false, nextLevelIndex = 0;
+        let hintsLeft = 5, correctPath = [];
+        let wrongMoves = 0, maxWrongMoves = 3;
+
+        function setTheme(level) {
+            const main = document.getElementById("main");
+            if (level === "easy") { main.style.background = "linear-gradient(135deg,#22c55e,#16a34a)"; document.documentElement.style.setProperty("--pulse-color", "#facc15"); }
+            if (level === "medium") { main.style.background = "linear-gradient(135deg,#facc15,#eab308)"; document.documentElement.style.setProperty("--pulse-color", "#3b82f6"); }
+            if (level === "hard") { main.style.background = "linear-gradient(135deg,#ef4444,#b91c1c)"; document.documentElement.style.setProperty("--pulse-color", "#06b6d4"); }
+        }
+
+        function generateMaze(r, c) {
+            maze = Array.from({ length: r }, () => Array.from({ length: c }, () => letters[Math.floor(Math.random() * letters.length)]));
+            correctPath = [{ row: 0, col: 0 }]; let row = 0, col = 0; maze[row][col] = target;
+            while (row < r - 1 || col < c - 1) {
+                if (row < r - 1 && col < c - 1) { if (Math.random() < 0.5) row++; else col++; }
+                else if (row < r - 1) row++; else col++;
+                maze[row][col] = target; correctPath.push({ row, col });
+            }
+            maze[r - 1][c - 1] = target;
+        }
+
+        function drawMaze(highlightWrong = null, hintCell = null) {
+            const mazeDiv = document.getElementById("maze"); mazeDiv.innerHTML = "";
+            mazeDiv.style.gridTemplateColumns = `repeat(${cols},60px)`;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement("div"); cell.classList.add("cell"); cell.textContent = maze[r][c];
+                    if (visited.some(v => v.row === r && v.col === c)) cell.classList.add("visited");
+                    if (highlightWrong && r === highlightWrong.row && c === highlightWrong.col) { cell.classList.add("wrong"); cell.textContent = "❌"; }
+                    else if (r === playerPos.row && c === playerPos.col) { cell.classList.add("player"); if (highlightWrong === null) cell.classList.add("correct-move"); cell.textContent = "👦"; }
+                    if (r === rows - 1 && c === cols - 1) { cell.classList.add("goal"); cell.textContent = "🏁"; }
+                    if (hintCell && r === hintCell.row && c === hintCell.col) cell.classList.add("hint");
+                    cell.addEventListener("click", () => tryMove(r, c));
+                    mazeDiv.appendChild(cell);
+                }
+            }
+            if (currentLevel) document.getElementById("info").innerHTML = `❌ Wrong moves left: ${maxWrongMoves - wrongMoves}`;
+            else document.getElementById("info").innerHTML = `🌟 Welcome, Adventurer! 🌟<br><br>Guide your hero 👦 through the letter maze.`;
+        }
+
+        function tryMove(r, c) { const dr = r - playerPos.row, dc = c - playerPos.col; if (Math.abs(dr) + Math.abs(dc) === 1) movePlayer(dr, dc); }
+
+        function movePlayer(dr, dc) {
+            if (isAnimating || !currentLevel) return;
+            let newRow = playerPos.row + dr, newCol = playerPos.col + dc;
+            if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols) return;
+            if (maze[newRow][newCol] === target || (newRow === rows - 1 && newCol === cols - 1)) {
+                playerPos = { row: newRow, col: newCol }; visited.push({ ...playerPos }); drawMaze();
+                if (playerPos.row === rows - 1 && playerPos.col === cols - 1) {
+                    currentPuzzle++;
+                    if (currentPuzzle < puzzles[currentLevel]) setTimeout(() => startPuzzle(), 1000);
+                    else showCongratsPage(currentLevel);
+                }
+            } else {
+                isAnimating = true; let prevPos = { ...playerPos }; playerPos = { row: newRow, col: newCol }; drawMaze(playerPos); wrongMoves++;
+                setTimeout(() => {
+                    if (wrongMoves < maxWrongMoves) playerPos = prevPos;
+                    else { playerPos = { row: 0, col: 0 }; visited = [{ ...playerPos }]; wrongMoves = 0; }
+                    drawMaze(); isAnimating = false;
+                }, 700);
+            }
+        }
+
+        function startPuzzle() {
+            target = letters[Math.floor(Math.random() * letters.length)];
+            document.getElementById("centerMessage").innerHTML = `<button id="levelSelectBtn">🎯 Target Letter: ${target}</button>`;
+            generateMaze(rows, cols); playerPos = { row: 0, col: 0 }; visited = [{ ...playerPos }]; wrongMoves = 0; hintsLeft = 5;
+            document.getElementById("hintBtn").disabled = false; document.getElementById("hintBtn").textContent = "💡 Hint (5 left)";
+            drawMaze();
+        }
+
+        function startLevel(level) {
+            document.getElementById("gamePage").style.display = "block"; document.getElementById("congratsPage").style.display = "none";
+            setTheme(level); currentLevel = level; currentPuzzle = 0;
+            if (level === "easy") { rows = 5; cols = 5; } if (level === "medium") { rows = 6; cols = 6; } if (level === "hard") { rows = 8; cols = 8; }
+            startPuzzle();
+        }
+
+        function showCongratsPage(level) {
+            document.getElementById("gamePage").style.display = "none"; document.getElementById("congratsPage").style.display = "flex";
+            document.getElementById("detail").textContent = `You finished ${level.toUpperCase()} level!`;
+            nextLevelIndex = levelOrder.indexOf(level) + 1;
+            let nextBtn = document.getElementById("nextBtn"); nextBtn.style.display = nextLevelIndex >= levelOrder.length ? "none" : "inline-block";
+        }
+
+        function goNextLevel() { startLevel(levelOrder[nextLevelIndex]); }
+
+        function showHint() {
+            if (hintsLeft <= 0) return;
+            let idx = correctPath.findIndex(p => p.row === playerPos.row && p.col === playerPos.col);
+            if (idx !== -1 && idx < correctPath.length - 1) {
+                drawMaze(null, correctPath[idx + 1]); hintsLeft--;
+                document.getElementById("hintBtn").textContent = `💡 Hint (${hintsLeft} left)`;
+                if (hintsLeft <= 0) document.getElementById("hintBtn").disabled = true;
+            }
+        }
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "ArrowUp") movePlayer(-1, 0); if (e.key === "ArrowDown") movePlayer(1, 0);
+            if (e.key === "ArrowLeft") movePlayer(0, -1); if (e.key === "ArrowRight") movePlayer(0, 1);
+        });
+    </script>
+</body>
+
+</html>
