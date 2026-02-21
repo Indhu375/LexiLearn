@@ -27,7 +27,7 @@ A comprehensive view of the student's progress, showing scores, daily challenge 
 - **Analyst View**: Detailed breakdown of screening results and historical performance data.
 
 ### 🏆 Daily Challenges (Tracer)
-Engaging daily tasks to encourage daily practice and maintain learning momentum.
+Engaging daily task like letter tracer to encourage daily practice and maintain learning momentum.
 
 ## 🛠️ Tech Stack
 
