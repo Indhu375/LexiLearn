@@ -372,11 +372,26 @@
     window.moduleLoaded = false;
     window.addEventListener('load', () => {
       setTimeout(() => {
-        if (!window.moduleLoaded && window.location.protocol === 'file:') {
-          alert("🚨 Security Block: Your browser is blocking LexiLearn's features because it's being opened directly as a file. \n\nPlease use 'Live Server' in VS Code or host it on Vercel to use the app! ✨");
+        if (!window.moduleLoaded) {
+          if (window.location.protocol === 'file:') {
+            alert("🚨 Security Block: Your browser is blocking LexiLearn's features because it's being opened directly as a file. \n\nPlease use 'Live Server' in VS Code or host it on Vercel to use the app! ✨");
+          } else {
+            alert("🚨 Module Error: LexiLearn failed to load its core features. Please check if you've added this domain to your Firebase Authorized Domains list!");
+          }
         }
-      }, 3000);
+      }, 5000);
     });
+
+    // Global resource error listener
+    window.addEventListener('error', (e) => {
+      if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK' || e.target.tagName === 'IMG') {
+        console.error('Resource failed to load:', e.target.src || e.target.href);
+        // We only alert for scripts/links as they are critical
+        if (e.target.tagName !== 'IMG') {
+          alert("🚨 404 Error: Failed to load " + (e.target.src || e.target.href) + "\n\nPlease check your file paths!");
+        }
+      }
+    }, true);
   </script>
 </head>
 
@@ -456,7 +471,7 @@
   <script type="module">
     window.moduleLoaded = true;
     // ✅ Import ONLY from shared config — NO API keys here
-    import { auth, db, doc, onSnapshot } from "./firebase-config.js";
+    import { auth, db, doc, onSnapshot } from "/firebase-config.js";
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     let unsubscribeStats = null; // keep reference to unsubscribe on logout

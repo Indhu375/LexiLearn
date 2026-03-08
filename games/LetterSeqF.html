@@ -128,7 +128,7 @@
         let game = new Phaser.Game(config);
     </script>
     <script type="module">
-        import { auth, db, doc, updateDoc, increment } from "../firebase-config.js";
+        import { auth, db, doc, updateDoc, increment } from "/firebase-config.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         window.saveGameStats = async (accuracy, points) => {
