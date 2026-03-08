@@ -169,6 +169,8 @@
 
 <body>
     <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
 
     <h2 id="instruction">🧩 Arrange the story in the correct order!</h2>
     <div class="container" id="cards"></div>
@@ -256,7 +258,15 @@
             const dropzones = document.querySelectorAll('.dropzone'); let correct = true;
             dropzones.forEach((zone, index) => { if (zone.children.length === 0 || zone.children[0].dataset.order != index + 1) correct = false; });
             const feedback = document.getElementById('feedback');
-            if (correct) { feedback.innerText = "🎉 Correct! Well done!"; feedback.style.color = "green"; }
+            if (correct) {
+                feedback.innerText = "🎉 Correct! Well done!";
+                feedback.style.color = "green";
+                // Save stats
+                if (window.saveGameStats) {
+                    const pts = currentLevel === "easy" ? 20 : currentLevel === "medium" ? 40 : 60;
+                    window.saveGameStats(100, pts);
+                }
+            }
             else { feedback.innerText = "❌ Oops! Resetting..."; feedback.style.color = "red"; setTimeout(loadQuestion, 2000); }
         }
 

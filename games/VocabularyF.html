@@ -210,6 +210,8 @@
 
 <body>
     <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
 
     <div id="frontPage">
         <h1>🏁 VOCABULARY RACE 🏁</h1>
@@ -340,6 +342,12 @@
         function showLevelCompleted(msg, nextLvl) {
             emojiEl.style.display = "none"; wordTextEl.textContent = ""; optionsEl.innerHTML = ""; traceArea.innerHTML = "";
             feedbackEl.innerHTML = `<h2 style="color:#ff4081;font-size:2rem;margin-top:20px;">${msg}</h2>`; speak(msg);
+
+            // Save stats
+            if (window.saveGameStats) {
+                window.saveGameStats(100, currentLevel === 1 ? 50 : 100);
+            }
+
             let c = document.createElement("button"); c.textContent = "▶ Continue"; c.className = "restartBtn";
             c.onclick = () => { currentLevel = nextLvl; idx = 0; emojiEl.style.display = "flex"; if (nextLvl === 2) loadLevel2(); else if (nextLvl === 3) loadLevel3(); };
             traceArea.appendChild(c);

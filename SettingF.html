@@ -328,7 +328,7 @@
       </div>
       <div class="row">
         <span class="row-label">Sign Out</span>
-        <button class="action-btn danger" id="logoutBtn" onclick="logoutUser()">Logout 🚪</button>
+        <button class="action-btn danger" id="logoutBtn">Logout 🚪</button>
       </div>
     </div>
   </div>
@@ -365,6 +365,9 @@
       localStorage.removeItem("uid");
       window.location.href = "login.html";
     };
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) logoutBtn.addEventListener('click', () => window.logoutUser());
 
     // Change Password
     document.getElementById("changePwBtn").addEventListener("click", async () => {

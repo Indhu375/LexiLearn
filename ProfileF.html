@@ -412,7 +412,7 @@
 
   <script type="module">
     // ✅ Import ONLY from shared config — NO API keys here
-    import { auth, db, doc, getDoc, updateDoc } from "./firebase-config.js";
+    import { auth, db, doc, onSnapshot, updateDoc } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     let uid = null;
@@ -422,29 +422,29 @@
       if (!user) { window.location.href = "login.html"; return; }
       uid = user.uid;
 
-      const snap = await getDoc(doc(db, "users", uid));
-      userData = snap.exists() ? snap.data() : {};
+      onSnapshot(doc(db, "users", uid), (snap) => {
+        userData = snap.exists() ? snap.data() : {};
 
-      document.getElementById("displayName").textContent = user.displayName || userData.nickname || "Explorer";
-      document.getElementById("displayEmail").textContent = user.email || "";
-      document.getElementById("displayLevel").textContent = userData.level || "Beginner";
-      document.getElementById("displayGoal").textContent = userData.goal || "Improve reading fluency";
+        document.getElementById("displayName").textContent = user.displayName || userData.nickname || "Explorer";
+        document.getElementById("displayEmail").textContent = user.email || "";
+        document.getElementById("displayLevel").textContent = userData.level || "Beginner";
+        document.getElementById("displayGoal").textContent = userData.goal || "Improve reading fluency";
 
-      const pts = userData.totalPoints || 0;
-      document.getElementById("displayBadge").textContent =
-        pts > 500 ? "🏆 Champion" : pts > 200 ? "🥇 Pro Learner" : pts > 50 ? "⭐ Rising Star" : "🌟 Learner";
+        const pts = userData.totalPoints || 0;
+        document.getElementById("displayBadge").textContent =
+          pts > 500 ? "🏆 Champion" : pts > 200 ? "🥇 Pro Learner" : pts > 50 ? "⭐ Rising Star" : "🌟 Learner";
 
-      const games = userData.gamesPlayed || 0;
-      const streak = userData.streakDays || 0;
-      const points = userData.totalPoints || 0;
-      document.getElementById("statGames").textContent = games;
-      document.getElementById("statStreak").textContent = streak;
-      document.getElementById("statPoints").textContent = points;
-      setTimeout(() => {
+        const games = userData.gamesPlayed || 0;
+        const streak = userData.streakDays || 0;
+        const points = userData.totalPoints || 0;
+        document.getElementById("statGames").textContent = games;
+        document.getElementById("statStreak").textContent = streak;
+        document.getElementById("statPoints").textContent = points;
+
         document.getElementById("pgGames").style.width = Math.min(games / 50 * 100, 100) + "%";
         document.getElementById("pgStreak").style.width = Math.min(streak / 30 * 100, 100) + "%";
         document.getElementById("pgPoints").style.width = Math.min(points / 500 * 100, 100) + "%";
-      }, 300);
+      });
     });
 
     window.toggleEdit = (show) => {

@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Letter Sequence Game</title>
-    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <style>
@@ -46,6 +45,9 @@
 </head>
 
 <body>
+    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
     <script>
         function playLetter(letter) {
             let utter = new SpeechSynthesisUtterance(letter);
@@ -114,6 +116,7 @@
                             this.foundCount++;
                             if (this.foundCount === bubbleCount / 2) {
                                 this.score++; this.scoreText.setText("Score: " + this.score);
+                                if (window.saveGameStats) window.saveGameStats(100, 20); // 100% accuracy for a perfect sequence
                                 this.time.delayedCall(2000, () => this.startRound());
                             }
                         }
@@ -124,6 +127,20 @@
 
         let config = { type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: [LetterSequenceGame] };
         let game = new Phaser.Game(config);
+    </script>
+    <script type="module">
+        import { auth, db, doc, updateDoc, increment } from "../firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        window.saveGameStats = async (accuracy, points) => {
+            const user = auth.currentUser;
+            if (!user) return;
+            await updateDoc(doc(db, "users", user.uid), {
+                gamesPlayed: increment(1),
+                accuracy: accuracy,
+                totalPoints: increment(points)
+            });
+        };
     </script>
 </body>
 

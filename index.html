@@ -381,16 +381,16 @@
     <header class="header">
       <div class="logo">🌟 LexiLearn</div>
       <div class="top-buttons">
-        <button class="icon-btn dashboard-btn" onclick="window.location.href='Dashboard.html'">
+        <button class="icon-btn dashboard-btn" id="dashBtn">
           📊<span class="tooltip">Dashboard</span>
         </button>
-        <button class="icon-btn profile-btn" onclick="window.location.href='ProfileF.html'">
+        <button class="icon-btn profile-btn" id="profBtn">
           👤<span class="tooltip">Profile</span>
         </button>
-        <button class="icon-btn settings-btn" onclick="window.location.href='SettingF.html'">
+        <button class="icon-btn settings-btn" id="settBtn">
           ⚙️<span class="tooltip">Settings</span>
         </button>
-        <button class="icon-btn logout-btn" id="logoutBtn" onclick="logoutUser()">
+        <button class="icon-btn logout-btn" id="logoutBtn">
           🚪<span class="tooltip">Logout</span>
         </button>
       </div>
@@ -484,6 +484,20 @@
       localStorage.removeItem("uid");
       window.location.href = "login.html";
     };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const btn = document.getElementById("logoutBtn");
+      if (btn) btn.addEventListener('click', () => window.logoutUser());
+
+      const dash = document.getElementById("dashBtn");
+      if (dash) dash.addEventListener('click', () => window.location.href = 'Dashboard.html');
+
+      const prof = document.getElementById("profBtn");
+      if (prof) prof.addEventListener('click', () => window.location.href = 'ProfileF.html');
+
+      const sett = document.getElementById("settBtn");
+      if (sett) sett.addEventListener('click', () => window.location.href = 'SettingF.html');
+    });
 
     function animateCount(id, target) {
       const el = document.getElementById(id);

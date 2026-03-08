@@ -46,6 +46,8 @@
 
 <body>
     <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
 
     <script>
         // ✅ Speech function
@@ -135,10 +137,16 @@
                             popEffect(this, bubble.x, bubble.y);
                             this.score++; this.scoreText.setText("Score: " + this.score);
                             this.correctStreak++;
+
+                            // Save progress periodically or on success
+                            const accuracy = Math.min(100, Math.round((this.score / (this.score + (this.wrongAttempts || 0))) * 100));
+                            if (window.saveGameStats) window.saveGameStats(accuracy, 10);
+
                             if (this.correctStreak % 3 === 0) this.showCheerMessage();
                             this.time.delayedCall(1500, () => this.startRound());
                         } else {
                             shakeEffect(this, bubble);
+                            this.wrongAttempts = (this.wrongAttempts || 0) + 1;
                             this.resultText = this.add.text(this.scale.width / 2, this.scale.height - 100, "❌ Wrong!", FRIENDLY_TEXT).setOrigin(0.5);
                             this.correctStreak = 0;
                         }

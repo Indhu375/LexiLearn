@@ -362,6 +362,7 @@
       if (isSignIn) {
         const email = document.getElementById("emailSignin").value.trim();
         if (!email || !password) { alert("Please enter your email and password!"); return; }
+        console.log("Attempting sign-in for:", email);
         try {
           loader.classList.add("show");
           const cred = await signInWithEmailAndPassword(auth, email, password);

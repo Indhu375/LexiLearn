@@ -303,6 +303,8 @@
     <div class="app">
         <h1>✨ Number &amp; Letter Quest ✨</h1>
         <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+        <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+            onclick="window.location.href='../index.html'">🏁 Finish Game</button>
         <button id="volumeBtn">🔊</button>
         <button id="hintBtn">💡 Hint</button>
         <div id="choiceScreen">
@@ -373,7 +375,17 @@
             }
         }
 
-        function showMessage(txt) { msgText.textContent = txt; msgBox.classList.add('show'); nextBtn.textContent = (level < 2) ? "Next Level" : "Restart"; }
+        function showMessage(txt) {
+            msgText.textContent = txt;
+            msgBox.classList.add('show');
+            nextBtn.textContent = (level < 2) ? "Next Level" : "Restart";
+
+            // Save stats
+            if (window.saveGameStats) {
+                const pts = levels[level].count * 5;
+                window.saveGameStats(100, pts);
+            }
+        }
 
         nextBtn.addEventListener('click', () => { msgBox.classList.remove('show'); if (level < 2) { level++; createRound(); } else { level = 0; createRound(); } });
 

@@ -319,6 +319,8 @@
 
 <body>
     <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
+        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
 
     <div id="homeScreen">
         <h1>🎉 Letter Maze Adventure 🎉</h1>
@@ -453,6 +455,13 @@
         function showCongratsPage(level) {
             document.getElementById("gamePage").style.display = "none"; document.getElementById("congratsPage").style.display = "flex";
             document.getElementById("detail").textContent = `You finished ${level.toUpperCase()} level!`;
+
+            // Save stats
+            if (window.saveGameStats) {
+                const pts = level === "easy" ? 30 : level === "medium" ? 60 : 100;
+                window.saveGameStats(100, pts);
+            }
+
             nextLevelIndex = levelOrder.indexOf(level) + 1;
             let nextBtn = document.getElementById("nextBtn"); nextBtn.style.display = nextLevelIndex >= levelOrder.length ? "none" : "inline-block";
         }
@@ -473,6 +482,20 @@
             if (e.key === "ArrowUp") movePlayer(-1, 0); if (e.key === "ArrowDown") movePlayer(1, 0);
             if (e.key === "ArrowLeft") movePlayer(0, -1); if (e.key === "ArrowRight") movePlayer(0, 1);
         });
+    </script>
+    <script type="module">
+        import { auth, db, doc, updateDoc, increment } from "../firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        window.saveGameStats = async (accuracy, points) => {
+            const user = auth.currentUser;
+            if (!user) return;
+            await updateDoc(doc(db, "users", user.uid), {
+                gamesPlayed: increment(1),
+                accuracy: accuracy,
+                totalPoints: increment(points)
+            });
+        };
     </script>
 </body>
 

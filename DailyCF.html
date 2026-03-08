@@ -419,9 +419,9 @@
 
         <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('tracer')">✏️ Tracer</button>
-            <button class="tab-btn" onclick="switchTab('word')">🔤 Unscramble</button>
-            <button class="tab-btn" onclick="switchTab('quiz')">🧠 Quiz</button>
+            <button class="tab-btn active" id="tabTracer">✏️ Tracer</button>
+            <button class="tab-btn" id="tabWord">🔤 Unscramble</button>
+            <button class="tab-btn" id="tabQuiz">🧠 Quiz</button>
         </div>
 
         <!-- Already done banner -->
@@ -448,7 +448,7 @@
             <div class="tracer-controls">
                 <button class="ctrl-btn clear" onclick="clearCanvas()">🗑️ Clear</button>
                 <button class="ctrl-btn" onclick="newLetter()">🔄 New Letter</button>
-                <button class="ctrl-btn submit" onclick="submitTracer()">✅ Done!</button>
+                <button class="ctrl-btn submit" onclick="submitTracer(this)">✅ Done!</button>
             </div>
         </div>
 
@@ -457,7 +457,7 @@
             <div class="word-prompt">🔤 Unscramble the letters to make a word!</div>
             <div class="scrambled" id="scrambledWord"></div>
             <input class="word-input" id="wordInput" type="text" placeholder="Type your answer..." autocomplete="off">
-            <button class="ctrl-btn submit" style="width:100%;" onclick="checkWord()">✅ Check!</button>
+            <button class="ctrl-btn submit" style="width:100%;" onclick="checkWord(this)">✅ Check!</button>
             <p id="wordFeedback" style="text-align:center;margin-top:12px;font-size:1.1em;font-weight:700;"></p>
         </div>
 
@@ -488,25 +488,34 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = "login.html"; return; }
             currentUser = user;
-            const snap = await getDoc(doc(db, "users", user.uid));
-            const data = snap.exists() ? snap.data() : {};
-            document.getElementById("streakNum").textContent = data.streakDays || 0;
 
-            if (data.lastChallenge === todayStr) {
-                document.getElementById("doneBanner").classList.add("show");
-                document.getElementById("tracerSection").style.display = "none";
-                document.getElementById("doneBannerStreak").textContent = data.streakDays || 0;
-            }
+            // ── Real-time streak listener ─────────────────────────────────────────
+            onSnapshot(doc(db, "users", user.uid), (snap) => {
+                if (!snap.exists()) return;
+                const data = snap.data();
+                document.getElementById("streakNum").textContent = data.streakDays || 0;
+
+                if (data.lastChallenge === todayStr) {
+                    document.getElementById("doneBanner").classList.add("show");
+                    document.getElementById("tracerSection").style.display = "none";
+                    document.getElementById("wordSection").style.display = "none";
+                    document.getElementById("quizSection").style.display = "none";
+                    document.getElementById("doneBannerStreak").textContent = data.streakDays || 0;
+                }
+            });
         });
 
-        window.submitChallenge = async () => {
+        window.submitChallenge = async (triggeringBtn) => {
             if (!currentUser) {
                 alert("Loading user data, please wait a moment... ⏳");
                 return;
             }
             try {
-                const btn = document.querySelector(".submit");
-                if (btn) btn.disabled = true;
+                // Disable whichever button was clicked
+                if (triggeringBtn) {
+                    triggeringBtn.disabled = true;
+                    triggeringBtn.innerHTML = "Submitting... ⌛";
+                }
 
                 const snap = await getDoc(doc(db, "users", currentUser.uid));
                 const data = snap.exists() ? snap.data() : {};
@@ -533,14 +542,23 @@
             } catch (err) {
                 console.error("Submission error:", err);
                 alert("Oops! Something went wrong. Check your connection.");
-                const btn = document.querySelector(".submit");
-                if (btn) btn.disabled = false;
+                if (triggeringBtn) {
+                    triggeringBtn.disabled = false;
+                    triggeringBtn.innerHTML = "✅ Done!";
+                }
             }
         };
 
-        // ── Tracer ────────────────────────────────────────────────────────────────────
-        const canvas = document.getElementById("tracerCanvas");
-        if (canvas) {
+        window.initTracer = () => {
+            const canvas = document.getElementById("tracerCanvas");
+            if (!canvas) return;
+
+            // Set explicit size if not set
+            if (canvas.width !== 320) {
+                canvas.width = 320;
+                canvas.height = 320;
+            }
+
             const ctx = canvas.getContext("2d");
             const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
             let drawing = false;
@@ -550,28 +568,56 @@
             const hintEl = document.getElementById("canvasHint");
             if (hintEl) hintEl.textContent = letterHint;
 
-            ctx.strokeStyle = "#ff99ff";
-            ctx.lineWidth = 5;
+            ctx.strokeStyle = "#00ff99"; // Brighter for visibility
+            ctx.lineWidth = 12; // Thicker for kids
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
 
             const getPos = (e) => {
                 const rect = canvas.getBoundingClientRect();
-                if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-                return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
             };
 
-            canvas.addEventListener("pointerdown", e => { drawing = true; ctx.beginTransaction ? ctx.beginTransaction() : ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
-            canvas.addEventListener("pointermove", e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
-            canvas.addEventListener("pointerup", () => { drawing = false; strokes++; });
+            const startDraw = (e) => {
+                drawing = true;
+                ctx.beginPath();
+                const p = getPos(e);
+                ctx.moveTo(p.x, p.y);
+                e.preventDefault();
+            };
+
+            const moveDraw = (e) => {
+                if (!drawing) return;
+                const p = getPos(e);
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+                e.preventDefault();
+            };
+
+            const endDraw = () => {
+                if (drawing) strokes++;
+                drawing = false;
+            };
+
+            canvas.onpointerdown = startDraw;
+            canvas.onpointermove = moveDraw;
+            canvas.onpointerup = endDraw;
+            canvas.onpointerout = endDraw;
+
+            canvas.ontouchstart = startDraw;
+            canvas.ontouchmove = moveDraw;
+            canvas.ontouchend = endDraw;
 
             window.clearCanvas = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); strokes = 0; };
             window.newLetter = () => { letterHint = letters[Math.floor(Math.random() * letters.length)]; if (hintEl) hintEl.textContent = letterHint; window.clearCanvas(); };
-            window.submitTracer = () => {
+            window.submitTracer = (btn) => {
                 if (strokes < 1) { alert("Please trace the letter first! ✏️"); return; }
-                window.submitChallenge();
+                window.submitChallenge(btn);
             };
-        }
+        };
+        window.initTracer();
 
         // ── Word Unscramble ───────────────────────────────────────────────────────────
         const wordList = [
@@ -593,13 +639,13 @@
             if (fb) fb.textContent = "";
         };
 
-        window.checkWord = () => {
+        window.checkWord = (btn) => {
             const inp = document.getElementById("wordInput");
             const ans = inp ? inp.value.trim().toUpperCase() : "";
             const fb = document.getElementById("wordFeedback");
             if (ans === currentWord) {
                 if (fb) { fb.textContent = "✅ Correct! Great job!"; fb.style.color = "#00ff99"; }
-                setTimeout(() => { window.submitChallenge(); }, 1000);
+                setTimeout(() => { window.submitChallenge(btn); }, 1000);
             } else {
                 if (fb) { fb.textContent = "❌ Try again!"; fb.style.color = "#ff6666"; }
             }
@@ -634,7 +680,7 @@
                         const fb = document.getElementById("quizFeedback");
                         if (i === quizQ.correct) {
                             b.classList.add("correct"); if (fb) { fb.textContent = "✅ Correct! +10 points!"; fb.style.color = "#00ff99"; }
-                            setTimeout(() => window.submitChallenge(), 1000);
+                            setTimeout(() => window.submitChallenge(b), 1000);
                         } else {
                             b.classList.add("wrong"); opts.querySelectorAll(".quiz-opt")[quizQ.correct].classList.add("correct");
                             if (fb) { fb.textContent = "❌ Oops! That's wrong."; fb.style.color = "#ff6666"; }
@@ -648,14 +694,34 @@
         };
         window.loadQuiz();
 
+        document.addEventListener("DOMContentLoaded", () => {
+            const tTracer = document.getElementById("tabTracer");
+            if (tTracer) tTracer.addEventListener('click', () => window.switchTab('tracer'));
+
+            const tWord = document.getElementById("tabWord");
+            if (tWord) tWord.addEventListener('click', () => window.switchTab('word'));
+
+            const tQuiz = document.getElementById("tabQuiz");
+            if (tQuiz) tQuiz.addEventListener('click', () => window.switchTab('quiz'));
+
+            if (window.initTracer) window.initTracer();
+        });
+
         // ── Tab switching ─────────────────────────────────────────────────────────────
         window.switchTab = (tab) => {
-            document.querySelectorAll(".tab-btn").forEach((b, i) => b.classList.toggle("active", ["tracer", "word", "quiz"][i] === tab));
-            document.getElementById("tracerSection").style.display = tab === "tracer" ? "block" : "none";
-            document.getElementById("wordSection").style.display = tab === "word" ? "block" : "none";
-            document.getElementById("quizSection").style.display = tab === "quiz" ? "block" : "none";
+            const tabs = ["tracer", "word", "quiz"];
+            const sectionMap = { "tracer": "tracerSection", "word": "wordSection", "quiz": "quizSection" };
+            const btns = [document.getElementById("tabTracer"), document.getElementById("tabWord"), document.getElementById("tabQuiz")];
+
+            tabs.forEach((t, i) => {
+                const sec = document.getElementById(sectionMap[t]);
+                if (sec) sec.style.display = (t === tab ? "block" : "none");
+                if (btns[i]) btns[i].classList.toggle("active", t === tab);
+            });
+
             if (tab === "word") window.loadWord();
             if (tab === "quiz") window.loadQuiz();
+            if (tab === "tracer") window.initTracer();
         };
 
         // Stars
