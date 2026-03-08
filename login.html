@@ -257,10 +257,18 @@
 
     // Global resource error listener
     window.addEventListener('error', (e) => {
-      if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK' || e.target.tagName === 'IMG') {
-        console.error('Resource failed to load:', e.target.src || e.target.href);
-        if (e.target.tagName !== 'IMG') {
-          alert("🚨 404 Error: Failed to load " + (e.target.src || e.target.href) + "\n\nPlease check your file paths!");
+      const tag = e.target.tagName;
+      if (tag === 'SCRIPT' || tag === 'LINK' || tag === 'IMG') {
+        const url = e.target.src || e.target.href;
+        console.error('Resource failed to load:', url || 'Inline Script/Module');
+
+        if (tag === 'SCRIPT' && !url) {
+          alert("🚨 Module Error: An internal script failed to load its dependencies. \n\nPlease ensure all files are uploaded to Vercel correctly!");
+          return;
+        }
+
+        if (tag !== 'IMG') {
+          alert("🚨 404 Error: Failed to load " + (url || "a resource") + " [" + tag + "]\n\nPlease check your file paths!");
         }
       }
     }, true);
@@ -321,7 +329,7 @@
   <script type="module">
     // ✅ Import ONLY from shared firebase-config.js — NO API keys here
     window.moduleLoaded = true;
-    import { auth, db, doc, getDoc, setDoc } from "/firebase-config.js";
+    import { auth, db, doc, getDoc, setDoc } from "./firebase-config.js";
     import {
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
