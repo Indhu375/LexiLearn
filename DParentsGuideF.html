@@ -19,8 +19,8 @@
     body {
       font-family: 'Comic Neue', sans-serif;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-      color: #fff;
+      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
+      color: #333;
       padding: 80px 20px 40px;
       position: relative;
       overflow-x: hidden;
@@ -79,47 +79,52 @@
     }
 
     h1 {
-      font-size: 2.3em;
-      font-weight: 700;
+      font-size: 2.8em;
+      font-weight: 800;
       text-align: center;
       margin-bottom: 10px;
-      text-shadow: 0 0 20px #00ccff;
+      color: #311b92;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
     }
 
     .sub {
       text-align: center;
-      color: rgba(255, 255, 255, 0.8);
+      color: #455a64;
       margin-bottom: 36px;
-      font-size: 1.05em;
+      font-size: 1.15em;
+      font-weight: 700;
     }
 
     /* Section tabs */
     .tabs {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
     }
 
     .tab {
-      padding: 10px 22px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+      padding: 12px 26px;
+      border: 3px solid #ffffff;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.7);
+      color: #5c6bc0;
       cursor: pointer;
       font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
+      font-size: 1.1em;
+      font-weight: 800;
       transition: all 0.25s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
     }
 
     .tab:hover,
     .tab.active {
-      background: rgba(255, 255, 255, 0.25);
-      border-color: #00ffff;
-      color: #00ffff;
+      background: #7c4dff;
+      border-color: #7c4dff;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(124, 77, 255, 0.3);
+      transform: translateY(-2px);
     }
 
     .section-panel {
@@ -131,22 +136,25 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.18);
-      border-radius: 20px;
-      padding: 26px;
-      margin-bottom: 22px;
+      border: 3px solid #ffffff;
+      border-radius: 28px;
+      padding: 32px;
+      margin-bottom: 24px;
       transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     }
 
     .card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-4px);
     }
 
     .card h2 {
-      font-size: 1.3em;
-      margin-bottom: 14px;
+      font-size: 1.4em;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #5c6bc0;
     }
 
     .chart-wrap {
@@ -159,12 +167,13 @@
     }
 
     .tip-list li {
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.88);
-      font-size: 1em;
+      padding: 14px 0;
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.05);
+      color: #455a64;
+      font-size: 1.1em;
+      font-weight: 700;
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: flex-start;
     }
 
@@ -309,10 +318,10 @@
 
     const opts = {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: 'rgba(255,255,255,0.8)', font: { size: 12, family: "'Comic Neue'" } } } },
+      plugins: { legend: { labels: { color: '#37474f', font: { size: 13, family: "'Comic Neue'" } } } },
       scales: {
-        x: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-        y: { ticks: { color: 'rgba(255,255,255,0.7)' }, grid: { color: 'rgba(255,255,255,0.1)' }, beginAtZero: true }
+        x: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
       }
     };
 

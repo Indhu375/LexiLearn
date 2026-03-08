@@ -10,10 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
 
         :root {
-            --cyan: #00e6ff;
-            --pink: #cc3399;
-            --wrong: #ff4d4d;
-            --hint: #ffff99;
+            --cyan: #7c4dff;
+            --pink: #ff4081;
+            --wrong: #ff1744;
+            --hint: #ffd600;
         }
 
         * {
@@ -25,8 +25,8 @@
         body {
             height: 100%;
             margin: 0;
-            color: #fff;
-            background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1350&q=80');
+            color: #333;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -34,14 +34,7 @@
         }
 
         body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.55);
-            z-index: -1;
+            display: none;
         }
 
         .app {
@@ -56,14 +49,17 @@
         h1 {
             margin: 12px 0;
             font-size: 36px;
-            color: var(--pink);
-            text-shadow: 2px 2px 8px var(--cyan)
+            color: #311b92;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            font-weight: 800;
         }
 
         #status {
             min-height: 24px;
             margin-bottom: 12px;
-            font-size: 20px
+            font-size: 20px;
+            color: #546e7a;
+            font-weight: 700;
         }
 
         #choiceScreen {
@@ -76,20 +72,22 @@
         }
 
         .choiceBtn {
-            padding: 15px 30px;
-            font-size: 24px;
-            border: none;
-            border-radius: 12px;
-            background: var(--pink);
-            color: #fff;
+            padding: 16px 36px;
+            font-size: 26px;
+            border: 3px solid #ffffff;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #7c4dff;
             cursor: pointer;
-            font-weight: 700;
-            transition: 0.2s;
+            font-weight: 800;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .choiceBtn:hover {
-            background: var(--cyan);
-            color: #000;
+            background: var(--pink);
+            color: #fff;
+            transform: scale(1.05);
         }
 
         #grid {
@@ -105,17 +103,17 @@
         .slot {
             position: relative;
             height: 100px;
-            border-radius: 12px;
-            background: #2c2c54;
-            border: 2px dashed rgba(255, 51, 153, .3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 3px dashed #e1bee7;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 36px;
-            color: #fff;
+            color: #333;
             user-select: none;
             overflow: hidden;
-            transition: transform .15s, border-color .15s;
+            transition: all 0.2s;
         }
 
         .slot::before {
@@ -126,25 +124,28 @@
             transform: translate(-50%, -50%);
             font-weight: 900;
             font-size: 38px;
-            color: rgba(255, 255, 255, 0.35);
+            color: rgba(0, 0, 0, 0.08);
             pointer-events: none;
         }
 
         .slot.filled {
-            border: 2px solid var(--cyan);
-            color: var(--pink);
-            text-shadow: 0 0 12px var(--pink);
+            background: #ffffff;
+            border: 3px solid #7c4dff;
+            color: #ff4081;
+            text-shadow: 0 0 10px rgba(255, 64, 129, 0.3);
             transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.2);
         }
 
         .slot.wrong {
             animation: shake 0.3s;
             border-color: var(--wrong);
+            background: #fee;
         }
 
         .slot.hint {
-            border: 3px solid var(--hint);
-            box-shadow: 0 0 10px var(--hint);
+            border: 4px solid var(--hint);
+            box-shadow: 0 0 15px var(--hint);
         }
 
         @keyframes shake {
@@ -172,39 +173,44 @@
         #pool {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
             justify-content: center;
-            padding: 18px;
-            margin-top: 20px;
+            padding: 24px;
+            margin-top: 24px;
             display: none;
         }
 
         .tile {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            background: #111;
-            border: 2px solid var(--cyan);
+            width: 85px;
+            height: 85px;
+            border-radius: 20px;
+            background: #ffffff;
+            border: 3px solid #7c4dff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 32px;
-            color: var(--pink);
-            text-shadow: 0 0 12px var(--pink);
+            font-size: 34px;
+            color: #ff4081;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             cursor: grab;
             user-select: none;
             touch-action: none;
-            transition: transform .1s, opacity .12s;
+            transition: all 0.1s;
+        }
+
+        .tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(124, 77, 255, 0.2);
         }
 
         .tile:active {
             cursor: grabbing;
-            transform: scale(.98);
+            transform: scale(0.95);
         }
 
         .tile.dragging {
-            opacity: .6;
+            opacity: 0.5;
         }
 
         #message {
@@ -264,21 +270,22 @@
             left: 15px;
             padding: 10px 18px;
             font-size: 1em;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
-            color: #fff;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ffffff;
+            border-radius: 14px;
+            color: #311b92;
             cursor: pointer;
             z-index: 1000;
             transition: all 0.25s;
             font-family: 'Comic Neue', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #f3e5f5;
             transform: translateX(-3px);
+            border-color: #7c4dff;
         }
 
         #hintBtn {

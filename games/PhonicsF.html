@@ -11,7 +11,7 @@
         body {
             margin: 0;
             padding: 0;
-            background: #8a7bd7;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
         }
 
         canvas {
@@ -25,21 +25,22 @@
             left: 15px;
             padding: 10px 18px;
             font-size: 1em;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
-            color: #fff;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ffffff;
+            border-radius: 14px;
+            color: #311b92;
             cursor: pointer;
             z-index: 1000;
             transition: all 0.25s;
             font-family: 'Comic Neue', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #f3e5f5;
             transform: translateX(-3px);
+            border-color: #7c4dff;
         }
     </style>
 </head>
@@ -163,7 +164,7 @@
 
         let config = {
             type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight,
-            backgroundColor: 0x8a7bd7,
+            transparent: true,
             scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
             scene: [PhonicsPop]
         };

@@ -8,15 +8,17 @@
     <style>
         body {
             margin: 0;
-            font-family: "Comic Sans MS", sans-serif;
-            background: linear-gradient(180deg, #a1c4fd, #c2e9fb);
+            font-family: 'Comic Neue', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
             text-align: center;
             padding: 20px 20px 40px;
+            color: #333;
         }
 
         h1 {
-            color: #ff4081;
-            text-shadow: 2px 2px #fff;
+            color: #311b92;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            font-weight: 800;
         }
 
         .back-btn {
@@ -25,45 +27,48 @@
             left: 15px;
             padding: 10px 18px;
             font-size: 1em;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            border-radius: 12px;
-            color: #333;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ffffff;
+            border-radius: 14px;
+            color: #311b92;
             cursor: pointer;
             z-index: 1000;
             transition: all 0.25s;
-            font-family: 'Comic Sans MS', sans-serif;
+            font-family: 'Comic Neue', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.55);
+            background: #f3e5f5;
             transform: translateX(-3px);
+            border-color: #7c4dff;
         }
 
         #game {
             max-width: 900px;
             margin: auto;
-            background: #fffdfd;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 3px solid #ffffff;
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             display: none;
         }
 
         .emoji-wrap {
             margin: 18px auto;
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 6px solid #ff4081;
+            border: 6px solid #7c4dff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 100px;
             background: #fff;
-            box-shadow: 0 0 25px #ff80ab;
+            box-shadow: 0 0 25px rgba(124, 77, 255, 0.2);
         }
 
         .word-text {
@@ -82,64 +87,42 @@
         }
 
         .option {
-            background: #4caf50;
-            color: #fff;
-            padding: 12px 26px;
+            background: #ffffff;
+            color: #7c4dff;
+            padding: 14px 32px;
+            border: 3px solid #7c4dff;
             border-radius: 25px;
             font-size: 1.3rem;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
-            border: 3px solid transparent;
             transition: all .2s;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(124, 77, 255, 0.1);
         }
 
         .option:hover {
-            background: #2e7d32;
-            transform: scale(1.08);
-        }
-
-        .hint {
-            border-color: gold !important;
-            box-shadow: 0 0 20px gold !important;
-        }
-
-        #feedback {
-            margin-top: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        #score {
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-
-        .letter-bank,
-        .answer-boxes {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 20px;
+            background: #7c4dff;
+            color: #fff;
+            transform: scale(1.05);
         }
 
         .letter {
-            background: #00bcd4;
-            color: #fff;
-            padding: 14px 20px;
-            border-radius: 10px;
+            background: #ffffff;
+            color: #7c4dff;
+            border: 3px solid #7c4dff;
+            padding: 14px 22px;
+            border-radius: 12px;
             font-size: 1.4rem;
-            font-weight: bold;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(124, 77, 255, 0.1);
             user-select: none;
             transition: .2s;
         }
 
         .letter:hover {
             transform: scale(1.1);
-            background: #008c9e;
+            background: #7c4dff;
+            color: #fff;
         }
 
         .answer-slot {

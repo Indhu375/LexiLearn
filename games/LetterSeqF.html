@@ -9,14 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
+            font-family: 'Comic Neue', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
             margin: 0;
             padding: 0;
-            background: black;
-        }
-
-        canvas {
-            display: block;
-            margin: auto;
+            overflow: hidden;
         }
 
         .back-btn {
@@ -25,21 +23,22 @@
             left: 15px;
             padding: 10px 18px;
             font-size: 1em;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 12px;
-            color: #fff;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ffffff;
+            border-radius: 14px;
+            color: #311b92;
             cursor: pointer;
             z-index: 1000;
             transition: all 0.25s;
             font-family: 'Comic Neue', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: #f3e5f5;
             transform: translateX(-3px);
+            border-color: #7c4dff;
         }
     </style>
 </head>
@@ -59,7 +58,7 @@
         const FRIENDLY_TEXT = { fontFamily: "Comic Neue, Comic Sans, Arial", fontSize: "34px", fill: "#ffffff", stroke: "#000000", strokeThickness: 5 };
 
         function createBackground(scene) {
-            scene.add.rectangle(scene.scale.width / 2, scene.scale.height / 2, scene.scale.width, scene.scale.height, 0x7f7fd5).setDepth(-2);
+            // Stars only, no solid rectangle
             for (let i = 0; i < 30; i++) {
                 let star = scene.add.text(Phaser.Math.Between(0, scene.scale.width), Phaser.Math.Between(0, scene.scale.height), "⭐", { fontSize: "20px" });
                 scene.tweens.add({ targets: star, alpha: { from: 0.3, to: 1 }, duration: Phaser.Math.Between(2000, 4000), yoyo: true, repeat: -1 });
@@ -125,7 +124,7 @@
             }
         }
 
-        let config = { type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: [LetterSequenceGame] };
+        let config = { type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight, transparent: true, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: [LetterSequenceGame] };
         let game = new Phaser.Game(config);
     </script>
     <script type="module">

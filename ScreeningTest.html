@@ -18,8 +18,8 @@
         body {
             font-family: 'Comic Neue', sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a0533 0%, #3d0d6e 50%, #6a1fb5 100%);
-            color: #fff;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -64,76 +64,80 @@
         }
 
         .header h1 {
-            font-size: 2.4em;
-            color: #fff;
-            text-shadow: 0 0 20px #ff99ff, 0 0 40px #cc00ff;
+            font-size: 2.8em;
+            color: #512da8;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
             margin-bottom: 8px;
         }
 
         .header p {
-            font-size: 1.1em;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.25em;
+            color: #455a64;
+            font-weight: 700;
         }
 
         /* Progress bar */
         .progress-wrap {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.05);
             border-radius: 30px;
-            height: 18px;
+            height: 22px;
             margin-bottom: 8px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(0, 0, 0, 0.1);
         }
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #ff66cc, #cc33ff, #00ccff);
+            background: linear-gradient(90deg, #ff4081, #7c4dff, #00bcd4);
             border-radius: 30px;
             transition: width 0.6s ease;
         }
 
         .progress-label {
             text-align: right;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: 1em;
+            color: #512da8;
+            font-weight: 700;
             margin-bottom: 24px;
         }
 
         /* Day display */
         .day-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #ff66cc, #9933ff);
+            background: linear-gradient(135deg, #ff4081, #7c4dff);
             border-radius: 20px;
-            padding: 6px 20px;
-            font-size: 1em;
+            padding: 8px 24px;
+            font-size: 1.1em;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(255, 102, 204, 0.4);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
             margin-bottom: 20px;
         }
 
         /* Question card */
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            padding: 32px 28px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 3px solid #ffffff;
+            border-radius: 32px;
+            padding: 36px 32px;
             margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(153, 0, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         }
 
         .question-num {
-            font-size: 0.85em;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 8px;
+            font-size: 1em;
+            color: #7c4dff;
+            font-weight: 700;
+            margin-bottom: 12px;
         }
 
         .question-text {
-            font-size: 1.5em;
+            font-size: 1.8em;
             font-weight: 700;
-            margin-bottom: 24px;
+            color: #311b92;
+            margin-bottom: 30px;
             line-height: 1.4;
-            text-shadow: 0 0 10px rgba(255, 200, 255, 0.5);
         }
 
         /* Options */
@@ -144,33 +148,37 @@
         }
 
         .opt-btn {
-            padding: 18px 10px;
-            border: 2px solid rgba(255, 255, 255, 0.35);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
+            padding: 22px 12px;
+            border: 3px solid #e1bee7;
+            border-radius: 20px;
+            background: #ffffff;
+            color: #512da8;
             font-family: 'Comic Neue', sans-serif;
-            font-size: 1.3em;
+            font-size: 1.4em;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.25s;
             text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .opt-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.04);
-            border-color: #ff99ff;
+            background: #f3e5f5;
+            transform: translateY(-3px);
+            border-color: #7c4dff;
+            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.2);
         }
 
         .opt-btn.correct {
-            background: rgba(0, 230, 80, 0.35);
-            border-color: #00e050;
+            background: #c8e6c9 !important;
+            border-color: #4caf50 !important;
+            color: #2e7d32 !important;
         }
 
         .opt-btn.wrong {
-            background: rgba(255, 60, 60, 0.35);
-            border-color: #ff4444;
+            background: #ffcdd2 !important;
+            border-color: #f44336 !important;
+            color: #c62828 !important;
         }
 
         .opt-btn:disabled {
@@ -387,61 +395,61 @@
 
         // ── Question bank (5 questions per day, 7 days) ─────────────────────────────
         const questionBank = [
-            // Day 1 — Letter recognition
+            // Day 1 — Visual Discrimination (Reversals)
             [
-                { q: "Which letter is different from the others?", opts: ["b", "d", "b", "b"], correct: 1 },
-                { q: "Which word starts with the 'P' sound?", opts: ["🍎 Apple", "🐧 Penguin", "🌙 Moon", "🐟 Fish"], correct: 1 },
-                { q: "How many letters are in the word CAT?", opts: ["2", "3", "4", "5"], correct: 1 },
-                { q: "Which pair shows the SAME letter?", opts: ["b & d", "p & q", "b & b", "d & p"], correct: 2 },
-                { q: "What sound does the letter 'M' make?", opts: ["Sss", "Mmm", "Rrr", "Fff"], correct: 1 }
+                { q: "Which letter is different?", opts: ["b", "b", "d", "b"], correct: 2 },
+                { q: "Which letter is the same as 'p'?", opts: ["q", "b", "p", "d"], correct: 2 },
+                { q: "Which one is 'm' turned upside down?", opts: ["n", "w", "u", "v"], correct: 1 },
+                { q: "Which word looks correctly spelled?", opts: ["dog", "bog", "pog", "qog"], correct: 0 },
+                { q: "Which letter is the odd one out?", opts: ["s", "s", "z", "s"], correct: 2 }
             ],
-            // Day 2 — Phonics
+            // Day 2 — Phonological Awareness (Sounds)
             [
-                { q: "Which word rhymes with CAT?", opts: ["Cup", "Bat", "Dog", "Sun"], correct: 1 },
-                { q: "What is the first sound in BALL?", opts: ["L", "A", "B", "P"], correct: 2 },
-                { q: "Which word has the short 'A' sound?", opts: ["Cake", "Rain", "Hat", "Play"], correct: 2 },
-                { q: "Pick the ODD one out:", opts: ["🐱 Cat", "🐶 Dog", "🍎 Apple", "🐟 Fish"], correct: 2 },
-                { q: "How many syllables in BUTTERFLY?", opts: ["1", "2", "3", "4"], correct: 2 }
+                { q: "Which word rhymes with 'CAT'?", opts: ["Dog", "Hat", "Sun", "Cup"], correct: 1 },
+                { q: "What is the first sound in 'PIG'?", opts: ["B", "P", "T", "D"], correct: 1 },
+                { q: "Which word starts with the same sound as 'FISH'?", opts: ["Fan", "Boy", "Goat", "Ship"], correct: 0 },
+                { q: "How many sounds in the word 'SUN'?", opts: ["1", "2", "3", "4"], correct: 2 },
+                { q: "Which word ends with the 'G' sound?", opts: ["Bat", "Log", "Run", "Stop"], correct: 1 }
             ],
-            // Day 3 — Letter reversal
+            // Day 3 — Rapid Naming (Shapes & Colors)
             [
-                { q: "Which letter is 'b' mirrored left-right?", opts: ["p", "q", "d", "n"], correct: 2 },
-                { q: "Look: 'was' — Which word is this read backwards?", opts: ["saw", "law", "raw", "jaw"], correct: 0 },
-                { q: "Which two letters look most similar?", opts: ["A & Z", "b & d", "C & O", "S & L"], correct: 1 },
-                { q: "Which letter comes AFTER 'N' in the alphabet?", opts: ["M", "O", "P", "L"], correct: 1 },
-                { q: "Which word is spelled correctly?", opts: ["Hpoe", "Hope", "Hoep", "Hopp"], correct: 1 }
+                { q: "What color is a banana?", opts: ["Red", "Blue", "Yellow", "Green"], correct: 2 },
+                { q: "Which shape has 3 sides?", opts: ["Square", "Circle", "Triangle", "Star"], correct: 2 },
+                { q: "Which one is an animal?", opts: ["Table", "Apple", "Tiger", "Pencil"], correct: 2 },
+                { q: "What do you use to see?", opts: ["Ears", "Eyes", "Nose", "Hands"], correct: 1 },
+                { q: "Which one is a fruit?", opts: ["Car", "Orange", "Shoe", "Book"], correct: 1 }
             ],
-            // Day 4 — Word recognition
+            // Day 4 — Working Memory (Sequencing)
             [
-                { q: "Which word means the opposite of HOT?", opts: ["Warm", "Cool", "Cold", "Icy"], correct: 2 },
-                { q: "Pick the correctly spelled word:", opts: ["Techer", "Teachre", "Teacher", "Teahcer"], correct: 2 },
-                { q: "Which word completes: 'The cat sat on the ___'?", opts: ["jump", "mat", "run", "fly"], correct: 1 },
-                { q: "How many words in: 'I love to read'?", opts: ["3", "4", "5", "6"], correct: 1 },
-                { q: "Which of these is NOT a number?", opts: ["Seven", "Three", "Red", "Nine"], correct: 2 }
+                { q: "What comes after 1, 2, 3?", opts: ["5", "6", "4", "7"], correct: 2 },
+                { q: "Which letter comes next: A, B, C, __?", opts: ["E", "D", "F", "G"], correct: 1 },
+                { q: "Repeat the pattern: Red, Blue, Red, __", opts: ["Green", "Yellow", "Blue", "Pink"], correct: 2 },
+                { q: "What was at the start: Apple, Ball, Cat?", opts: ["Ball", "Cat", "Apple", "Dog"], correct: 2 },
+                { q: "Which number is missing: 5, 6, _, 8?", opts: ["4", "7", "9", "10"], correct: 1 }
             ],
-            // Day 5 — Memory & sequencing
+            // Day 5 — Orthographic Processing (Word Reversals)
             [
-                { q: "What comes next: A, B, C, __?", opts: ["E", "F", "D", "G"], correct: 2 },
-                { q: "What comes next: 1, 2, 3, __?", opts: ["5", "4", "6", "2"], correct: 1 },
-                { q: "Which picture tells a story in the right ORDER?", opts: ["🌱→🌷→🌻", "🌻→🌱→🌷", "🌷→🌻→🌱", "🌱→🌻→🌷"], correct: 0 },
-                { q: "Read then recall: 'Sun Moon Star'. What was FIRST?", opts: ["Moon", "Star", "Sun", "Sky"], correct: 2 },
-                { q: "Which sequence is CORRECT?", opts: ["Cat Bat Hat", "Hat Cat Bat", "Bat Hat Cat", "Hat Bat Cat"], correct: 0 }
+                { q: "Which word is 'WAS' backwards?", opts: ["SAW", "LAW", "RAW", "WAR"], correct: 0 },
+                { q: "Is 'NO' different from 'ON'?", opts: ["Yes", "No", "Maybe", "Same"], correct: 0 },
+                { q: "Which one is spelled right?", opts: ["hte", "the", "eth", "teh"], correct: 1 },
+                { q: "Which word has 'b' in it?", opts: ["Dad", "Bed", "Pen", "Cup"], correct: 1 },
+                { q: "Find the word with 'p':", opts: ["Bag", "Hat", "Pot", "Sun"], correct: 2 }
             ],
-            // Day 6 — Reading comprehension (simple)
+            // Day 6 — Syllable Segmenting
             [
-                { q: "'The red ball is big.' What color is the ball?", opts: ["Blue", "Green", "Red", "Yellow"], correct: 2 },
-                { q: "'Sam has 3 apples.' How many apples?", opts: ["2", "4", "3", "5"], correct: 2 },
-                { q: "Which word is a NAME?", opts: ["Run", "Big", "Emma", "Jump"], correct: 2 },
-                { q: "'The dog runs fast.' Who runs fast?", opts: ["Cat", "Dog", "Bird", "Fish"], correct: 1 },
-                { q: "Complete: 'I can ___ my hands.'", opts: ["wash", "big", "tall", "blue"], correct: 0 }
+                { q: "How many claps in 'APPLE'?", opts: ["1", "2", "3", "4"], correct: 1 },
+                { q: "How many claps in 'ELEPHANT'?", opts: ["2", "3", "4", "5"], correct: 1 },
+                { q: "How many claps in 'CAT'?", opts: ["1", "2", "3", "0"], correct: 0 },
+                { q: "Which word is longer?", opts: ["Ant", "Butterfly", "Bee", "Fly"], correct: 1 },
+                { q: "Break it apart: COW-BOY makes?", opts: ["Cow", "Boy", "Cowboy", "Farm"], correct: 2 }
             ],
-            // Day 7 — Mixed review
+            // Day 7 — Final Evaluation
             [
-                { q: "Which letter looks like 'b' flipped upside-down?", opts: ["d", "p", "q", "n"], correct: 1 },
-                { q: "How many letters in 'ELEPHANT'?", opts: ["6", "7", "8", "9"], correct: 2 },
-                { q: "Pick the word that DOESN'T belong:", opts: ["Red", "Blue", "Chair", "Green"], correct: 2 },
-                { q: "What is 2 + 3?", opts: ["4", "5", "6", "7"], correct: 1 },
-                { q: "Which animal can fly?", opts: ["🐠 Fish", "🦈 Shark", "🦋 Butterfly", "🐢 Turtle"], correct: 2 }
+                { q: "Which letter is the mirror of 'b'?", opts: ["p", "q", "d", "n"], correct: 2 },
+                { q: "Which letter is 'u' upside down?", opts: ["n", "m", "w", "v"], correct: 0 },
+                { q: "Does 'BAT' rhyme with 'HAT'?", opts: ["Yes", "No", "Maybe", "I don't know"], correct: 0 },
+                { q: "What is the first letter of 'SUN'?", opts: ["C", "T", "S", "M"], correct: 2 },
+                { q: "Are 'b' and 'd' the same?", opts: ["Yes", "No", "Sometimes", "Maybe"], correct: 1 }
             ]
         ];
 
