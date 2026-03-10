@@ -1,5 +1,5 @@
-firebase-config.js
-.env
+# firebase-config.js (Removed from ignore to allow Vercel deployment)
+# .env
 .env.local
 firebase-key.json
 
