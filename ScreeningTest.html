@@ -390,7 +390,7 @@
 
     <script type="module">
         // ✅ Import from shared config — NO API keys here
-        import { auth, db, doc, getDoc, setDoc, updateDoc } from "./firebase-config.js";
+        import { auth, db, doc, getDoc, setDoc } from "./firebase-config.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // ── Question bank (5 questions per day, 7 days) ─────────────────────────────
@@ -557,10 +557,11 @@
                 const hasDyslexia = totalWrong >= 12; // threshold: ≥12 wrong out of 35
                 updates.screeningComplete = true;
                 updates.hasDyslexia = hasDyslexia;
-                await updateDoc(doc(db, "users", currentUser.uid), updates);
+                // Use setDoc(merge) so first-time/previously-deleted user docs don't crash the flow.
+                await setDoc(doc(db, "users", currentUser.uid), updates, { merge: true });
                 showAllDone(hasDyslexia);
             } else {
-                await updateDoc(doc(db, "users", currentUser.uid), updates);
+                await setDoc(doc(db, "users", currentUser.uid), updates, { merge: true });
                 showDayComplete(dayNum);
             }
         }

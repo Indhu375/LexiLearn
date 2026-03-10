@@ -173,18 +173,18 @@
 
     <script type="module">
         // ✅ Import from shared config — NO API keys here
-        import { auth, db, doc, updateDoc, increment } from "../firebase-config.js";
+        import { auth, db, doc, setDoc, increment } from "../firebase-config.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         // Save stats when game completes
         window.saveGameStats = async (accuracy, points) => {
             const user = auth.currentUser;
             if (!user) return;
-            await updateDoc(doc(db, "users", user.uid), {
+            await setDoc(doc(db, "users", user.uid), {
                 gamesPlayed: increment(1),
                 accuracy: accuracy,
                 totalPoints: increment(points)
-            });
+            }, { merge: true });
         };
     </script>
 </body>

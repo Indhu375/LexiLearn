@@ -486,7 +486,7 @@
     </div>
 
     <script type="module">
-        import { auth, db, doc, getDoc, updateDoc, increment, onSnapshot } from "./firebase-config.js";
+        import { auth, db, doc, getDoc, setDoc, increment, onSnapshot } from "./firebase-config.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         let currentUser = null;
@@ -540,11 +540,11 @@
                     return;
                 }
 
-                await updateDoc(doc(db, "users", currentUser.uid), {
+                await setDoc(doc(db, "users", currentUser.uid), {
                     lastChallenge: todayStr,
                     totalPoints: increment(50),
                     streakDays: isConsecutive ? increment(1) : 1
-                });
+                }, { merge: true });
 
                 document.getElementById("resultOverlay").classList.add("show");
             } catch (err) {

@@ -418,7 +418,7 @@
 
   <script type="module">
     // ✅ Import ONLY from shared config — NO API keys here
-    import { auth, db, doc, onSnapshot, updateDoc } from "./firebase-config.js";
+    import { auth, db, doc, onSnapshot, setDoc } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     let uid = null;
@@ -467,7 +467,7 @@
       const level = document.getElementById("editLevel").value;
       const goal = document.getElementById("editGoal").value;
       if (!name) { alert("Please enter a name!"); return; }
-      await updateDoc(doc(db, "users", uid), { nickname: name, level, goal });
+      await setDoc(doc(db, "users", uid), { nickname: name, level, goal }, { merge: true });
       document.getElementById("displayName").textContent = name;
       document.getElementById("displayLevel").textContent = level;
       document.getElementById("displayGoal").textContent = goal;

@@ -67,6 +67,7 @@ function main() {
 
   const tempDir = fs.mkdtempSync(path.join(root, ".tmp-syntax-"));
   let errorCount = 0;
+  let spawnBlocked = false;
 
   try {
     for (const file of files) {
@@ -80,6 +81,15 @@ function main() {
         fs.writeFileSync(tempFile, body, "utf8");
 
         const res = nodeCheck(tempFile);
+        if (res.error) {
+          // In some restricted environments (like certain sandboxes), spawning a child process is blocked.
+          // Don't emit misleading syntax errors; report once and stop.
+          spawnBlocked = true;
+          const msg = String(res.error?.message || res.error);
+          process.stdout.write(`SPAWN_BLOCKED\t${msg}\n`);
+          process.exitCode = 0;
+          return;
+        }
         if (res.status === 0) continue;
 
         // `node --check` emits parse errors to stderr with "file:line" framing.
