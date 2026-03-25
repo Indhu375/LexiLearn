@@ -1,320 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Sign In</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Comic Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
+      background: var(--bg-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      padding: 20px 20px 70px;
-      position: relative;
-      overflow: hidden;
+      padding: 40px 20px;
     }
 
-
-
-    /* Sparkly stars */
-    .star {
-      position: fixed;
-      pointer-events: none;
-      animation: twinkle 3s infinite;
-      font-size: 18px;
-      opacity: 0.7;
-      z-index: 0;
-    }
-
-    @keyframes twinkle {
-
-      0%,
-      100% {
-        opacity: 0.3;
-        transform: scale(1);
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.3);
-      }
-    }
-
-    /* Glass card */
-    .card {
-      position: relative;
-      z-index: 10;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 28px;
-      padding: 40px 36px;
+    .auth-card {
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-      text-align: center;
+      max-width: 440px;
+      padding: 40px;
     }
 
-    .logo {
-      font-size: 2.6em;
+    .logo-text {
+      font-size: 2.2rem;
       font-weight: 800;
-      color: #311b92;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      color: var(--primary);
+      text-align: center;
       margin-bottom: 8px;
     }
 
     .subtitle {
-      font-size: 1.1em;
-      color: #455a64;
-      font-weight: 700;
-      margin-bottom: 32px;
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 30px;
     }
 
-    h1 {
-      font-size: 1.8em;
-      color: #512da8;
-      margin-bottom: 24px;
-      font-weight: 800;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px 18px;
-      margin: 8px 0;
-      border: 2px solid #e1bee7;
-      border-radius: 14px;
-      background: #ffffff;
-      color: #333;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      outline: none;
-      transition: border-color 0.3s, background 0.3s;
-    }
-
-    input::placeholder {
-      color: #9e9e9e;
-    }
-
-    input:focus {
-      border-color: #7c4dff;
-      background: #f3e5f5;
-    }
-
-    .primary-btn {
-      width: 100%;
-      padding: 14px;
-      margin-top: 16px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1.1em;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
-    }
-
-    .primary-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(0, 114, 255, 0.5);
+    .input-group {
+      margin-bottom: 16px;
     }
 
     .google-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      padding: 13px 0;
-      margin-top: 10px;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.9);
+      padding: 14px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--surface-color);
+      font-weight: 600;
+      color: var(--text-main);
       cursor: pointer;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      color: #444;
-      transition: background 0.3s, transform 0.2s;
+      margin-top: 16px;
+      transition: all 0.2s;
     }
-
     .google-btn:hover {
-      background: #fff;
-      transform: translateY(-2px);
+      background: var(--bg-color);
+      border-color: var(--primary);
     }
-
     .google-btn img {
-      height: 22px;
-      width: 22px;
+      width: 20px;
+      height: 20px;
     }
 
     .toggle-link {
-      display: block;
-      font-size: 0.95em;
-      margin-top: 16px;
-      color: #d0f0ff;
-      cursor: pointer;
-      text-decoration: underline;
-      transition: color 0.2s;
+       display: inline-block;
+       width: 100%;
+       text-align: center;
+       margin-top: 24px;
+       font-weight: 600;
+       color: var(--primary);
+       cursor: pointer;
+       text-decoration: underline;
     }
-
     .toggle-link:hover {
-      color: #fff;
+       color: var(--primary-hover);
     }
 
     .info-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(74, 20, 140, 0.95);
-      color: #fff;
-      padding: 12px 0;
+      bottom: 0; left: 0; right: 0;
+      background: var(--primary);
+      color: white;
       text-align: center;
-      font-size: 0.9em;
-      font-weight: 700;
-      box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+      padding: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
       z-index: 1000;
     }
 
-    #signupFields {
-      display: none;
-    }
-
-    /* Loading overlay */
     #loader {
       display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(100, 0, 150, 0.7);
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.9);
       z-index: 9999;
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      color: #fff;
-      font-size: 1.4em;
-      font-weight: 700;
-      gap: 16px;
+      color: var(--primary);
+      font-weight: 800;
+      font-size: 1.5rem;
     }
+    #loader.show { display: flex; }
 
-    #loader.show {
-      display: flex;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #00ffff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    @media (max-width: 460px) {
-      .card {
-        padding: 28px 20px;
-      }
-    }
+    #signupFields { display: none; }
   </style>
-
-  <!-- Diagnostics Script -->
-  <script>
-    window.moduleLoaded = false;
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (!window.moduleLoaded) {
-          if (window.location.protocol === 'file:') {
-            alert("🚨 Security Block: Your browser is blocking LexiLearn's features because it's being opened directly as a file. \n\nPlease use 'Live Server' in VS Code or host it on Vercel to use the app! ✨");
-          } else {
-            alert("🚨 Module Error: LexiLearn failed to load its core features. This usually happens due to network issues or missing Firebase authorization for this domain. \n\nPlease check your browser console for specific errors!");
-          }
-        }
-      }, 5000);
-    });
-
-    // Global resource error listener
-    window.addEventListener('error', (e) => {
-      const tag = e.target.tagName;
-      if (tag === 'SCRIPT' || tag === 'LINK' || tag === 'IMG') {
-        const url = e.target.src || e.target.href;
-        console.error('Resource failed to load:', url || 'Inline Script/Module');
-
-        if (tag === 'SCRIPT' && !url) {
-          alert("🚨 Module Error: An internal script failed to load its dependencies. \n\nPlease ensure all files are uploaded to Vercel correctly!");
-          return;
-        }
-
-        if (tag !== 'IMG') {
-          alert("🚨 404 Error: Failed to load " + (url || "a resource") + " [" + tag + "]\n\nPlease check your file paths!");
-        }
-      }
-    }, true);
-  </script>
 </head>
 
 <body>
+  <div id="loader">Loading LexiLearn...</div>
 
-  <!-- Sparkly background stars -->
-  <div class="star" style="top:8%;left:10%;">✨</div>
-  <div class="star" style="top:15%;right:12%;animation-delay:0.5s;">⭐</div>
-  <div class="star" style="top:55%;left:5%;animation-delay:1s;">✦</div>
-  <div class="star" style="top:70%;right:8%;animation-delay:1.5s;">💫</div>
-  <div class="star" style="top:35%;left:85%;animation-delay:0.8s;">✨</div>
-  <div class="star" style="top:88%;left:30%;animation-delay:2s;">⭐</div>
-  <div class="star" style="top:25%;left:50%;animation-delay:1.2s;">✦</div>
-  <div class="star" style="top:80%;right:35%;animation-delay:0.3s;">💫</div>
-
-  <!-- Loader -->
-  <div id="loader">
-    <div class="spinner"></div>
-    <span>Loading LexiLearn...</span>
-  </div>
-
-  <div class="card">
-    <div class="logo">🌟 LexiLearn</div>
+  <div class="surface auth-card">
+    <div class="logo-text">🌟 LexiLearn</div>
     <div class="subtitle">Fun learning for every child ✨</div>
 
-    <h1 id="formTitle">Sign In</h1>
+    <h2 id="formTitle" class="text-center mb-4">Sign In</h2>
 
-    <!-- Sign-in fields only -->
-    <div id="signinFields">
-      <input type="email" id="emailSignin" placeholder="Email" autocomplete="email">
+    <div id="signinFields" class="input-group">
+      <input type="email" class="input-base" id="emailSignin" placeholder="Email Address" autocomplete="email">
     </div>
 
-    <!-- Sign-up extra fields -->
-    <div id="signupFields" style="display:none;">
-      <input type="text" id="firstName" placeholder="First Name">
-      <input type="text" id="lastName" placeholder="Last Name">
-      <input type="number" id="ageInput" placeholder="Age">
-      <input type="email" id="emailSignup" placeholder="Email" autocomplete="email">
-      <input type="text" id="nickname" placeholder="Nickname (display name)">
+    <div id="signupFields">
+      <div class="input-group"><input type="text" class="input-base" id="firstName" placeholder="First Name"></div>
+      <div class="input-group"><input type="text" class="input-base" id="lastName" placeholder="Last Name"></div>
+      <div class="input-group"><input type="number" class="input-base" id="ageInput" placeholder="Age"></div>
+      <div class="input-group"><input type="email" class="input-base" id="emailSignup" placeholder="Email Address" autocomplete="email"></div>
+      <div class="input-group"><input type="text" class="input-base" id="nickname" placeholder="Nickname"></div>
     </div>
 
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
-    <button class="primary-btn" id="authBtn">Sign In</button>
+    <div class="input-group">
+      <input type="password" class="input-base" id="password" placeholder="Password" autocomplete="current-password">
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%; padding: 16px;" id="authBtn">Sign In</button>
 
     <button class="google-btn" id="googleBtn">
       <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google">
@@ -322,12 +140,12 @@
     </button>
 
     <span class="toggle-link" id="toggleForm">Don't have an account? Sign Up</span>
+    <span class="toggle-link" id="resendVerification" style="display:none; margin-top: 12px;">Resend Verification Email</span>
   </div>
 
   <div class="info-bar">⚠️ Designed for children — Parental supervision recommended ⚠️</div>
 
   <script type="module">
-    // ✅ Import ONLY from shared firebase-config.js — NO API keys here
     window.moduleLoaded = true;
     import { auth, db, doc, getDoc, setDoc } from "./firebase-config.js";
     import {
@@ -336,7 +154,8 @@
       updateProfile,
       onAuthStateChanged,
       GoogleAuthProvider,
-      signInWithPopup
+      signInWithPopup,
+      sendEmailVerification
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const loader = document.getElementById("loader");
@@ -346,68 +165,60 @@
     const formTitle = document.getElementById("formTitle");
     const signinFields = document.getElementById("signinFields");
     const signupFields = document.getElementById("signupFields");
+    const resendBtn = document.getElementById("resendVerification");
     let isSignIn = true;
 
-    // ── Redirect if already logged in ──────────────────────────────────────────
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Prevent auto-redirect if we just logged out
-        if (localStorage.getItem("justLoggedOut") === "true") {
-          return;
-        }
+        if (localStorage.getItem("justLoggedOut") === "true") return;
         loader.classList.add("show");
         await redirectAfterLogin(user);
       }
     });
 
-    // Clear justLoggedOut flag on any click or input (user interaction)
     window.addEventListener("mousedown", () => localStorage.removeItem("justLoggedOut"));
     window.addEventListener("keydown", () => localStorage.removeItem("justLoggedOut"));
 
-    // ── After login: check screening status ────────────────────────────────────
     async function redirectAfterLogin(user) {
+      if (!user.emailVerified && user.providerData.some(p => p.providerId === 'password')) {
+        loader.classList.remove("show");
+        alert("Please verify your email address before logging in! Check your inbox and spam folder.");
+        resendBtn.style.display = "inline-block";
+        return;
+      }
+      resendBtn.style.display = "none";
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("nickname", user.displayName || user.email);
       localStorage.setItem("uid", user.uid);
       try {
         const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists() && snap.data().screeningComplete) {
-          window.location.href = "index.html";
-        } else {
-          window.location.href = "ScreeningTest.html";
-        }
-      } catch {
-        window.location.href = "ScreeningTest.html";
-      }
+        if (snap.exists() && snap.data().screeningComplete) window.location.href = "index.html";
+        else window.location.href = "ScreeningTest.html";
+      } catch { window.location.href = "ScreeningTest.html"; }
     }
 
-    // ── Toggle between Sign In / Sign Up ───────────────────────────────────────
     toggleForm.addEventListener("click", () => {
       isSignIn = !isSignIn;
       formTitle.textContent = isSignIn ? "Sign In" : "Sign Up";
       authBtn.textContent = isSignIn ? "Sign In" : "Sign Up";
-      toggleForm.textContent = isSignIn
-        ? "Don't have an account? Sign Up"
-        : "Already have an account? Sign In";
+      toggleForm.textContent = isSignIn ? "Don't have an account? Sign Up" : "Already have an account? Sign In";
       signinFields.style.display = isSignIn ? "block" : "none";
       signupFields.style.display = isSignIn ? "none" : "block";
     });
 
-    // ── Email / Password handler ────────────────────────────────────────────────
     authBtn.addEventListener("click", async () => {
       const password = document.getElementById("password").value.trim();
-
       if (isSignIn) {
         const email = document.getElementById("emailSignin").value.trim();
-        if (!email || !password) { alert("Please enter your email and password!"); return; }
-        console.log("Attempting sign-in for:", email);
+        if (!email || !password) { alert("Please enter email and password"); return; }
         try {
           loader.classList.add("show");
           const cred = await signInWithEmailAndPassword(auth, email, password);
           await redirectAfterLogin(cred.user);
         } catch (e) {
           loader.classList.remove("show");
-          alert("Sign-in failed: " + e.message);
+          if (e.code === 'auth/invalid-credential') alert("Invalid email or password.");
+          else alert("Sign-in failed: " + e.message);
         }
       } else {
         const firstName = document.getElementById("firstName").value.trim();
@@ -428,15 +239,14 @@
             gamesPlayed: 0, accuracy: 0, streakDays: 0, totalPoints: 0,
             createdAt: new Date().toISOString()
           });
-          window.location.href = "ScreeningTest.html";
-        } catch (e) {
+          await sendEmailVerification(cred.user);
           loader.classList.remove("show");
-          alert("Sign-up failed: " + e.message);
-        }
+          alert("Verification email sent to " + email + ".\n\nPlease check your inbox and your spam folder if you don't receive it.");
+          isSignIn = true; toggleForm.click();
+        } catch (e) { loader.classList.remove("show"); alert("Sign-up failed: " + e.message); }
       }
     });
 
-    // ── Google Sign-In ──────────────────────────────────────────────────────────
     const provider = new GoogleAuthProvider();
     googleBtn.addEventListener("click", async () => {
       try {
@@ -446,35 +256,23 @@
         const snap = await getDoc(doc(db, "users", user.uid));
         if (!snap.exists()) {
           await setDoc(doc(db, "users", user.uid), {
-            nickname: user.displayName || user.email,
-            email: user.email,
+            nickname: user.displayName || user.email, email: user.email,
             screeningComplete: false, screeningDay: 0,
             gamesPlayed: 0, accuracy: 0, streakDays: 0, totalPoints: 0,
             createdAt: new Date().toISOString()
           });
         }
         await redirectAfterLogin(user);
-      } catch (e) {
-        loader.classList.remove("show");
-        alert("Google sign-in failed: " + e.message);
-      }
+      } catch (e) { loader.classList.remove("show"); alert("Google sign-in failed: " + e.message); }
+    });
+
+    resendBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try { await sendEmailVerification(user); alert("Verification email resent!\n\nPlease check your inbox and your spam folder if you don't receive it."); }
+        catch (e) { alert("Error: " + e.message); }
+      } else alert("Please sign in first.");
     });
   </script>
-
-  <script>
-    // Add random extra stars
-    const starSymbols = ["✦", "✨", "⭐", "💫", "🌟"];
-    for (let i = 0; i < 12; i++) {
-      const s = document.createElement("div");
-      s.className = "star";
-      s.textContent = starSymbols[Math.floor(Math.random() * starSymbols.length)];
-      s.style.top = Math.random() * 100 + "%";
-      s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (Math.random() * 12 + 12) + "px";
-      s.style.animationDelay = Math.random() * 3 + "s";
-      document.body.appendChild(s);
-    }
-  </script>
 </body>
-
 </html>

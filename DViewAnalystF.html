@@ -1,272 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Analytics</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Comic Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
-      color: #333;
-      padding: 80px 20px 40px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .star {
-      position: fixed;
-      pointer-events: none;
-      animation: twinkle 3s infinite;
-      opacity: 0.6;
-      z-index: 0;
-    }
-
-    @keyframes twinkle {
-
-      0%,
-      100% {
-        opacity: 0.2;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.4)
-      }
-    }
-
-    .back-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.25s;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateX(-3px);
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-    }
-
-    h1 {
-      font-size: 2.8em;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 10px;
-      color: #512da8;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-    }
-
-    .sub {
-      text-align: center;
-      color: #455a64;
-      font-weight: 700;
-      margin-bottom: 36px;
-      font-size: 1.25em;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 18px;
-      margin-bottom: 36px;
-    }
-
     .summary-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border: 3px solid #ffffff;
-      border-radius: 24px;
-      padding: 24px;
       text-align: center;
-      transition: all 0.3s;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
     }
-
-    .summary-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
-    }
-
-    .summary-card .val {
-      font-size: 2.4em;
-      font-weight: 800;
-    }
-
-    .summary-card .lbl {
-      color: #78909c;
-      font-size: 1em;
-      font-weight: 700;
-      margin-top: 4px;
-    }
-
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
-      gap: 24px;
-    }
-
-    .chart-card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border: 3px solid #ffffff;
-      border-radius: 28px;
-      padding: 28px;
-      transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .chart-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .chart-card h2 {
-      font-size: 1.3em;
-      font-weight: 700;
-      margin-bottom: 18px;
-      color: #5c6bc0;
-    }
-
-    .chart-wrap {
-      height: 260px;
-    }
-
-    /* Calendar grid */
-    .calendar {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-      margin-top: 10px;
-    }
-
-    .cal-day {
-      height: 20px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .cal-day.l1 {
-      background: rgba(0, 200, 100, 0.25);
-    }
-
-    .cal-day.l2 {
-      background: rgba(0, 200, 100, 0.50);
-    }
-
-    .cal-day.l3 {
-      background: rgba(0, 200, 100, 0.75);
-    }
-
-    .cal-day.l4 {
-      background: rgba(0, 200, 100, 1.00);
-    }
-
-    @media (max-width: 700px) {
-      .charts-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+    .summary-card .val { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+    .summary-card .lbl { color: var(--text-muted); font-size: 1.1rem; font-weight: 600; margin-top: 4px; }
+    
+    .chart-wrap { height: 260px; }
+    
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 16px; }
+    .cal-day { height: 24px; border-radius: 4px; background: var(--border-color); }
+    .cal-day.l1 { background: rgba(108, 92, 231, 0.25); }
+    .cal-day.l2 { background: rgba(108, 92, 231, 0.50); }
+    .cal-day.l3 { background: rgba(108, 92, 231, 0.75); }
+    .cal-day.l4 { background: rgba(108, 92, 231, 1.0); }
   </style>
 </head>
 
 <body>
-  <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
-  <div class="star" style="top:15%;right:8%;font-size:18px;animation-delay:0.5s;">⭐</div>
-  <div class="star" style="top:65%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
-  <div class="star" style="top:82%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+  <div class="app-container">
+    <header class="app-navbar">
+        <div class="nav-brand">📈 Analytics Dashboard</div>
+        <div class="nav-actions">
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">⬅ Home</button>
+        </div>
+    </header>
 
-  <button class="back-btn" onclick="window.location.href='Dashboard.html'">⬅ Dashboard</button>
+    <div class="mb-4">
+      <p class="text-muted text-lg">Track your weekly progress and skills 🌟</p>
+    </div>
 
-  <div class="container">
-    <h1>📈 Analytics Dashboard</h1>
-    <p class="sub">Track your weekly progress and skills 🌟</p>
-
-    <!-- Summary cards -->
-    <div class="summary-grid">
-      <div class="summary-card">
-        <div class="val" id="statGames" style="color:#ff99cc;">0</div>
+    <div class="grid-4 mb-4">
+      <div class="surface summary-card">
+        <div class="val" id="statGames">0</div>
         <div class="lbl">Games This Week</div>
       </div>
-      <div class="summary-card">
-        <div class="val" id="statAccuracy" style="color:#99ffcc;">0%</div>
+      <div class="surface summary-card">
+        <div class="val" id="statAccuracy">0%</div>
         <div class="lbl">Overall Accuracy</div>
       </div>
-      <div class="summary-card">
-        <div class="val" id="statStreak" style="color:#ffff99;">0🔥</div>
+      <div class="surface summary-card">
+        <div class="val" id="statStreak">0🔥</div>
         <div class="lbl">Day Streak</div>
       </div>
-      <div class="summary-card">
-        <div class="val" id="statPoints" style="color:#99ccff;">0</div>
+      <div class="surface summary-card">
+        <div class="val" id="statPoints">0</div>
         <div class="lbl">Total Points</div>
       </div>
     </div>
 
-    <!-- Charts -->
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h2>📊 Weekly Activity</h2>
+    <div class="grid-2">
+      <div class="surface">
+        <h3 class="mb-3 text-primary">📊 Weekly Activity</h3>
         <div class="chart-wrap"><canvas id="weeklyLine"></canvas></div>
       </div>
-      <div class="chart-card">
-        <h2>📈 Improvement Trend</h2>
+      <div class="surface">
+        <h3 class="mb-3 text-primary">📈 Improvement Trend</h3>
         <div class="chart-wrap"><canvas id="trendLine"></canvas></div>
       </div>
-      <div class="chart-card">
-        <h2>🕸️ Skills Comparison</h2>
+      <div class="surface">
+        <h3 class="mb-3 text-primary">🕸️ Skills Comparison</h3>
         <div class="chart-wrap"><canvas id="skills"></canvas></div>
       </div>
-      <div class="chart-card">
-        <h2>🎮 Games Breakdown</h2>
+      <div class="surface">
+        <h3 class="mb-3 text-primary">🎮 Games Breakdown</h3>
         <div class="chart-wrap"><canvas id="donut"></canvas></div>
       </div>
-      <div class="chart-card" style="grid-column:1/-1;">
-        <h2>📅 Activity Heatmap (Last 12 Weeks)</h2>
+      <div class="surface" style="grid-column: 1 / -1;">
+        <h3 class="mb-3 text-primary">📅 Activity Heatmap (Last 12 Weeks)</h3>
         <div class="calendar" id="calGrid"></div>
       </div>
     </div>
   </div>
 
   <script type="module">
-    import { auth, db, doc, onSnapshot } from "/firebase-config.js";
+    import { auth, db, doc, onSnapshot } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     let weeklyChart, trendChart, skillsChart, donutChart;
+    const fontFam = "system-ui, -apple-system, sans-serif";
 
     const chartDefaults = {
-      plugins: { legend: { labels: { color: '#37474f', font: { size: 14, family: "'Comic Neue'" } } } },
+      plugins: { legend: { labels: { color: '#2d3436', font: { family: fontFam } } } },
       scales: {
-        x: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-        y: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' } }
+        x: { ticks: { color: '#636e72', font: { family: fontFam } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { ticks: { color: '#636e72', font: { family: fontFam } }, grid: { color: 'rgba(0,0,0,0.05)' } }
       }
     };
 
@@ -275,25 +100,16 @@
         type: 'bar',
         data: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          datasets: [
-            { label: 'Activity', data: [3, 5, 4, 8, 5, 6, 4], backgroundColor: '#AB47BC' }
-          ]
+          datasets: [{ label: 'Activity', data: [3, 5, 4, 8, 5, 6, 4], backgroundColor: '#a29bfe' }]
         },
-        options: {
-          responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins,
-          scales: { x: chartDefaults.scales.x, y: { ...chartDefaults.scales.y, beginAtZero: true } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins, scales: { x: chartDefaults.scales.x, y: { ...chartDefaults.scales.y, beginAtZero: true } } }
       });
 
       trendChart = new Chart(document.getElementById("trendLine"), {
         type: 'line',
         data: {
           labels: ['Wk 1', 'Wk 2', 'Wk 3', 'Wk 4', 'Wk 5', 'Wk 6'],
-          datasets: [{
-            label: 'Accuracy %', data: [50, 55, 60, 65, 70, 75],
-            borderColor: '#00ffcc', backgroundColor: 'rgba(0,255,204,0.15)',
-            tension: 0.4, fill: true, pointBackgroundColor: '#00ffcc', pointRadius: 5
-          }]
+          datasets: [{ label: 'Accuracy %', data: [50, 55, 60, 65, 70, 75], borderColor: '#00b894', backgroundColor: 'rgba(0,184,148,0.1)', tension: 0.4, fill: true }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins, scales: chartDefaults.scales }
       });
@@ -301,24 +117,12 @@
       skillsChart = new Chart(document.getElementById("skills"), {
         type: 'radar',
         data: {
-          labels: ['Phonics', 'Letter Seq', 'Vocabulary', 'Story Seq', 'Letter Maze', 'Memory'],
-          datasets: [
-            {
-              label: 'Progress', data: [70, 60, 80, 55, 65, 75],
-              borderColor: '#ff66cc', backgroundColor: 'rgba(255,102,204,0.2)', pointBackgroundColor: '#ff66cc'
-            }
-          ]
+          labels: ['Phonics', 'Letter Seq', 'Vocabulary', 'Dominoes', 'Letter Maze', 'Memory'],
+          datasets: [{ label: 'Progress', data: [70, 60, 80, 55, 65, 75], borderColor: '#fd79a8', backgroundColor: 'rgba(253,121,168,0.2)' }]
         },
         options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: chartDefaults.plugins,
-          scales: {
-            r: {
-              ticks: { color: 'rgba(255,255,255,0.7)', backdropColor: 'transparent' },
-              grid: { color: 'rgba(255,255,255,0.15)' }, angleLines: { color: 'rgba(255,255,255,0.15)' },
-              pointLabels: { color: 'rgba(255,255,255,0.8)', font: { size: 12 } }, min: 0, max: 100
-            }
-          }
+          responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins,
+          scales: { r: { ticks: { backdropColor: 'transparent' }, min: 0, max: 100 } }
         }
       });
 
@@ -326,91 +130,39 @@
         type: 'doughnut',
         data: {
           labels: ['Completed', 'Remaining'],
-          datasets: [{
-            data: [0, 100],
-            backgroundColor: ['#ff66cc', 'rgba(255,255,255,0.1)'],
-            borderWidth: 2, borderColor: 'rgba(255,255,255,0.1)'
-          }]
+          datasets: [{ data: [0, 100], backgroundColor: ['#6c5ce7', '#dfe6e9'], borderWidth: 0 }]
         },
-        options: {
-          responsive: true, maintainAspectRatio: false,
-          plugins: { ...chartDefaults.plugins, tooltip: { bodyColor: '#fff', titleColor: '#fff' } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: chartDefaults.plugins }
       });
     }
 
     onAuthStateChanged(auth, (user) => {
       if (!user) { window.location.href = "login.html"; return; }
-
       initCharts();
 
       onSnapshot(doc(db, "users", user.uid), (snap) => {
         if (!snap.exists()) return;
         const d = snap.data();
 
-        // Update summary cards with animation
-        animateCount("statGames", d.gamesPlayed || 0);
-        animateCount("statAccuracy", d.accuracy || 0, true);
-        animateCount("statStreak", d.streakDays || 0, false, "🔥");
-        animateCount("statPoints", d.totalPoints || 0);
+        document.getElementById("statGames").textContent = d.gamesPlayed || 0;
+        document.getElementById("statAccuracy").textContent = (d.accuracy || 0) + "%";
+        document.getElementById("statStreak").textContent = (d.streakDays || 0) + "🔥";
+        document.getElementById("statPoints").textContent = d.totalPoints || 0;
 
-        // Update charts slightly based on real data to make it feel alive
         const acc = d.accuracy || 0;
-        trendChart.data.datasets[0].data[5] = acc;
-        trendChart.update();
-
-        skillsChart.data.datasets[0].data = [
-          Math.min(100, (d.gamesPlayed || 0) * 5 + 40),
-          Math.min(100, acc + 10),
-          Math.min(100, (d.totalPoints || 0) / 10 + 30),
-          Math.min(100, (d.streakDays || 0) * 10 + 20),
-          65, 75
-        ];
+        trendChart.data.datasets[0].data[5] = acc; trendChart.update();
+        skillsChart.data.datasets[0].data = [ Math.min(100, (d.gamesPlayed||0)*5+40), Math.min(100, acc+10), Math.min(100, (d.totalPoints||0)/10+30), Math.min(100, (d.streakDays||0)*10+20), 65, 75 ];
         skillsChart.update();
-
-        donutChart.data.datasets[0].data = [acc, 100 - acc];
-        donutChart.update();
+        donutChart.data.datasets[0].data = [acc, 100 - acc]; donutChart.update();
       });
     });
 
-    function animateCount(id, target, isPct = false, suffix = "") {
-      const el = document.getElementById(id);
-      if (!el) return;
-      let cur = parseInt(el.textContent.replace(/[^0-9]/g, "")) || 0;
-      if (cur === target) {
-        el.textContent = target + (isPct ? "%" : suffix);
-        return;
-      }
-
-      const step = Math.max(1, Math.round(Math.abs(target - cur) / 25));
-      const timer = setInterval(() => {
-        if (cur < target) cur = Math.min(cur + step, target);
-        else cur = Math.max(cur - step, target);
-
-        el.textContent = cur + (isPct ? "%" : suffix);
-        if (cur === target) clearInterval(timer);
-      }, 30);
-    }
-
-    // Calendar heatmap
     const grid = document.getElementById("calGrid");
     for (let i = 0; i < 84; i++) {
-      const d = document.createElement("div");
-      const r = Math.random();
+      const d = document.createElement("div"); const r = Math.random();
       d.className = "cal-day" + (r > 0.85 ? " l4" : r > 0.7 ? " l3" : r > 0.5 ? " l2" : r > 0.3 ? " l1" : "");
       grid.appendChild(d);
     }
-
-    // Stars
-    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
-    for (let i = 0; i < 10; i++) {
-      const s = document.createElement("div"); s.className = "star";
-      s.textContent = syms[Math.floor(Math.random() * syms.length)];
-      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
-      document.body.appendChild(s);
-    }
   </script>
 </body>
-
 </html>

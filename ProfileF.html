@@ -1,465 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Comic Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
-      padding: 80px 20px 40px;
-      position: relative;
-      overflow-x: hidden;
-      color: #333;
-    }
-
-    .star {
-      position: fixed;
-      pointer-events: none;
-      animation: twinkle 3s infinite;
-      opacity: 0.6;
-      z-index: 0;
-    }
-
-    @keyframes twinkle {
-
-      0%,
-      100% {
-        opacity: 0.2;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.4)
-      }
-    }
-
-    .back-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.25s;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateX(-3px);
-    }
-
-    .container {
-      position: relative;
-      z-index: 10;
-      max-width: 860px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(14px);
-      border: 3px solid #ffffff;
-      border-radius: 32px;
-      padding: 40px 36px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.7s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px)
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0)
-      }
-    }
-
-    /* Profile header */
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      margin-bottom: 36px;
-      flex-wrap: wrap;
-    }
-
     .avatar-wrap {
       position: relative;
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 4px solid rgba(255, 255, 255, 0.5);
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius-full);
       overflow: hidden;
-      box-shadow: 0 0 24px rgba(0, 255, 255, 0.3);
+      border: 4px solid var(--border-color);
       flex-shrink: 0;
+      margin-right: 20px;
     }
-
-    .avatar-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
+    .avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
     .upload-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 36px;
-      background: rgba(0, 0, 0, 0.55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.2em;
-    }
-
-    .profile-info h1 {
-      font-size: 2.2em;
-      color: #311b92;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-      margin-bottom: 6px;
-      font-weight: 800;
-    }
-
-    .profile-info p {
-      color: #455a64;
-      font-size: 1.1em;
-      margin: 4px 0;
-      font-weight: 700;
+      position: absolute; bottom: 0; left: 0; right: 0; height: 36px;
+      background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.2rem;
     }
 
     .badge {
       display: inline-block;
-      padding: 4px 14px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #ff66cc, #9933ff);
-      font-size: 0.9em;
-      margin-top: 8px;
-      font-weight: 700;
+      padding: 6px 16px; border-radius: var(--radius-full);
+      background: rgba(108, 92, 231, 0.1); color: var(--primary);
+      font-weight: 800; font-size: 0.9rem; margin-top: 8px;
     }
 
-    .edit-btn,
-    .save-btn {
-      margin-top: 12px;
-      padding: 10px 24px;
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.15);
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-
-    .save-btn {
-      background: linear-gradient(135deg, #00cc66, #00ff99);
-      color: #000;
-      border-color: #00ff99;
-      display: none;
-    }
-
-    .edit-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
-    }
-
-    /* Edit form */
-    .edit-form {
-      display: none;
-      margin-top: 16px;
-    }
-
-    .edit-form input,
-    .edit-form select {
-      width: 100%;
-      padding: 11px 15px;
-      margin: 6px 0;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      outline: none;
-    }
-
-    .edit-form select option {
-      color: #000;
-    }
-
-    .edit-form input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
-
-    .edit-form input:focus,
-    .edit-form select:focus {
-      border-color: #00ffff;
-    }
-
-    /* Stat grid */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      background: rgba(255, 255, 255, 0.17);
-    }
-
-    .stat-card .num {
-      font-size: 2.2em;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 0 12px currentColor;
-    }
-
-    .stat-card .lbl {
-      color: rgba(255, 255, 255, 0.75);
-      font-size: 0.95em;
-      margin-top: 4px;
-    }
-
+    .edit-form { display: none; margin-top: 20px; }
+    
     .progress-bar-wrap {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 8px;
-      margin-top: 10px;
-      overflow: hidden;
+      height: 10px; background: var(--border-color); border-radius: var(--radius-full); margin-top: 12px; overflow: hidden;
     }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #00c6ff, #9933ff);
-      border-radius: 8px;
-      transition: width 1s ease;
-    }
-
-    section h2 {
-      font-size: 1.5em;
-      color: #fff;
-      text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
-      margin-bottom: 14px;
-    }
-
-    /* Activity list */
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 28px;
-    }
+    .progress-fill { height: 100%; background: var(--primary); border-radius: var(--radius-full); transition: width 1s ease; }
 
     .list-item {
-      background: #ffffff;
-      border: 2px solid #e1bee7;
-      border-radius: 16px;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.25s;
-      color: #455a64;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px; border-bottom: 1px solid var(--border-color); transition: all 0.2s;
     }
-
-    .list-item:hover {
-      background: #f3e5f5;
-      transform: translateX(4px);
-      border-color: #7c4dff;
-    }
-
-    .list-item .time {
-      color: #90a4ae;
-      font-size: 0.9em;
-    }
-
-    @media (max-width: 550px) {
-      .profile-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .container {
-        padding: 24px 16px;
-      }
-    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item:hover { background: var(--bg-color); }
+    .list-item .time { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; }
   </style>
 </head>
 
 <body>
-  <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
-  <div class="star" style="top:18%;right:8%;font-size:18px;animation-delay:0.6s;">⭐</div>
-  <div class="star" style="top:65%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
-  <div class="star" style="top:80%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+  <div class="app-container">
+    <header class="app-navbar">
+        <div class="nav-brand">👤 Profile</div>
+        <div class="nav-actions">
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">⬅ Home</button>
+        </div>
+    </header>
 
-  <button class="back-btn" onclick="window.location.href='index.html'">⬅ Home</button>
-  <input type="file" id="picInput" accept="image/*" style="display:none">
+    <input type="file" id="picInput" accept="image/*" style="display:none">
 
-  <div class="container">
-    <!-- Profile Header -->
-    <div class="profile-header">
-      <div class="avatar-wrap" id="avatarWrap">
-        <img id="avatarImg" src="https://img.icons8.com/ios-filled/100/aaaaaa/user.png" alt="Profile">
-        <div class="upload-overlay" onclick="document.getElementById('picInput').click()">📷</div>
+    <div class="surface mb-4">
+      <div style="display: flex; flex-wrap: wrap; align-items: center;">
+        <div class="avatar-wrap">
+          <img id="avatarImg" src="https://img.icons8.com/ios-filled/100/aaaaaa/user.png" alt="Profile">
+          <div class="upload-overlay" onclick="document.getElementById('picInput').click()">📷</div>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+          <h1 id="displayName" class="text-primary mb-1">Loading...</h1>
+          <p id="displayEmail" class="text-muted mb-1"></p>
+          <div style="font-weight: 600;">Level: <span id="displayLevel" class="text-primary">Beginner</span></div>
+          <div style="font-weight: 600;">Goal: <span id="displayGoal" class="text-primary">Improve reading fluency</span></div>
+          <div class="badge" id="displayBadge">🌟 Learner</div>
+        </div>
+        <div style="margin-top: 20px;">
+          <button class="btn btn-outline" id="editBtn" onclick="toggleEdit(true)">✏️ Edit</button>
+          <button class="btn btn-primary" id="saveBtn" style="display:none;" onclick="saveProfile()">💾 Save</button>
+        </div>
       </div>
-      <div class="profile-info">
-        <h1 id="displayName">Loading...</h1>
-        <p id="displayEmail"></p>
-        <p>Level: <span id="displayLevel">Beginner</span></p>
-        <p>Goal: <span id="displayGoal">Improve reading fluency</span></p>
-        <span class="badge" id="displayBadge">🌟 Learner</span>
-      </div>
-      <div style="margin-left:auto;">
-        <button class="edit-btn" id="editBtn" onclick="toggleEdit(true)">✏️ Edit Profile</button>
-        <button class="save-btn" id="saveBtn" onclick="saveProfile()">💾 Save</button>
+
+      <div class="edit-form grid-2" id="editForm">
+        <input id="editName" type="text" class="input-base" placeholder="Nickname">
+        <select id="editLevel" class="input-base">
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+        <select id="editGoal" class="input-base mb-2">
+          <option>Improve reading fluency</option>
+          <option>Enhance word recognition</option>
+          <option>Build vocabulary</option>
+        </select>
       </div>
     </div>
 
-    <!-- Edit form (hidden until Edit clicked) -->
-    <div class="edit-form" id="editForm">
-      <input id="editName" type="text" placeholder="Nickname">
-      <select id="editLevel">
-        <option>Beginner</option>
-        <option>Intermediate</option>
-        <option>Advanced</option>
-      </select>
-      <select id="editGoal">
-        <option>Improve reading fluency</option>
-        <option>Enhance word recognition</option>
-        <option>Build vocabulary</option>
-      </select>
+    <h2 class="mb-3">📊 Your Stats</h2>
+    <div class="grid-3 mb-4">
+      <div class="surface stat-card text-center">
+        <div class="value" id="statGames">0</div>
+        <div class="label">Games Played</div>
+        <div class="progress-bar-wrap"><div class="progress-fill" id="pgGames" style="width:0%"></div></div>
+      </div>
+      <div class="surface stat-card text-center">
+        <div class="value" id="statStreak">0</div>
+        <div class="label">Day Streak 🔥</div>
+        <div class="progress-bar-wrap"><div class="progress-fill" id="pgStreak" style="width:0%"></div></div>
+      </div>
+      <div class="surface stat-card text-center">
+        <div class="value" id="statPoints">0</div>
+        <div class="label">Total Points ⭐</div>
+        <div class="progress-bar-wrap"><div class="progress-fill" id="pgPoints" style="width:0%"></div></div>
+      </div>
     </div>
 
-    <!-- Stats -->
-    <section>
-      <h2>📊 Your Stats</h2>
-      <div class="stats">
-        <div class="stat-card">
-          <div class="num" id="statGames" style="color:#ff99cc;">0</div>
-          <div class="lbl">Games Played</div>
-          <div class="progress-bar-wrap">
-            <div class="progress-fill" id="pgGames" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="num" id="statStreak" style="color:#ffff99;">0</div>
-          <div class="lbl">Day Streak 🔥</div>
-          <div class="progress-bar-wrap">
-            <div class="progress-fill" id="pgStreak" style="width:0%"></div>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="num" id="statPoints" style="color:#99ffcc;">0</div>
-          <div class="lbl">Total Points ⭐</div>
-          <div class="progress-bar-wrap">
-            <div class="progress-fill" id="pgPoints" style="width:0%"></div>
-          </div>
+    <div class="grid-2">
+      <div class="surface">
+        <h3 class="mb-3">🕹️ Recent Activities</h3>
+        <div>
+          <div class="list-item"><span style="font-weight:600;">Completed Letter Maze</span><span class="time">Today</span></div>
+          <div class="list-item"><span style="font-weight:600;">Played Phonics Pop</span><span class="time">Yesterday</span></div>
+          <div class="list-item"><span style="font-weight:600;">Daily Challenge ✅</span><span class="time">2 days ago</span></div>
         </div>
       </div>
-    </section>
+      <div class="surface">
+        <h3 class="mb-3">📅 Upcoming Exercises</h3>
+        <div>
+          <div class="list-item"><span style="font-weight:600;">Word Matching</span><span class="time">Tomorrow</span></div>
+          <div class="list-item"><span style="font-weight:600;">Letter Recognition</span><span class="time">In 2 days</span></div>
+          <div class="list-item"><span style="font-weight:600;">Reading Fluency</span><span class="time">In 3 days</span></div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Recent Activities -->
-    <section>
-      <h2>🕹️ Recent Activities</h2>
-      <div class="list">
-        <div class="list-item"><span>Completed Letter Maze</span><span class="time">Today</span></div>
-        <div class="list-item"><span>Played Phonics Pop</span><span class="time">Yesterday</span></div>
-        <div class="list-item"><span>Daily Challenge ✅</span><span class="time">2 days ago</span></div>
-      </div>
-    </section>
-
-    <!-- Upcoming -->
-    <section>
-      <h2>📅 Upcoming Exercises</h2>
-      <div class="list">
-        <div class="list-item"><span>Word Matching Exercise</span><span class="time">Tomorrow</span></div>
-        <div class="list-item"><span>Letter Recognition Practice</span><span class="time">In 2 days</span></div>
-        <div class="list-item"><span>Reading Fluency Drill</span><span class="time">In 3 days</span></div>
-      </div>
-    </section>
   </div>
 
   <script type="module">
-    // ✅ Import ONLY from shared config — NO API keys here
     import { auth, db, doc, onSnapshot, setDoc } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    let uid = null;
-    let userData = {};
-
+    let uid = null; let userData = {};
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = "login.html"; return; }
       uid = user.uid;
-
       onSnapshot(doc(db, "users", uid), (snap) => {
         userData = snap.exists() ? snap.data() : {};
-
         document.getElementById("displayName").textContent = user.displayName || userData.nickname || "Explorer";
         document.getElementById("displayEmail").textContent = user.email || "";
         document.getElementById("displayLevel").textContent = userData.level || "Beginner";
         document.getElementById("displayGoal").textContent = userData.goal || "Improve reading fluency";
 
         const pts = userData.totalPoints || 0;
-        document.getElementById("displayBadge").textContent =
-          pts > 500 ? "🏆 Champion" : pts > 200 ? "🥇 Pro Learner" : pts > 50 ? "⭐ Rising Star" : "🌟 Learner";
+        document.getElementById("displayBadge").textContent = pts > 500 ? "🏆 Champion" : pts > 200 ? "🥇 Pro Learner" : pts > 50 ? "⭐ Rising Star" : "🌟 Learner";
 
-        const games = userData.gamesPlayed || 0;
-        const streak = userData.streakDays || 0;
-        const points = userData.totalPoints || 0;
+        const games = userData.gamesPlayed || 0; const streak = userData.streakDays || 0;
         document.getElementById("statGames").textContent = games;
         document.getElementById("statStreak").textContent = streak;
-        document.getElementById("statPoints").textContent = points;
+        document.getElementById("statPoints").textContent = pts;
 
         document.getElementById("pgGames").style.width = Math.min(games / 50 * 100, 100) + "%";
         document.getElementById("pgStreak").style.width = Math.min(streak / 30 * 100, 100) + "%";
-        document.getElementById("pgPoints").style.width = Math.min(points / 500 * 100, 100) + "%";
+        document.getElementById("pgPoints").style.width = Math.min(pts / 500 * 100, 100) + "%";
       });
     });
 
     window.toggleEdit = (show) => {
-      document.getElementById("editForm").style.display = show ? "block" : "none";
+      document.getElementById("editForm").style.display = show ? "grid" : "none";
       document.getElementById("editBtn").style.display = show ? "none" : "inline-block";
       document.getElementById("saveBtn").style.display = show ? "inline-block" : "none";
-      if (show) {
-        document.getElementById("editName").value = document.getElementById("displayName").textContent;
-      }
+      if (show) document.getElementById("editName").value = document.getElementById("displayName").textContent;
     };
 
     window.saveProfile = async () => {
@@ -474,26 +180,12 @@
       toggleEdit(false);
     };
 
-    // Profile picture
     document.getElementById("picInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+      const file = e.target.files[0]; if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => { document.getElementById("avatarImg").src = ev.target.result; };
       reader.readAsDataURL(file);
     });
   </script>
-
-  <script>
-    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
-    for (let i = 0; i < 12; i++) {
-      const s = document.createElement("div"); s.className = "star";
-      s.textContent = syms[Math.floor(Math.random() * syms.length)];
-      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
-      document.body.appendChild(s);
-    }
-  </script>
 </body>
-
 </html>

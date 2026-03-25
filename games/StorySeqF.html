@@ -1,315 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Story Sequencer Game</title>
+    <meta charset="UTF-8" />
+    <title>LexiLearn — I-Spy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../theme.css">
     <style>
-        body {
-            font-family: 'Comic Neue', sans-serif;
-            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
+        .letter-display {
+            font-size: 6rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 20px 0;
             text-align: center;
-            padding: 80px 20px 40px;
-            min-height: 100vh;
-            color: #333;
         }
 
-        .back-btn {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            padding: 10px 18px;
-            font-size: 1em;
+        .timer {
+            font-size: 1.5rem;
             font-weight: 800;
-            background: rgba(255, 255, 255, 0.9);
-            border: 3px solid #ffffff;
-            border-radius: 14px;
-            color: #311b92;
-            cursor: pointer;
-            z-index: 1000;
-            transition: all 0.25s;
-            font-family: 'Comic Neue', sans-serif;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-btn:hover {
-            background: #f3e5f5;
-            transform: translateX(-3px);
-            border-color: #7c4dff;
-        }
-
-        h2 {
-            color: #311b92;
             margin-bottom: 24px;
-            font-weight: 800;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            color: var(--text-muted);
+            text-align: center;
         }
 
-        .container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 32px 0;
-            flex-wrap: wrap;
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
         }
 
-        .card {
-            width: 130px;
-            height: 130px;
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-            font-size: 55px;
-            background: #ffffff;
-            border: 3px solid #7c4dff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .card:hover {
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 8px 25px rgba(124, 77, 255, 0.2);
-        }
-
-        .dropzone {
-            width: 130px;
-            height: 130px;
-            border: 3px dashed #7c4dff;
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .dropzone.filled {
-            border: 3px solid #b2ff59;
-            background: rgba(178, 255, 89, 0.1);
-        }
-
-        button {
-            margin: 12px;
-            padding: 14px 28px;
-            border: 3px solid #ffffff;
-            border-radius: 18px;
-            background: #ffffff;
-            color: #7c4dff;
-            font-size: 1.1em;
-            font-weight: 800;
+        .image-card {
+            background: var(--surface-color);
+            border: 4px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             transition: all 0.3s;
-            font-family: 'Comic Neue', sans-serif;
-        }
-
-        button:hover {
-            background: #7c4dff;
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.2);
-        }
-
-        #feedback {
-            margin-top: 20px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        #congratsOverlay,
-        #winOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            font-family: 'Comic Neue', sans-serif;
-            font-size: 3rem;
+            justify-content: center;
+        }
+
+        .image-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 25px rgba(108, 92, 231, 0.2);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: contain;
+        }
+
+        .image-card.correct {
+            border-color: var(--success) !important;
+            background: rgba(0, 184, 148, 0.1);
+            transform: scale(1.05);
+        }
+
+        .image-card.wrong {
+            border-color: var(--danger) !important;
+            background: rgba(255, 118, 117, 0.1);
+            opacity: 0.6;
+            transform: scale(0.95);
+        }
+
+        .feedback {
+            font-size: 2.5rem;
             font-weight: 800;
-            color: #311b92;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            display: none;
-        }
-
-        #congratsOverlay button,
-        #winOverlay button {
-            margin-top: 40px;
-            font-size: 1.8rem;
-            padding: 18px 40px;
-            background: #7c4dff;
-            color: #fff;
-        }
-
-        .hintGlow {
-            animation: glow 1s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                box-shadow: 0 0 10px gold;
-                transform: scale(1);
-            }
-
-            to {
-                box-shadow: 0 0 25px orange;
-                transform: scale(1.1);
-            }
-        }
-
-        .sparkle {
-            position: absolute;
-            font-size: 24px;
-            animation: sparkleAnim 1s ease-out forwards;
-        }
-
-        @keyframes sparkleAnim {
-            0% {
-                opacity: 1;
-                transform: scale(0.5) rotate(0deg);
-            }
-
-            100% {
-                opacity: 0;
-                transform: scale(2) rotate(180deg);
-            }
+            margin-bottom: 30px;
+            height: 3rem;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
-    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
-        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
+    <div class="game-layout">
+        <header class="game-header">
+            <h1 class="nav-brand">🔍 I-Spy Quest</h1>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+                <button class="btn btn-danger" onclick="window.location.href='../index.html'">🏁 Finish</button>
+            </div>
+        </header>
 
-    <h2 id="instruction">🧩 Arrange the story in the correct order!</h2>
-    <div class="container" id="cards"></div>
-    <div class="container" id="dropzones"></div>
-    <button onclick="checkOrder()">✅ Check Order</button>
-    <button onclick="nextQuestion()">⏭ Next Question</button>
-    <button onclick="showHint()">💡 Hint</button>
-    <div id="feedback"></div>
+        <div class="app-container">
+            <h2 class="text-primary text-center mb-2" style="font-size: 2.5rem;">I spy something that starts with...</h2>
 
-    <div id="congratsOverlay">🎊 Congratulations! 🎊<button onclick="continueGame()">Continue</button></div>
-    <div id="winOverlay">🏆 You Win! 🏆<button onclick="restartGame()">Play Again</button></div>
+            <div class="letter-display" id="letterDisplay">A</div>
+            <div class="timer" id="timer">⏱️ Time: 20s</div>
 
-    <script>
-        const questionBank = {
-            easy: [
-                { instruction: "Arrange the morning routine.", story: ["🌞", "🍳", "🏫"] },
-                { instruction: "Arrange brushing teeth.", story: ["🪥", "💧", "😁"] },
-                { instruction: "Feeding your pet.", story: ["🐶", "🍲", "🐕‍🦺"] }
-            ],
-            medium: [
-                { instruction: "Get ready for school.", story: ["🛁", "👕", "🎒", "🏫"] },
-                { instruction: "Plant a tree.", story: ["🌱", "💧", "🌞", "🌳"] },
-                { instruction: "Prepare for birthday party.", story: ["🎂", "🎈", "🎁", "🥳"] }
-            ],
-            hard: [
-                { instruction: "Go shopping and return home.", story: ["🚲", "🏬", "🛍️", "🍎", "🏠"] },
-                { instruction: "Picnic trip.", story: ["🎒", "🚗", "🥪", "🏞️", "😀"] },
-                { instruction: "Play a football match.", story: ["👟", "⚽", "🥅", "🏆", "🎉"] }
-            ]
+            <div class="feedback" id="feedback"></div>
+            <div class="image-grid" id="imageGrid"></div>
+
+            <div class="text-center">
+                <button class="btn btn-primary" id="nextBtn" style="display: none; margin: 0 auto; font-size: 1.5rem; padding: 16px 48px;" onclick="nextRound()">Next Round ⏭️</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from "../firebase-config.js";
+        import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const imageBank = {
+            A: ["apple.png", "ant.png", "aeroplane.png"],
+            B: ["ball.png", "bat.png", "banana.png"],
+            C: ["cat.png", "car.png", "cup.png"],
+            D: ["dog.png", "donkey.png", "dolphin.png"],
+            E: ["elephant.png", "eagle.png", "egg.png"],
+            F: ["fan.png", "fish.png", "frog.png"],
+            G: ["grapes.png", "goat.png", "girafee.png"],
+            H: ["hat.png", "hen.png", "horse.png"],
+            I: ["igloo.png", "icecream.png", "ice.png"],
+            J: ["jeans.png", "jeep.png", "jug.png"],
+            K: ["kiwi.png", "key.png", "kettle.png"],
+            L: ["lamb.png", "lion.png", "lotus.png"],
+            M: ["mango.png", "monkey.png", "mushroom.png"],
+            N: ["nurse.png", "nest.png", "nails.png"],
+            O: ["onion.png", "orange.png", "ostrich.png"],
+            P: ["pencil.png", "penguin.png", "pumpkin.png"],
+            Q: ["queen.png", "queue.png", "ques_mark.png"],
+            R: ["rabbit.png", "radio.png", "rainbow.png"],
+            S: ["shoe.png", "ship.png", "sheep.png"],
+            T: ["tiger.png", "tomato.png", "turtle.png"],
+            U: ["unicorn.png", "umbrella.png", "up.png"],
+            V: ["vase.png", "violin.png", "vowels.png"],
+            W: ["wheel.png", "watermelon.png", "watch.png"],
+            X: ["xerox.png", "xmase.png", "xylophone.png"],
+            Y: ["yoyo.png", "yak.png", "yarn.png"],
+            Z: ["zebra.png", "zipper.png", "zero.png"]
         };
 
-        let currentLevel = "easy", currentQuestionIndex = 0, questionsAnswered = 0;
+        let currentLetter = "";
+        let timeLeft = 20;
+        let interval;
+        let roundStart;
+        let isGameOver = false;
 
-        function loadQuestion() {
-            const q = questionBank[currentLevel][currentQuestionIndex];
-            document.getElementById("instruction").innerText = `${currentLevel.toUpperCase()} Level: ${q.instruction}`;
-            const cardsContainer = document.getElementById("cards");
-            const dropzonesContainer = document.getElementById("dropzones");
+        function startTimer() {
+            timeLeft = 20;
+            roundStart = Date.now();
+            updateTimerDisplay();
+
+            interval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    endRound(false);
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById("timer").innerText = `⏱️ Time: ${timeLeft}s`;
+        }
+
+        function getCorrectImage(letter) {
+            const imgs = imageBank[letter];
+            return `../assests/images/${letter}/${imgs[Math.floor(Math.random() * imgs.length)]}`;
+        }
+
+        function getWrongImages(letter) {
+            const otherLetters = Object.keys(imageBank).filter(l => l !== letter);
+            let arr = [];
+            while (arr.length < 3) {
+                const l = otherLetters[Math.floor(Math.random() * otherLetters.length)];
+                const img = imageBank[l][Math.floor(Math.random() * imageBank[l].length)];
+                const path = `../assests/images/${l}/${img}`;
+                if (!arr.includes(path)) arr.push(path);
+            }
+            return arr;
+        }
+
+        function shuffle(arr) {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+
+        function renderRound() {
+            isGameOver = false;
+            const grid = document.getElementById("imageGrid");
+            const letterEl = document.getElementById("letterDisplay");
             const feedback = document.getElementById("feedback");
-            cardsContainer.innerHTML = ""; dropzonesContainer.innerHTML = ""; feedback.innerText = "";
-            const shuffled = [...q.story].map((val, i) => ({ val, order: i + 1 })).sort(() => Math.random() - 0.5);
-            shuffled.forEach(item => {
-                const card = document.createElement("div"); card.className = "card"; card.innerText = item.val; card.dataset.order = item.order; card.draggable = true;
-                cardsContainer.appendChild(card);
+            const nextBtn = document.getElementById("nextBtn");
+
+            feedback.innerText = "";
+            grid.innerHTML = "";
+            nextBtn.style.display = "none";
+
+            currentLetter = Object.keys(imageBank)[Math.floor(Math.random() * 26)];
+            letterEl.innerText = currentLetter;
+
+            const correctSrc = getCorrectImage(currentLetter);
+            const images = shuffle([correctSrc, ...getWrongImages(currentLetter)]);
+
+            images.forEach(src => {
+                const card = document.createElement("div");
+                card.className = "image-card";
+                const img = document.createElement("img");
+                img.src = src;
+
+                card.onclick = () => {
+                    if (isGameOver) return;
+                    clearInterval(interval);
+                    const isCorrect = src === correctSrc;
+                    card.classList.add(isCorrect ? "correct" : "wrong");
+                    endRound(isCorrect);
+                };
+
+                card.appendChild(img);
+                grid.appendChild(card);
             });
-            for (let i = 0; i < q.story.length; i++) { const zone = document.createElement("div"); zone.className = "dropzone"; dropzonesContainer.appendChild(zone); }
-            enableDragAndDrop();
+
+            startTimer();
         }
 
-        function continueGame() { document.getElementById('congratsOverlay').style.display = 'none'; loadQuestion(); }
-        function restartGame() { document.getElementById('winOverlay').style.display = 'none'; currentLevel = "easy"; currentQuestionIndex = 0; questionsAnswered = 0; loadQuestion(); }
+        async function endRound(correct) {
+            isGameOver = true;
+            const feedback = document.getElementById("feedback");
+            const nextBtn = document.getElementById("nextBtn");
 
-        function nextQuestion() {
-            currentQuestionIndex++; questionsAnswered++;
-            const levelQuestions = questionBank[currentLevel];
-            if (currentQuestionIndex >= levelQuestions.length) {
-                if (currentLevel === "easy") currentLevel = "medium";
-                else if (currentLevel === "medium") currentLevel = "hard";
-                else { document.getElementById('winOverlay').style.display = 'flex'; return; }
-                currentQuestionIndex = 0;
-            }
-            if (questionsAnswered % 3 === 0) { document.getElementById('congratsOverlay').style.display = 'flex'; return; }
-            loadQuestion();
-        }
+            feedback.innerText = correct ? "🎉 Correct! Great job!" : "❌ Oops! Try next one.";
+            feedback.style.color = correct ? "var(--success)" : "var(--danger)";
+            nextBtn.style.display = "block";
 
-        function enableDragAndDrop() {
-            const cardsContainer = document.getElementById('cards');
-            const cards = document.querySelectorAll('.card');
-            const dropzones = document.querySelectorAll('.dropzone');
-            cards.forEach(card => {
-                card.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', null); e.dataTransfer.setDragImage(card, 60, 60); card.classList.add('dragging'); });
-                card.addEventListener('dragend', e => { card.classList.remove('dragging'); });
-            });
-            dropzones.forEach(zone => {
-                zone.addEventListener('dragover', e => e.preventDefault());
-                zone.addEventListener('drop', e => {
-                    e.preventDefault(); const draggingCard = document.querySelector('.dragging'); if (!draggingCard) return;
-                    if (zone.children.length > 0) { const oldCard = zone.children[0]; cardsContainer.appendChild(oldCard); }
-                    zone.innerHTML = ""; zone.appendChild(draggingCard); zone.classList.add("filled");
+            const user = auth.currentUser;
+            if (!user) return;
+
+            try {
+                await updateDoc(doc(db, "users", user.uid), {
+                    "totalPoints": increment(correct ? 10 : 0),
+                    "gamesPlayed": increment(1)
                 });
-            });
-        }
-
-        function checkOrder() {
-            const dropzones = document.querySelectorAll('.dropzone'); let correct = true;
-            dropzones.forEach((zone, index) => { if (zone.children.length === 0 || zone.children[0].dataset.order != index + 1) correct = false; });
-            const feedback = document.getElementById('feedback');
-            if (correct) {
-                feedback.innerText = "🎉 Correct! Well done!";
-                feedback.style.color = "green";
-                // Save stats
-                if (window.saveGameStats) {
-                    const pts = currentLevel === "easy" ? 20 : currentLevel === "medium" ? 40 : 60;
-                    window.saveGameStats(100, pts);
-                }
-            }
-            else { feedback.innerText = "❌ Oops! Resetting..."; feedback.style.color = "red"; setTimeout(loadQuestion, 2000); }
-        }
-
-        function showHint() {
-            const dropzones = document.querySelectorAll('.dropzone');
-            const cards = document.querySelectorAll('.card');
-            for (let i = 0; i < dropzones.length; i++) {
-                const zone = dropzones[i];
-                if (zone.children.length === 0 || zone.children[0].dataset.order != i + 1) {
-                    const correctCard = [...cards].find(c => c.dataset.order == i + 1); if (!correctCard) return;
-                    correctCard.classList.add("hintGlow"); zone.classList.add("hintGlow");
-                    for (let j = 0; j < 5; j++) {
-                        const sparkle = document.createElement("div"); sparkle.className = "sparkle"; sparkle.innerText = "✨";
-                        sparkle.style.left = (zone.getBoundingClientRect().left + Math.random() * 100) + "px";
-                        sparkle.style.top = (zone.getBoundingClientRect().top + Math.random() * 100) + "px";
-                        sparkle.style.position = "fixed"; document.body.appendChild(sparkle);
-                        setTimeout(() => sparkle.remove(), 1000);
-                    }
-                    setTimeout(() => { correctCard.classList.remove("hintGlow"); zone.classList.remove("hintGlow"); }, 2000);
-                    break;
-                }
+            } catch (err) {
+                console.error("Firebase update failed:", err);
             }
         }
 
-        loadQuestion();
+        window.nextRound = renderRound;
+        renderRound();
     </script>
 </body>
-
 </html>

@@ -1,401 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LexiLearn — Screening Test</title>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Comic Neue', sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        .star {
-            position: fixed;
-            pointer-events: none;
-            animation: twinkle 3s infinite;
-            opacity: 0.6;
-            z-index: 0;
-        }
-
-        @keyframes twinkle {
-
-            0%,
-            100% {
-                opacity: 0.2;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.4);
-            }
-        }
-
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 700px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin: 30px 0 30px;
-        }
-
-        .header h1 {
-            font-size: 2.8em;
-            color: #512da8;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            font-size: 1.25em;
-            color: #455a64;
-            font-weight: 700;
-        }
-
-        /* Progress bar */
         .progress-wrap {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 30px;
-            height: 22px;
+            background: var(--border-color);
+            border-radius: var(--radius-full);
+            height: 12px;
             margin-bottom: 8px;
             overflow: hidden;
-            border: 2px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
         }
-
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #ff4081, #7c4dff, #00bcd4);
-            border-radius: 30px;
+            background: var(--primary);
+            border-radius: var(--radius-full);
             transition: width 0.6s ease;
         }
-
         .progress-label {
             text-align: right;
-            font-size: 1em;
-            color: #512da8;
-            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
             margin-bottom: 24px;
         }
 
-        /* Day display */
-        .day-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #ff4081, #7c4dff);
-            border-radius: 20px;
-            padding: 8px 24px;
-            font-size: 1.1em;
-            font-weight: 700;
-            color: white;
-            box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
-            margin-bottom: 20px;
-        }
-
-        /* Question card */
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 3px solid #ffffff;
-            border-radius: 32px;
-            padding: 36px 32px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-
         .question-num {
-            font-size: 1em;
-            color: #7c4dff;
-            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 12px;
         }
-
         .question-text {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #311b92;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
             margin-bottom: 30px;
-            line-height: 1.4;
         }
 
-        /* Options */
         .options {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
         }
-
         .opt-btn {
-            padding: 22px 12px;
-            border: 3px solid #e1bee7;
-            border-radius: 20px;
-            background: #ffffff;
-            color: #512da8;
-            font-family: 'Comic Neue', sans-serif;
-            font-size: 1.4em;
-            font-weight: 700;
+            padding: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--surface-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
-
-        .opt-btn:hover {
-            background: #f3e5f5;
-            transform: translateY(-3px);
-            border-color: #7c4dff;
-            box-shadow: 0 8px 20px rgba(124, 77, 255, 0.2);
+        .opt-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
         }
-
         .opt-btn.correct {
-            background: #c8e6c9 !important;
-            border-color: #4caf50 !important;
-            color: #2e7d32 !important;
+            background: rgba(0, 184, 148, 0.1);
+            border-color: var(--success);
+            color: var(--success);
         }
-
         .opt-btn.wrong {
-            background: #ffcdd2 !important;
-            border-color: #f44336 !important;
-            color: #c62828 !important;
+            background: rgba(255, 118, 117, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
-        .opt-btn:disabled {
-            cursor: default;
-        }
+        /* Screens */
+        #dayComplete, #allDoneScreen, #alreadyDoneToday { display: none; }
+        .show-flex { display: flex !important; flex-direction: column; align-items: center; text-align: center; }
 
-        /* Day complete screen */
-        .day-complete {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .day-complete.show {
-            display: flex;
-        }
-
-        .day-complete .emoji {
-            font-size: 5em;
-            margin-bottom: 16px;
-        }
-
-        .day-complete h2 {
-            font-size: 2em;
-            color: #ffff99;
-            text-shadow: 0 0 20px gold;
-            margin-bottom: 12px;
-        }
-
-        .day-complete p {
-            font-size: 1.1em;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 28px;
-        }
-
-        .next-btn {
-            padding: 16px 40px;
-            background: linear-gradient(135deg, #ff66cc, #9933ff);
-            border: none;
-            border-radius: 20px;
-            color: #fff;
-            font-family: 'Comic Neue', sans-serif;
-            font-size: 1.2em;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(153, 0, 255, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .next-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(153, 0, 255, 0.5);
-        }
-
-        /* Completed all 7 days */
-        #allDoneScreen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        #allDoneScreen.show {
-            display: flex;
-        }
-
-        /* Week dots */
         .week-dots {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 28px;
+            gap: 12px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
-
         .week-dot {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85em;
-            font-weight: 700;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            width: 40px; height: 40px;
+            border-radius: var(--radius-full);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; font-weight: 800;
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
         }
-
         .week-dot.done {
-            background: linear-gradient(135deg, #00cc66, #00ff99);
-            border-color: #00ff99;
+            background: var(--success); border-color: var(--success); color: white;
         }
-
         .week-dot.today {
-            background: linear-gradient(135deg, #ff66cc, #9933ff);
-            border-color: #ff99ff;
-            animation: pulse 1.5s infinite;
-        }
-
-        .week-dot.future {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(153, 0, 255, 0.5);
-            }
-
-            50% {
-                box-shadow: 0 0 0 10px rgba(153, 0, 255, 0);
-            }
-        }
-
-        /* Already done today */
-        #alreadyDoneToday {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        #alreadyDoneToday.show {
-            display: flex;
-        }
-
-        @media (max-width: 500px) {
-            .options {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                padding: 24px 18px;
-            }
+            border-color: var(--primary); color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Stars -->
-    <div class="star" style="top:5%;left:8%;font-size:22px;">✨</div>
-    <div class="star" style="top:12%;right:10%;font-size:18px;animation-delay:0.7s;">⭐</div>
-    <div class="star" style="top:60%;left:4%;font-size:20px;animation-delay:1.2s;">✦</div>
-    <div class="star" style="top:75%;right:6%;font-size:16px;animation-delay:1.8s;">💫</div>
-    <div class="star" style="top:40%;right:3%;font-size:24px;animation-delay:0.4s;">🌟</div>
-    <div class="star" style="top:88%;left:20%;font-size:18px;animation-delay:2.2s;">✨</div>
-
-    <div class="container">
-        <div class="header">
-            <h1>🧠 Brain Screening</h1>
-            <p>7-day journey to understand how you learn best!</p>
+    <div class="app-container" style="max-width: 800px; padding-top: 40px;">
+        <div class="mb-4">
+            <h1 class="text-primary mb-1">🧠 Brain Screening</h1>
+            <p class="text-muted text-lg">7-day journey to understand how you learn best!</p>
         </div>
 
-        <!-- Week progress dots -->
         <div class="week-dots" id="weekDots"></div>
 
-        <!-- Progress bar -->
         <div class="progress-wrap">
             <div class="progress-bar" id="progressBar" style="width:0%"></div>
         </div>
         <div class="progress-label" id="progressLabel">Day 0 of 7</div>
 
-        <!-- Main question area -->
-        <div id="mainArea">
-            <div class="card">
-                <div class="question-num" id="questionNum">Question 1 of 5</div>
-                <div class="question-text" id="questionText">Loading...</div>
-                <div class="options" id="optionsGrid"></div>
-            </div>
+        <div id="mainArea" class="surface">
+            <div class="question-num" id="questionNum">Question 1 of 5</div>
+            <div class="question-text" id="questionText">Loading...</div>
+            <div class="options" id="optionsGrid"></div>
         </div>
 
-        <!-- Day complete screen (inside card area) -->
-        <div class="card day-complete" id="dayComplete">
-            <div class="emoji" id="dayEmoji">🌟</div>
-            <h2 id="dayCompleteTitle">Day 1 Done!</h2>
-            <p id="dayCompleteMsg">Great job! Come back tomorrow for Day 2.</p>
-            <button class="next-btn" id="dayContinueBtn">🏠 Go to Home</button>
+        <div class="surface" id="dayComplete">
+            <div style="font-size: 4rem; margin-bottom: 16px;">🌟</div>
+            <h2 class="text-primary mb-2" id="dayCompleteTitle">Day 1 Done!</h2>
+            <p class="text-muted mb-4" id="dayCompleteMsg">Great job! Come back tomorrow for Day 2.</p>
+            <button class="btn btn-primary" id="dayContinueBtn">🏠 Go to Home</button>
         </div>
 
-        <!-- Already done today -->
-        <div class="card" id="alreadyDoneToday">
-            <div style="text-align:center;padding:20px 0;">
-                <div style="font-size:4em;margin-bottom:16px;">⏰</div>
-                <h2 style="font-size:1.8em;color:#ffff99;text-shadow:0 0 20px gold;margin-bottom:12px;">Come Back
-                    Tomorrow!</h2>
-                <p style="font-size:1.1em;color:rgba(255,255,255,0.85);margin-bottom:20px;">You've already completed
-                    today's screening. See you again tomorrow! 🌟</p>
-                <button class="next-btn" onclick="window.location.href='index.html'">🏠 Go to Home</button>
-            </div>
+        <div class="surface" id="alreadyDoneToday">
+            <div style="font-size: 4rem; margin-bottom: 16px;">⏰</div>
+            <h2 class="text-primary mb-2">Come Back Tomorrow!</h2>
+            <p class="text-muted mb-4">You've already completed today's screening. See you again tomorrow! 🌟</p>
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">🏠 Go to Home</button>
         </div>
 
-        <!-- All 7 days done screen -->
-        <div class="card" id="allDoneScreen">
-            <div style="text-align:center;padding:20px 0;">
-                <div style="font-size:4em;margin-bottom:16px;animation:pulse 2s infinite;">🎉</div>
-                <h2 style="font-size:2em;color:#ffff99;text-shadow:0 0 20px gold;margin-bottom:12px;">Screening
-                    Complete!</h2>
-                <p id="screeningResult" style="font-size:1.1em;color:rgba(255,255,255,0.9);margin-bottom:28px;"></p>
-                <button class="next-btn" onclick="window.location.href='index.html'">🎮 Let's Play!</button>
-            </div>
+        <div class="surface" id="allDoneScreen">
+            <div style="font-size: 4rem; margin-bottom: 16px;">🎉</div>
+            <h2 class="text-primary mb-2">Screening Complete!</h2>
+            <p class="text-muted mb-4" id="screeningResult"></p>
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">🎮 Let's Play!</button>
         </div>
     </div>
 
     <script type="module">
-        // ✅ Import from shared config — NO API keys here
         import { auth, db, doc, getDoc, setDoc } from "./firebase-config.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // ── Question bank (5 questions per day, 7 days) ─────────────────────────────
         const questionBank = [
-            // Day 1 — Visual Discrimination (Reversals)
             [
                 { q: "Which letter is different?", opts: ["b", "b", "d", "b"], correct: 2 },
                 { q: "Which letter is the same as 'p'?", opts: ["q", "b", "p", "d"], correct: 2 },
@@ -403,7 +158,6 @@
                 { q: "Which word looks correctly spelled?", opts: ["dog", "bog", "pog", "qog"], correct: 0 },
                 { q: "Which letter is the odd one out?", opts: ["s", "s", "z", "s"], correct: 2 }
             ],
-            // Day 2 — Phonological Awareness (Sounds)
             [
                 { q: "Which word rhymes with 'CAT'?", opts: ["Dog", "Hat", "Sun", "Cup"], correct: 1 },
                 { q: "What is the first sound in 'PIG'?", opts: ["B", "P", "T", "D"], correct: 1 },
@@ -411,7 +165,6 @@
                 { q: "How many sounds in the word 'SUN'?", opts: ["1", "2", "3", "4"], correct: 2 },
                 { q: "Which word ends with the 'G' sound?", opts: ["Bat", "Log", "Run", "Stop"], correct: 1 }
             ],
-            // Day 3 — Rapid Naming (Shapes & Colors)
             [
                 { q: "What color is a banana?", opts: ["Red", "Blue", "Yellow", "Green"], correct: 2 },
                 { q: "Which shape has 3 sides?", opts: ["Square", "Circle", "Triangle", "Star"], correct: 2 },
@@ -419,7 +172,6 @@
                 { q: "What do you use to see?", opts: ["Ears", "Eyes", "Nose", "Hands"], correct: 1 },
                 { q: "Which one is a fruit?", opts: ["Car", "Orange", "Shoe", "Book"], correct: 1 }
             ],
-            // Day 4 — Working Memory (Sequencing)
             [
                 { q: "What comes after 1, 2, 3?", opts: ["5", "6", "4", "7"], correct: 2 },
                 { q: "Which letter comes next: A, B, C, __?", opts: ["E", "D", "F", "G"], correct: 1 },
@@ -427,7 +179,6 @@
                 { q: "What was at the start: Apple, Ball, Cat?", opts: ["Ball", "Cat", "Apple", "Dog"], correct: 2 },
                 { q: "Which number is missing: 5, 6, _, 8?", opts: ["4", "7", "9", "10"], correct: 1 }
             ],
-            // Day 5 — Orthographic Processing (Word Reversals)
             [
                 { q: "Which word is 'WAS' backwards?", opts: ["SAW", "LAW", "RAW", "WAR"], correct: 0 },
                 { q: "Is 'NO' different from 'ON'?", opts: ["Yes", "No", "Maybe", "Same"], correct: 0 },
@@ -435,7 +186,6 @@
                 { q: "Which word has 'b' in it?", opts: ["Dad", "Bed", "Pen", "Cup"], correct: 1 },
                 { q: "Find the word with 'p':", opts: ["Bag", "Hat", "Pot", "Sun"], correct: 2 }
             ],
-            // Day 6 — Syllable Segmenting
             [
                 { q: "How many claps in 'APPLE'?", opts: ["1", "2", "3", "4"], correct: 1 },
                 { q: "How many claps in 'ELEPHANT'?", opts: ["2", "3", "4", "5"], correct: 1 },
@@ -443,7 +193,6 @@
                 { q: "Which word is longer?", opts: ["Ant", "Butterfly", "Bee", "Fly"], correct: 1 },
                 { q: "Break it apart: COW-BOY makes?", opts: ["Cow", "Boy", "Cowboy", "Farm"], correct: 2 }
             ],
-            // Day 7 — Final Evaluation
             [
                 { q: "Which letter is the mirror of 'b'?", opts: ["p", "q", "d", "n"], correct: 2 },
                 { q: "Which letter is 'u' upside down?", opts: ["n", "m", "w", "v"], correct: 0 },
@@ -453,111 +202,68 @@
             ]
         ];
 
-        // ── State ─────────────────────────────────────────────────────────────────────
         let currentUser = null;
-        let screeningDay = 0; // 0-based: day 0 = first test (Day 1)
-        let qIndex = 0;
-        let wrongCount = 0;
-        let answered = false;
-        let todayDone = false;
+        let screeningDay = 0; let qIndex = 0; let wrongCount = 0; let answered = false;
 
-        // ── DOM refs ──────────────────────────────────────────────────────────────────
         const mainArea = document.getElementById("mainArea");
-        const questionNum = document.getElementById("questionNum");
-        const questionText = document.getElementById("questionText");
         const optionsGrid = document.getElementById("optionsGrid");
-        const progressBar = document.getElementById("progressBar");
-        const progressLabel = document.getElementById("progressLabel");
-        const dayComplete = document.getElementById("dayComplete");
-        const allDoneScreen = document.getElementById("allDoneScreen");
-        const alreadyDone = document.getElementById("alreadyDoneToday");
-        const weekDotsEl = document.getElementById("weekDots");
 
         function buildWeekDots(doneCount, todayIdx) {
-            weekDotsEl.innerHTML = "";
+            const w = document.getElementById("weekDots"); w.innerHTML = "";
             for (let i = 0; i < 7; i++) {
                 const d = document.createElement("div");
-                if (i < doneCount) d.className = "week-dot done", d.textContent = "✓";
-                else if (i === todayIdx) d.className = "week-dot today", d.textContent = i + 1;
-                else d.className = "week-dot future", d.textContent = i + 1;
-                weekDotsEl.appendChild(d);
+                if (i < doneCount) { d.className = "week-dot done"; d.textContent = "✓"; }
+                else if (i === todayIdx) { d.className = "week-dot today"; d.textContent = i + 1; }
+                else { d.className = "week-dot"; d.textContent = i + 1; }
+                w.appendChild(d);
             }
         }
 
         function updateProgress(dayNum) {
-            const pct = (dayNum / 7) * 100;
-            progressBar.style.width = pct + "%";
-            progressLabel.textContent = `Day ${dayNum} of 7 complete`;
+            document.getElementById("progressBar").style.width = ((dayNum / 7) * 100) + "%";
+            document.getElementById("progressLabel").textContent = `Day ${dayNum} of 7 complete`;
         }
 
         function loadQuestion() {
             const questions = questionBank[screeningDay];
             const q = questions[qIndex];
-            questionNum.textContent = `Question ${qIndex + 1} of ${questions.length}`;
-            questionText.textContent = q.q;
+            document.getElementById("questionNum").textContent = `Question ${qIndex + 1} of ${questions.length}`;
+            document.getElementById("questionText").textContent = q.q;
 
             optionsGrid.innerHTML = "";
             q.opts.forEach((opt, i) => {
-                const btn = document.createElement("button");
-                btn.className = "opt-btn";
-                btn.textContent = opt;
+                const btn = document.createElement("button"); btn.className = "opt-btn"; btn.textContent = opt;
                 btn.addEventListener("click", () => handleAnswer(i, q.correct, btn));
                 optionsGrid.appendChild(btn);
             });
-
             answered = false;
         }
 
         function handleAnswer(chosen, correct, clickedBtn) {
-            if (answered) return;
-            answered = true;
-
+            if (answered) return; answered = true;
             const allBtns = optionsGrid.querySelectorAll(".opt-btn");
             allBtns.forEach(b => b.disabled = true);
 
-            if (chosen === correct) {
-                clickedBtn.classList.add("correct");
-            } else {
-                clickedBtn.classList.add("wrong");
-                allBtns[correct].classList.add("correct");
-                wrongCount++;
-            }
+            if (chosen === correct) clickedBtn.classList.add("correct");
+            else { clickedBtn.classList.add("wrong"); allBtns[correct].classList.add("correct"); wrongCount++; }
 
             setTimeout(() => {
                 qIndex++;
-                if (qIndex < questionBank[screeningDay].length) {
-                    loadQuestion();
-                } else {
-                    finishDay();
-                }
+                if (qIndex < questionBank[screeningDay].length) loadQuestion();
+                else finishDay();
             }, 900);
         }
 
         async function finishDay() {
             const dayNum = screeningDay + 1;
-            const isLastDay = dayNum === 7;
+            const updates = { screeningDay: dayNum, [`screeningWrong_day${dayNum}`]: wrongCount, [`screeningDone_day${dayNum}`]: new Date().toDateString() };
 
-            // Mark this day complete in Firestore
-            const updates = {
-                screeningDay: screeningDay + 1,
-                [`screeningWrong_day${dayNum}`]: wrongCount,
-                [`screeningDone_day${dayNum}`]: new Date().toDateString()
-            };
-
-            if (isLastDay) {
-                // Tally total wrong answers
+            if (dayNum === 7) {
                 const snap = await getDoc(doc(db, "users", currentUser.uid));
                 let totalWrong = wrongCount;
-                if (snap.exists()) {
-                    const d = snap.data();
-                    for (let i = 1; i < 7; i++) {
-                        totalWrong += (d[`screeningWrong_day${i}`] || 0);
-                    }
-                }
-                const hasDyslexia = totalWrong >= 12; // threshold: ≥12 wrong out of 35
-                updates.screeningComplete = true;
-                updates.hasDyslexia = hasDyslexia;
-                // Use setDoc(merge) so first-time/previously-deleted user docs don't crash the flow.
+                if (snap.exists()) { const d = snap.data(); for (let i = 1; i < 7; i++) totalWrong += (d[`screeningWrong_day${i}`] || 0); }
+                const hasDyslexia = totalWrong >= 12;
+                updates.screeningComplete = true; updates.hasDyslexia = hasDyslexia;
                 await setDoc(doc(db, "users", currentUser.uid), updates, { merge: true });
                 showAllDone(hasDyslexia);
             } else {
@@ -568,75 +274,41 @@
 
         function showDayComplete(dayNum) {
             mainArea.style.display = "none";
-            dayComplete.classList.add("show");
-            document.getElementById("dayCompleteTitle").textContent =
-                dayNum === 7 ? "🎉 All 7 Days Done!" : `🌟 Day ${dayNum} Complete!`;
-            document.getElementById("dayCompleteMsg").textContent =
-                dayNum < 7
-                    ? `Fantastic! Come back tomorrow for Day ${dayNum + 1} of your screening.`
-                    : `You finished all 7 days! Amazing work!`;
-            buildWeekDots(dayNum, dayNum);
-            updateProgress(dayNum);
+            document.getElementById("dayComplete").classList.add("show-flex");
+            document.getElementById("dayCompleteTitle").textContent = dayNum === 7 ? "🎉 All 7 Days Done!" : `🌟 Day ${dayNum} Complete!`;
+            document.getElementById("dayCompleteMsg").textContent = dayNum < 7 ? `Fantastic! Come back tomorrow for Day ${dayNum + 1}.` : `You finished all 7 days!`;
+            buildWeekDots(dayNum, dayNum); updateProgress(dayNum);
             document.getElementById("dayContinueBtn").onclick = () => { window.location.href = "index.html"; };
         }
 
         function showAllDone(hasDyslexia) {
             mainArea.style.display = "none";
-            allDoneScreen.classList.add("show");
-            buildWeekDots(7, 7);
-            updateProgress(7);
+            document.getElementById("allDoneScreen").classList.add("show-flex");
+            buildWeekDots(7, 7); updateProgress(7);
             document.getElementById("screeningResult").textContent = hasDyslexia
                 ? "We've tailored some special games and exercises to help you shine! 🌟 Ready to play?"
                 : "Your learning profile looks great! Let's explore all the fun games. 🎮";
         }
 
-        // ── Auth guard ────────────────────────────────────────────────────────────────
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = "login.html"; return; }
             currentUser = user;
-
             const snap = await getDoc(doc(db, "users", user.uid));
-            if (snap.exists() && snap.data().screeningComplete) {
-                window.location.href = "index.html"; return;
-            }
-
+            if (snap.exists() && snap.data().screeningComplete) { window.location.href = "index.html"; return; }
             const data = snap.exists() ? snap.data() : {};
             screeningDay = data.screeningDay || 0;
-            const lastDoneDay = data[`screeningDone_day${screeningDay}`];
-            const todayStr = new Date().toDateString();
-
-            updateProgress(screeningDay);
-            buildWeekDots(screeningDay, screeningDay);
-
             if (screeningDay >= 7) { showAllDone(data.hasDyslexia); return; }
+            
+            updateProgress(screeningDay); buildWeekDots(screeningDay, screeningDay);
 
-            // Check if user already completed today's test
-            if (lastDoneDay === todayStr) {
+            if (data[`screeningDone_day${screeningDay}`] === new Date().toDateString()) {
                 mainArea.style.display = "none";
-                alreadyDone.classList.add("show");
-                buildWeekDots(screeningDay, screeningDay);
+                document.getElementById("alreadyDoneToday").classList.add("show-flex");
                 return;
             }
 
-            wrongCount = 0;
-            qIndex = 0;
-            loadQuestion();
+            wrongCount = 0; qIndex = 0; loadQuestion();
         });
     </script>
-
-    <script>
-        const syms = ["✦", "✨", "⭐", "💫", "🌟"];
-        for (let i = 0; i < 14; i++) {
-            const s = document.createElement("div");
-            s.className = "star";
-            s.textContent = syms[Math.floor(Math.random() * syms.length)];
-            s.style.top = Math.random() * 100 + "%";
-            s.style.left = Math.random() * 100 + "%";
-            s.style.fontSize = (Math.random() * 10 + 14) + "px";
-            s.style.animationDelay = Math.random() * 3 + "s";
-            document.body.appendChild(s);
-        }
-    </script>
 </body>
-
 </html>

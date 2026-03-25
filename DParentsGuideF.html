@@ -1,224 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Parents Guide</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Comic Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
-      color: #333;
-      padding: 80px 20px 40px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    .star {
-      position: fixed;
-      pointer-events: none;
-      animation: twinkle 3s infinite;
-      opacity: 0.6;
-      z-index: 0;
-    }
-
-    @keyframes twinkle {
-
-      0%,
-      100% {
-        opacity: 0.2;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.4)
-      }
-    }
-
-    .back-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.25s;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateX(-3px);
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-    }
-
-    h1 {
-      font-size: 2.8em;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 10px;
-      color: #311b92;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-    }
-
-    .sub {
-      text-align: center;
-      color: #455a64;
-      margin-bottom: 36px;
-      font-size: 1.15em;
-      font-weight: 700;
-    }
-
-    /* Section tabs */
-    .tabs {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 32px;
-    }
-
+    .tabs { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
     .tab {
-      padding: 12px 26px;
-      border: 3px solid #ffffff;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.7);
-      color: #5c6bc0;
-      cursor: pointer;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1.1em;
-      font-weight: 800;
-      transition: all 0.25s;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      padding: 10px 20px; border: 2px solid var(--border-color); border-radius: var(--radius-full);
+      background: var(--surface-color); color: var(--text-main); font-weight: 700; cursor: pointer; transition: all 0.2s;
     }
-
-    .tab:hover,
-    .tab.active {
-      background: #7c4dff;
-      border-color: #7c4dff;
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(124, 77, 255, 0.3);
-      transform: translateY(-2px);
-    }
-
-    .section-panel {
-      display: none;
-    }
-
-    .section-panel.active {
-      display: block;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(10px);
-      border: 3px solid #ffffff;
-      border-radius: 28px;
-      padding: 32px;
-      margin-bottom: 24px;
-      transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .card h2 {
-      font-size: 1.4em;
-      font-weight: 700;
-      margin-bottom: 18px;
-      color: #5c6bc0;
-    }
-
-    .chart-wrap {
-      height: 250px;
-    }
-
-    .tip-list {
-      list-style: none;
-      padding: 0;
-    }
-
+    .tab:hover, .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+    .chart-wrap { height: 250px; }
+    
+    .tip-list { list-style: none; padding: 0; }
     .tip-list li {
-      padding: 14px 0;
-      border-bottom: 1.5px solid rgba(0, 0, 0, 0.05);
-      color: #455a64;
-      font-size: 1.1em;
-      font-weight: 700;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600;
+      display: flex; gap: 12px; align-items: flex-start;
     }
-
-    .tip-list li:last-child {
-      border-bottom: none;
-    }
-
-    .tip-list li::before {
-      content: "✅";
-      flex-shrink: 0;
-    }
-
-    .badge-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
-
-    .badge-item {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      font-size: 0.95em;
-    }
-
-    .badge-item big {
-      font-size: 2em;
-      display: block;
-      margin-bottom: 8px;
-    }
+    .tip-list li:last-child { border-bottom: none; }
+    .tip-list li::before { content: "✅"; flex-shrink: 0; }
+    
+    .badge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .badge-item { background: var(--bg-color); border-radius: var(--radius-md); padding: 16px; text-align: center; }
+    .badge-item big { font-size: 2rem; display: block; margin-bottom: 8px; }
   </style>
 </head>
 
 <body>
-  <div class="star" style="top:5%;left:6%;font-size:22px;">✨</div>
-  <div class="star" style="top:18%;right:8%;font-size:18px;animation-delay:0.5s;">⭐</div>
-  <div class="star" style="top:65%;left:3%;font-size:20px;animation-delay:1.2s;">✦</div>
-  <div class="star" style="top:82%;right:5%;font-size:16px;animation-delay:1.8s;">💫</div>
+  <div class="app-container">
+    <header class="app-navbar">
+        <div class="nav-brand">👨‍👩‍👧 Parents Guide</div>
+        <div class="nav-actions">
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">⬅ Home</button>
+        </div>
+    </header>
 
-  <button class="back-btn" onclick="window.location.href='Dashboard.html'">⬅ Dashboard</button>
-
-  <div class="container">
-    <h1>👨‍👩‍👧 Parents Guide</h1>
-    <p class="sub">Insights and recommendations to support your child's learning journey 🌟</p>
+    <div class="mb-4">
+      <p class="text-muted text-lg">Insights and recommendations to support your child's learning journey 🌟</p>
+    </div>
 
     <div class="tabs">
       <button class="tab active" onclick="switchTab('performance',this)">📊 Performance</button>
@@ -229,99 +53,104 @@
 
     <!-- Performance -->
     <div class="section-panel active" id="tab-performance">
-      <div class="card">
-        <h2>📈 Weekly Game Performance</h2>
-        <div class="chart-wrap"><canvas id="perfBar"></canvas></div>
-      </div>
-      <div class="card">
-        <h2>🏅 Achievements Unlocked</h2>
-        <div class="badge-grid">
-          <div class="badge-item"><big>🌟</big>First Game Completed</div>
-          <div class="badge-item"><big>🔥</big>3-Day Streak</div>
-          <div class="badge-item"><big>📚</big>Word Master</div>
-          <div class="badge-item"><big>🎯</big>Perfect Round</div>
-          <div class="badge-item"><big>⭐</big>50 Points Club</div>
-          <div class="badge-item"><big>🧠</big>Screening Champion</div>
+      <div class="grid-2">
+        <div class="surface">
+          <h3 class="mb-3 text-primary">📈 Weekly Game Performance</h3>
+          <div class="chart-wrap"><canvas id="perfBar"></canvas></div>
+        </div>
+        <div class="surface">
+          <h3 class="mb-3 text-primary">🏅 Achievements Unlocked</h3>
+          <div class="badge-grid">
+            <div class="badge-item"><big>🌟</big>First Game Completed</div>
+            <div class="badge-item"><big>🔥</big>3-Day Streak</div>
+            <div class="badge-item"><big>📚</big>Word Master</div>
+            <div class="badge-item"><big>🎯</big>Perfect Round</div>
+            <div class="badge-item"><big>⭐</big>50 Points Club</div>
+            <div class="badge-item"><big>🧠</big>Screening Champion</div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Tips -->
     <div class="section-panel" id="tab-tips">
-      <div class="card">
-        <h2>💡 How to Support Your Child</h2>
-        <ul class="tip-list">
-          <li>Set consistent daily practice times — even 15–20 minutes makes a big difference.</li>
-          <li>Celebrate small wins to keep your child motivated and confident.</li>
-          <li>Use multisensory learning — trace letters in sand, use clay shapes, or sing letter sounds.</li>
-          <li>Read aloud together daily to improve phonological awareness.</li>
-          <li>Use dyslexia-friendly fonts (like OpenDyslexic) for reading materials.</li>
-          <li>Avoid timed pressure — dyslexic learners benefit from extra processing time.</li>
-          <li>Speak to your child's teacher about accommodations such as audio books or oral exams.</li>
-          <li>Encourage strength-based activities: art, music, storytelling, and building.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h2>📖 Recommended Books for Parents</h2>
-        <ul class="tip-list">
-          <li>The Dyslexic Advantage — Brock & Fernette Eide</li>
-          <li>Overcoming Dyslexia — Sally Shaywitz</li>
-          <li>Proust and the Squid — Maryanne Wolf</li>
-          <li>Smart Kids with Learning Difficulties — Rich Cooper</li>
-        </ul>
+      <div class="grid-2">
+        <div class="surface">
+          <h3 class="mb-3 text-primary">💡 How to Support Your Child</h3>
+          <ul class="tip-list">
+            <li>Set consistent daily practice times — even 15–20 minutes makes a big difference.</li>
+            <li>Celebrate small wins to keep your child motivated and confident.</li>
+            <li>Use multisensory learning — trace letters in sand, use clay shapes, or sing letter sounds.</li>
+            <li>Read aloud together daily to improve phonological awareness.</li>
+            <li>Avoid timed pressure — learners benefit from extra processing time.</li>
+            <li>Encourage strength-based activities: art, music, storytelling, and building.</li>
+          </ul>
+        </div>
+        <div class="surface">
+          <h3 class="mb-3 text-primary">📖 Recommended Books</h3>
+          <ul class="tip-list">
+            <li>The Dyslexic Advantage — Brock & Fernette Eide</li>
+            <li>Overcoming Dyslexia — Sally Shaywitz</li>
+            <li>Proust and the Squid — Maryanne Wolf</li>
+            <li>Smart Kids with Learning Difficulties — Rich Cooper</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- Nutrition -->
     <div class="section-panel" id="tab-nutrition">
-      <div class="card">
-        <h2>🥗 Brain-Boosting Nutrition</h2>
-        <div class="chart-wrap"><canvas id="nutritionBar"></canvas></div>
-      </div>
-      <div class="card">
-        <h2>🍎 Daily Recommendations</h2>
-        <ul class="tip-list">
-          <li>Include omega-3 rich foods: salmon, walnuts, flaxseeds — great for focus and memory.</li>
-          <li>Ensure adequate iron intake — iron deficiency can affect attention and learning.</li>
-          <li>Limit sugary snacks before study sessions — they cause energy crashes.</li>
-          <li>Stay hydrated — even mild dehydration affects concentration.</li>
-          <li>Blueberries and leafy greens contain antioxidants that support brain health.</li>
-        </ul>
+      <div class="grid-2">
+        <div class="surface">
+          <h3 class="mb-3 text-primary">🥗 Brain-Boosting Nutrition</h3>
+          <div class="chart-wrap"><canvas id="nutritionBar"></canvas></div>
+        </div>
+        <div class="surface">
+          <h3 class="mb-3 text-primary">🍎 Daily Recommendations</h3>
+          <ul class="tip-list">
+            <li>Include omega-3 rich foods: salmon, walnuts, flaxseeds — great for focus and memory.</li>
+            <li>Ensure adequate iron intake — iron deficiency can affect attention and learning.</li>
+            <li>Limit sugary snacks before study sessions — they cause energy crashes.</li>
+            <li>Stay hydrated — even mild dehydration affects concentration.</li>
+            <li>Blueberries and leafy greens contain antioxidants that support brain health.</li>
+          </ul>
+        </div>
       </div>
     </div>
 
     <!-- Activity -->
     <div class="section-panel" id="tab-activity">
-      <div class="card">
-        <h2>🏃 Weekly Activity Log</h2>
-        <div class="chart-wrap"><canvas id="actLine"></canvas></div>
-      </div>
-      <div class="card">
-        <h2>🤸 Recommended Activities</h2>
-        <ul class="tip-list">
-          <li>Cross-body exercises (e.g., touching right hand to left knee) — help with brain hemisphere coordination.
-          </li>
-          <li>Yoga and mindfulness — reduce anxiety often associated with learning differences.</li>
-          <li>Swimming — builds rhythm and coordination beneficial for reading.</li>
-          <li>Juggling — improves visual tracking and focus.</li>
-          <li>Dance and music — strengthen phonological awareness through rhythm.</li>
-        </ul>
+      <div class="grid-2">
+        <div class="surface">
+          <h3 class="mb-3 text-primary">🏃 Weekly Activity Log</h3>
+          <div class="chart-wrap"><canvas id="actLine"></canvas></div>
+        </div>
+        <div class="surface">
+          <h3 class="mb-3 text-primary">🤸 Recommended Activities</h3>
+          <ul class="tip-list">
+            <li>Cross-body exercises (e.g., touching right hand to left knee) — help with brain hemisphere coordination.</li>
+            <li>Yoga and mindfulness — reduce anxiety often associated with learning differences.</li>
+            <li>Swimming — builds rhythm and coordination beneficial for reading.</li>
+            <li>Juggling — improves visual tracking and focus.</li>
+            <li>Dance and music — strengthen phonological awareness through rhythm.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
-    import { auth, db, doc, onSnapshot } from "/firebase-config.js";
+    import { auth, db, doc, onSnapshot } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     let perfBar, nutritionBar, actLine;
-
+    const fontFam = "system-ui, -apple-system, sans-serif";
     const opts = {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: '#37474f', font: { size: 13, family: "'Comic Neue'" } } } },
+      plugins: { legend: { labels: { color: '#2d3436', font: { family: fontFam } } } },
       scales: {
-        x: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' } },
-        y: { ticks: { color: '#546e7a' }, grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
+        x: { ticks: { color: '#636e72', font: { family: fontFam } }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        y: { ticks: { color: '#636e72', font: { family: fontFam } }, grid: { color: 'rgba(0,0,0,0.05)' }, beginAtZero: true }
       }
     };
 
@@ -329,10 +158,10 @@
       perfBar = new Chart(document.getElementById("perfBar"), {
         type: 'bar',
         data: {
-          labels: ['Phonics', 'Letter Maze', 'Vocabulary', 'Story Seq', 'Shadow', 'Letter Seq'],
+          labels: ['Phonics', 'Letter Maze', 'Vocabulary', 'Dominoes', 'Shadow', 'Letter Seq'],
           datasets: [
-            { label: 'Correct', data: [85, 70, 90, 60, 75, 80], backgroundColor: '#26C6DA' },
-            { label: 'Incorrect', data: [15, 30, 10, 40, 25, 20], backgroundColor: '#EC407A' }
+            { label: 'Correct', data: [85, 70, 90, 60, 75, 80], backgroundColor: '#6c5ce7' },
+            { label: 'Incorrect', data: [15, 30, 10, 40, 25, 20], backgroundColor: '#fd79a8' }
           ]
         },
         options: opts
@@ -343,8 +172,8 @@
         data: {
           labels: ['Protein', 'Omega-3', 'Iron', 'Vit B12', 'Zinc', 'Magnesium'],
           datasets: [
-            { label: 'Recommended', data: [100, 100, 100, 100, 100, 100], backgroundColor: 'rgba(0,255,204,0.2)', borderColor: '#00ffcc', borderWidth: 2 },
-            { label: 'Current', data: [80, 60, 70, 85, 55, 75], backgroundColor: '#AB47BC' }
+            { label: 'Recommended', data: [100, 100, 100, 100, 100, 100], backgroundColor: 'rgba(0,184,148,0.2)', borderColor: '#00b894', borderWidth: 2 },
+            { label: 'Current', data: [80, 60, 70, 85, 55, 75], backgroundColor: '#a29bfe' }
           ]
         },
         options: opts
@@ -355,14 +184,8 @@
         data: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           datasets: [
-            {
-              label: 'App Learning (min)', data: [25, 20, 30, 15, 25, 40, 20],
-              borderColor: '#00ffcc', backgroundColor: 'rgba(0,255,204,0.15)', tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#00ffcc'
-            },
-            {
-              label: 'Physical Activity (min)', data: [30, 45, 20, 60, 35, 90, 60],
-              borderColor: '#ff66cc', backgroundColor: 'rgba(255,102,204,0.1)', tension: 0.4, fill: true, pointRadius: 5, pointBackgroundColor: '#ff66cc'
-            }
+            { label: 'App Learning (min)', data: [25, 20, 30, 15, 25, 40, 20], borderColor: '#00b894', backgroundColor: 'rgba(0,184,148,0.1)', fill: true, tension: 0.4 },
+            { label: 'Physical Activity (min)', data: [30, 45, 20, 60, 35, 90, 60], borderColor: '#fd79a8', backgroundColor: 'rgba(253,121,168,0.1)', fill: true, tension: 0.4 }
           ]
         },
         options: opts
@@ -371,50 +194,32 @@
 
     onAuthStateChanged(auth, (user) => {
       if (!user) { window.location.href = "login.html"; return; }
-
       initCharts();
 
       onSnapshot(doc(db, "users", user.uid), (snap) => {
-        if (!snap.exists()) return;
-        const d = snap.data();
-
-        // Update achievements based on real data
+        if (!snap.exists()) return; const d = snap.data();
         const badges = document.querySelectorAll(".badge-item");
-        if (d.gamesPlayed > 0) badges[0].style.opacity = "1"; else badges[0].style.opacity = "0.4";
-        if (d.streakDays >= 3) badges[1].style.opacity = "1"; else badges[1].style.opacity = "0.4";
-        if (d.totalPoints >= 100) badges[2].style.opacity = "1"; else badges[2].style.opacity = "0.4";
-        if (d.accuracy >= 95) badges[3].style.opacity = "1"; else badges[3].style.opacity = "0.4";
-        if (d.totalPoints >= 50) badges[4].style.opacity = "1"; else badges[4].style.opacity = "0.4";
-        if (d.screeningComplete) badges[5].style.opacity = "1"; else badges[5].style.opacity = "0.4";
-
-        // Update charts with real data trends
+        badges[0].style.opacity = d.gamesPlayed > 0 ? "1" : "0.4";
+        badges[1].style.opacity = d.streakDays >= 3 ? "1" : "0.4";
+        badges[2].style.opacity = d.totalPoints >= 100 ? "1" : "0.4";
+        badges[3].style.opacity = d.accuracy >= 95 ? "1" : "0.4";
+        badges[4].style.opacity = d.totalPoints >= 50 ? "1" : "0.4";
+        badges[5].style.opacity = d.screeningComplete ? "1" : "0.4";
+        
         const acc = d.accuracy || 0;
         perfBar.data.datasets[0].data = [acc, acc - 5, acc + 5, acc - 10, acc - 2, acc];
         perfBar.update();
-
         actLine.data.datasets[0].data[6] = Math.min(60, (d.gamesPlayed || 0) * 10);
         actLine.update();
       });
     });
 
-    // Global navigation for tabs
     window.switchTab = (name, btn) => {
       document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
       document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
       document.getElementById("tab-" + name).classList.add("active");
       btn.classList.add("active");
     };
-
-    // Stars
-    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
-    for (let i = 0; i < 10; i++) {
-      const s = document.createElement("div"); s.className = "star";
-      s.textContent = syms[Math.floor(Math.random() * syms.length)];
-      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
-      document.body.appendChild(s);
-    }
   </script>
 </body>
-
 </html>

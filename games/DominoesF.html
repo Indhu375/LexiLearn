@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiLearn — Dominoes</title>
+    <link rel="stylesheet" href="../theme.css">
+    <style>
+        .domino-board {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .operator {
+            font-size: 3rem;
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        .domino-card {
+            width: 100px;
+            height: 140px;
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 1fr;
+            padding: 8px;
+        }
+
+        .pip {
+            width: 14px;
+            height: 14px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 16px;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .options button {
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .options button:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.15);
+        }
+
+        #resultOverlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,0.95);
+            align-items: center; justify-content: center; flex-direction: column;
+            z-index: 1000; text-align: center; padding: 20px;
+        }
+        #resultOverlay.show { display: flex; }
+    </style>
+</head>
+
+<body>
+    <div class="game-layout">
+        <header class="game-header">
+            <h1 class="nav-brand">🁣 Dominoes</h1>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="goBack()">⬅ Back</button>
+                <button class="btn btn-danger" onclick="goHome()">🏁 Finish</button>
+            </div>
+        </header>
+
+        <div class="surface mb-4">
+            <div class="grid-2">
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">⏱ Time: <span id="time">0</span>s</div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: var(--primary);">⭐ Score: <span id="score">0</span></div>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <h2 id="modeText" class="text-primary mb-2">Add the numbers!</h2>
+            
+            <div class="domino-board">
+                <div class="domino-card" id="leftDomino"></div>
+                <div class="operator" id="operatorEl">+</div>
+                <div class="domino-card" id="rightDomino"></div>
+            </div>
+
+            <div class="options" id="options"></div>
+        </div>
+    </div>
+
+    <div id="resultOverlay">
+        <div style="font-size: 5rem; margin-bottom: 16px;">🎉</div>
+        <h2 class="text-primary" style="font-size: 2.5rem; margin-bottom: 12px;">Game Complete!</h2>
+        <div id="resultMsg" class="text-muted" style="font-size: 1.2rem; font-weight: 600; margin-bottom: 30px;">Amazing work!</div>
+        <button class="btn btn-primary" onclick="window.location.href='../index.html'">🏠 Back to Home</button>
+    </div>
+
+    <script type="module">
+        import { auth, db } from "../firebase-config.js";
+        import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const MAX_TIME = 120;
+        const MAX_SCORE = 10;
+
+        let score = 0;
+        let time = 0;
+        let timer = null;
+        let autoSaveTimer = null;
+        let leftValue, rightValue;
+        let mode = "add";
+
+        const timeEl = document.getElementById("time");
+        const scoreEl = document.getElementById("score");
+        const optionsEl = document.getElementById("options");
+        const modeText = document.getElementById("modeText");
+        const operatorEl = document.getElementById("operatorEl");
+        const leftDomino = document.getElementById("leftDomino");
+        const rightDomino = document.getElementById("rightDomino");
+
+        function startTimer() {
+            timer = setInterval(() => {
+                time++;
+                timeEl.innerText = time;
+                if (time >= MAX_TIME) endGame();
+            }, 1000);
+        }
+
+        function startAutoSave() {
+            autoSaveTimer = setInterval(() => saveProgressDelta(), 30000);
+        }
+
+        function renderDomino(el, value) {
+            el.innerHTML = "";
+            const positions = {
+                1: [4],
+                2: [0, 8],
+                3: [0, 4, 8],
+                4: [0, 2, 6, 8],
+                5: [0, 2, 4, 6, 8],
+                6: [0, 2, 3, 5, 6, 8]
+            };
+
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement("div");
+                cell.style.display = "flex";
+                cell.style.alignItems = "center";
+                cell.style.justifyContent = "center";
+                if ((positions[value] || []).includes(i)) {
+                    const pip = document.createElement("div");
+                    pip.className = "pip";
+                    cell.appendChild(pip);
+                }
+                el.appendChild(cell);
+            }
+        }
+
+        function newRound() {
+            optionsEl.innerHTML = "";
+
+            mode = Math.random() > 0.5 ? "add" : "subtract";
+            modeText.innerText = mode === "add" ? "➕ Add the numbers!" : "➖ Subtract the numbers!";
+            operatorEl.innerText = mode === "add" ? "+" : "−";
+
+            leftValue = Math.floor(Math.random() * 6) + 1;
+            rightValue = Math.floor(Math.random() * 6) + 1;
+
+            if (mode === "subtract" && rightValue > leftValue) {
+                [leftValue, rightValue] = [rightValue, leftValue];
+            }
+
+            renderDomino(leftDomino, leftValue);
+            renderDomino(rightDomino, rightValue);
+
+            const correct = mode === "add" ? leftValue + rightValue : leftValue - rightValue;
+
+            const answers = new Set([correct]);
+            while (answers.size < 4) {
+                answers.add(Math.floor(Math.random() * 12));
+            }
+
+            [...answers]
+                .sort(() => Math.random() - 0.5)
+                .forEach(num => {
+                    const btn = document.createElement("button");
+                    btn.innerText = num;
+                    btn.onclick = () => checkAnswer(num);
+                    optionsEl.appendChild(btn);
+                });
+        }
+
+        function checkAnswer(ans) {
+            const correct = mode === "add" ? leftValue + rightValue : leftValue - rightValue;
+            if (ans === correct) {
+                score++;
+                scoreEl.innerText = score;
+            }
+            if (score >= MAX_SCORE) { endGame(); return; }
+            newRound();
+        }
+
+        async function saveProgressDelta() {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                await updateDoc(doc(db, "users", user.uid), {
+                    totalTime: increment(30),
+                    "gameProgress.dominoes.time": increment(30)
+                });
+            } catch (e) { console.warn("Auto-save failed:", e); }
+        }
+
+        async function saveFinalProgress() {
+            const user = auth.currentUser;
+            if (!user) return;
+            try {
+                await updateDoc(doc(db, "users", user.uid), {
+                    gamesPlayed: increment(1),
+                    totalPoints: increment(score),
+                    "gameProgress.dominoes.score": increment(score),
+                    "gameProgress.dominoes.lastPlayed": new Date().toISOString()
+                });
+            } catch (e) { console.warn("Final save failed:", e); }
+        }
+
+        async function endGame() {
+            clearInterval(timer);
+            clearInterval(autoSaveTimer);
+            optionsEl.innerHTML = "";
+            modeText.innerText = "🎉 Game Completed!";
+            await saveFinalProgress();
+            document.getElementById("resultMsg").innerText = `Great job! Score: ${score} | Time: ${time}s`;
+            document.getElementById("resultOverlay").classList.add("show");
+        }
+
+        window.goBack = async function () {
+            clearInterval(timer);
+            clearInterval(autoSaveTimer);
+            await saveFinalProgress();
+            window.location.href = "./CombF.html";
+        };
+
+        window.goHome = async function () {
+            clearInterval(timer);
+            clearInterval(autoSaveTimer);
+            await saveFinalProgress();
+            window.location.href = "../index.html";
+        };
+
+        auth.onAuthStateChanged(user => {
+            if (!user) { window.location.href = "../login.html"; return; }
+            startTimer();
+            startAutoSave();
+            newRound();
+        });
+    </script>
+</body>
+</html>

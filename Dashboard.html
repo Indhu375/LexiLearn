@@ -1,204 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    .dashboard-hero {
+      padding: 40px 0;
     }
-
-    body {
-      font-family: 'Comic Neue', sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
-      color: #333;
+    .action-cards {
+      margin-top: 40px;
+    }
+    .big-btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .star {
-      position: fixed;
-      pointer-events: none;
-      animation: twinkle 3s infinite;
-      opacity: 0.6;
-      z-index: 0;
-    }
-
-    @keyframes twinkle {
-
-      0%,
-      100% {
-        opacity: 0.2;
-        transform: scale(1)
-      }
-
-      50% {
-        opacity: 1;
-        transform: scale(1.4)
-      }
-    }
-
-    .back-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 999;
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.15);
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Comic Neue', sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.25s;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateX(-3px);
-    }
-
-    .content {
-      position: relative;
-      z-index: 10;
-      max-width: 600px;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 3em;
-      margin-bottom: 15px;
-      color: #311b92;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-      font-weight: 800;
-    }
-
-    p {
-      font-size: 1.3em;
-      color: #546e7a;
-      font-weight: 700;
-      margin-bottom: 40px;
-    }
-
-    .btn-container {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .dash-btn {
-      padding: 26px 44px;
-      font-size: 1.4em;
-      font-weight: 700;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 24px;
-      cursor: pointer;
-      color: white;
-      transition: all 0.3s;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-      min-width: 220px;
-      font-family: 'Comic Neue', sans-serif;
-    }
-
-    .dash-btn:hover {
-      transform: translateY(-6px) scale(1.04);
-      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
-    }
-
-    .analytics {
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-    }
-
-    .parents {
-      background: linear-gradient(135deg, #ff9966, #ff5e62);
-    }
-
-    .back-row {
-      margin-top: 40px;
-      display: inline-block;
-      padding: 14px 32px;
-      background: rgba(255, 255, 255, 0.12);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: 16px;
-      font-size: 1.1em;
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-
-    .back-row:hover {
-      background: rgba(255, 255, 255, 0.22);
+      gap: 15px;
+      padding: 40px;
+      font-size: 1.5rem;
+      border-radius: var(--radius-lg);
     }
   </style>
 </head>
 
 <body>
-  <!-- Stars -->
-  <div class="star" style="top:8%;left:6%;font-size:22px;">✨</div>
-  <div class="star" style="top:20%;right:10%;font-size:18px;animation-delay:0.6s;">⭐</div>
-  <div class="star" style="top:70%;left:4%;font-size:20px;animation-delay:1.2s;">✦</div>
-  <div class="star" style="top:80%;right:8%;font-size:24px;animation-delay:1.8s;">💫</div>
-  <div class="star" style="top:40%;right:4%;font-size:16px;animation-delay:0.9s;">✨</div>
+  <div class="app-container">
+    <header class="app-navbar">
+      <div class="nav-brand">📊 Dashboard</div>
+      <div class="nav-actions">
+        <button class="btn btn-outline" onclick="window.location.href='index.html'">⬅ Home</button>
+      </div>
+    </header>
 
-  <button class="back-btn" onclick="window.location.href='index.html'">⬅ Home</button>
-
-  <div class="content">
-    <h1>📊 Dashboard</h1>
-    <p>Choose a view to explore your progress and get guidance.</p>
-    <div class="btn-container">
-      <button class="dash-btn analytics" onclick="location.href='DViewAnalystF.html'">
-        📈 View Analytics
-      </button>
-      <button class="dash-btn parents" onclick="location.href='DParentsGuideF.html'">
-        👨‍👩‍👧 Parents Guide
-      </button>
+    <div class="surface dashboard-hero">
+      <h1 class="text-primary mb-2">Explore Your Progress</h1>
+      <p class="text-muted text-lg">Choose a view below to dive into detailed analytics or get guidance.</p>
+      
+      <div class="grid-2 action-cards">
+        <button class="btn btn-primary big-btn" onclick="location.href='DViewAnalystF.html'">
+          <span style="font-size: 2.5rem;">📈</span>
+          View Analytics
+        </button>
+        <button class="btn btn-secondary big-btn" onclick="location.href='DParentsGuideF.html'">
+          <span style="font-size: 2.5rem;">👨‍👩‍👧</span>
+          Parents Guide
+        </button>
+      </div>
     </div>
-    <div class="back-row" onclick="location.href='index.html'">⬅ Back to Home</div>
   </div>
 
   <script type="module">
-    import { auth, db, doc, onSnapshot } from "/firebase-config.js";
+    import { auth, db, doc, onSnapshot } from "./firebase-config.js";
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     onAuthStateChanged(auth, (user) => {
       if (!user) { window.location.href = "login.html"; return; }
-
-      // ── Real-time stats listener ─────────────────────────────────────────
       onSnapshot(doc(db, "users", user.uid), (snap) => {
         if (!snap.exists()) return;
         const d = snap.data();
-
-        // Update stats if we add cards later, for now we can update the welcome or just keep it sync
-        // I'll add a hidden or future-proof listener here
         console.log("Dashboard sync:", d);
       });
     });
-
-    const syms = ["✦", "✨", "⭐", "💫", "🌟"];
-    for (let i = 0; i < 12; i++) {
-      const s = document.createElement("div"); s.className = "star";
-      s.textContent = syms[Math.floor(Math.random() * syms.length)];
-      s.style.top = Math.random() * 100 + "%"; s.style.left = Math.random() * 100 + "%";
-      s.style.fontSize = (Math.random() * 10 + 14) + "px"; s.style.animationDelay = Math.random() * 3 + "s";
-      document.body.appendChild(s);
-    }
   </script>
 </body>
-
 </html>

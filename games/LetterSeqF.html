@@ -1,67 +1,54 @@
-<!-- Letter Sequence -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Letter Sequence Game</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../theme.css">
     <style>
         body {
-            font-family: 'Comic Neue', sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #e0f7fa 0%, #ce93d8 100%);
             margin: 0;
             padding: 0;
             overflow: hidden;
+            background: var(--bg-color);
         }
 
-        .back-btn {
+        .game-header-overlay {
             position: fixed;
-            top: 15px;
-            left: 15px;
-            padding: 10px 18px;
-            font-size: 1em;
-            font-weight: 800;
-            background: rgba(255, 255, 255, 0.9);
-            border: 3px solid #ffffff;
-            border-radius: 14px;
-            color: #311b92;
-            cursor: pointer;
+            top: 0; left: 0; right: 0;
             z-index: 1000;
-            transition: all 0.25s;
-            font-family: 'Comic Neue', sans-serif;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none; /* Let clicks pass through except on buttons */
+        }
+        
+        .game-header-overlay > * {
+            pointer-events: auto;
         }
 
-        .back-btn:hover {
-            background: #f3e5f5;
-            transform: translateX(-3px);
-            border-color: #7c4dff;
+        canvas {
+            display: block;
         }
     </style>
 </head>
 
 <body>
-    <button class="back-btn" onclick="window.location.href='./CombF.html'">⬅ Back</button>
-    <button class="back-btn" style="left: auto; right: 15px; background: rgba(255, 68, 68, 0.8);"
-        onclick="window.location.href='../index.html'">🏁 Finish Game</button>
-    <script>
-        function playLetter(letter) {
-            let utter = new SpeechSynthesisUtterance(letter);
-            utter.lang = "en-US"; utter.rate = 0.9; utter.pitch = 1.1;
-            speechSynthesis.speak(utter);
-        }
+    <div class="game-header-overlay">
+        <button class="btn btn-outline" onclick="window.location.href='./CombF.html'">⬅ Back</button>
+        <button class="btn btn-danger" onclick="window.location.href='../index.html'">🏁 Finish Game</button>
+    </div>
 
-        const COLORS = [0xff7eb3, 0xff758c, 0xfbc531, 0xf5d020, 0x86a8e7, 0x91eae4];
-        const FRIENDLY_TEXT = { fontFamily: "Comic Neue, Comic Sans, Arial", fontSize: "34px", fill: "#ffffff", stroke: "#000000", strokeThickness: 5 };
+    <script>
+        const COLORS = [0x6c5ce7, 0xfd79a8, 0x00b894, 0xfdccb6, 0x74b9ff, 0x55efc4];
+        const fontFam = "system-ui, -apple-system, sans-serif";
+        const FRIENDLY_TEXT = { fontFamily: fontFam, fontSize: "34px", fill: "#ffffff", stroke: "#000000", strokeThickness: 5 };
+        const NORMAL_TEXT = { fontFamily: fontFam, fontSize: "24px", fill: "#2d3436", fontWeight: "800" };
 
         function createBackground(scene) {
-            // Stars only, no solid rectangle
             for (let i = 0; i < 30; i++) {
                 let star = scene.add.text(Phaser.Math.Between(0, scene.scale.width), Phaser.Math.Between(0, scene.scale.height), "⭐", { fontSize: "20px" });
-                scene.tweens.add({ targets: star, alpha: { from: 0.3, to: 1 }, duration: Phaser.Math.Between(2000, 4000), yoyo: true, repeat: -1 });
+                scene.tweens.add({ targets: star, alpha: { from: 0.2, to: 0.8 }, duration: Phaser.Math.Between(2000, 4000), yoyo: true, repeat: -1 });
             }
         }
 
@@ -71,11 +58,15 @@
             create() {
                 this.score = 0; this.correctStreak = 0; this.level = "Easy";
                 createBackground(this);
-                this.levelText = this.add.text(20, 20, "Level: Easy", FRIENDLY_TEXT);
-                this.scoreText = this.add.text(this.scale.width - 200, 20, "Score: 0", FRIENDLY_TEXT);
-                this.replayBtn = this.add.text(this.scale.width / 2, 70, "🔊 Replay Sound", FRIENDLY_TEXT).setOrigin(0.5).setInteractive().on("pointerdown", () => { if (this.targetLetter) playLetter(this.targetLetter); });
+                
+                this.levelText = this.add.text(20, 80, "Level: Easy", NORMAL_TEXT);
+                this.scoreText = this.add.text(this.scale.width - 150, 80, "Score: 0", NORMAL_TEXT);
+                
                 ["Easy", "Medium", "Hard"].forEach((lvl, i) => {
-                    this.add.text(200 + i * 200, this.scale.height - 50, lvl, FRIENDLY_TEXT).setInteractive().on("pointerdown", () => { this.level = lvl; this.levelText.setText("Level: " + lvl); this.startRound(); });
+                    let btn = this.add.text(this.scale.width / 2 - 150 + (i * 150), this.scale.height - 50, lvl, { ...NORMAL_TEXT, backgroundColor: "#fff", padding: {x: 10, y: 5} })
+                        .setInteractive()
+                        .setOrigin(0.5)
+                        .on("pointerdown", () => { this.level = lvl; this.levelText.setText("Level: " + lvl); this.startRound(); });
                 });
                 this.startRound();
             }
@@ -84,63 +75,78 @@
                 if (this.bubbles) this.bubbles.forEach(b => b.destroy());
                 if (this.lettersText) this.lettersText.forEach(t => t.destroy());
                 this.bubbles = []; this.lettersText = []; this.foundCount = 0;
-                let letterPairs = [["p", "q"], ["b", "d"], ["m", "n"]];
+                
+                let letterPairs = [["p", "q"], ["b", "d"], ["m", "n"], ["u", "v"], ["I", "l"]];
                 let chosenPair = Phaser.Utils.Array.GetRandom(letterPairs);
                 this.targetLetter = chosenPair[0]; this.distractorLetter = chosenPair[1];
+                
                 if (this.instructionText) this.instructionText.destroy();
                 this.instructionText = this.add.text(this.scale.width / 2, 130, "Find ALL '" + this.targetLetter.toUpperCase() + "' letters!", FRIENDLY_TEXT).setOrigin(0.5);
-                playLetter(this.targetLetter);
+                
                 let bubbleCount = (this.level === "Easy") ? 10 : (this.level === "Medium") ? 14 : 20;
                 let rows = Math.ceil(Math.sqrt(bubbleCount)), cols = Math.ceil(bubbleCount / rows);
                 let gridWidth = this.scale.width * 0.8, gridHeight = this.scale.height * 0.6;
                 let gapX = gridWidth / cols, gapY = gridHeight / rows;
-                let startX = (this.scale.width - gridWidth) / 2 + gapX / 2, startY = 200;
+                let startX = (this.scale.width - gridWidth) / 2 + gapX / 2, startY = 220;
+                
                 let lettersArray = [];
-                for (let i = 0; i < bubbleCount / 2; i++)lettersArray.push(this.targetLetter);
-                for (let i = 0; i < bubbleCount / 2; i++)lettersArray.push(this.distractorLetter);
+                for (let i = 0; i < bubbleCount / 2; i++) lettersArray.push(this.targetLetter);
+                for (let i = 0; i < bubbleCount / 2; i++) lettersArray.push(this.distractorLetter);
                 Phaser.Utils.Array.Shuffle(lettersArray);
+                
                 for (let i = 0; i < bubbleCount; i++) {
                     let row = Math.floor(i / cols), col = i % cols;
                     let x = startX + col * gapX, y = startY + row * gapY;
                     let letter = lettersArray[i];
                     let color = Phaser.Utils.Array.GetRandom(COLORS);
-                    let bubble = this.add.circle(x, y, Math.min(gapX, gapY) / 3, color).setInteractive();
-                    bubble.setStrokeStyle(6, 0xffffff); bubble.letter = letter;
-                    let text = this.add.text(x, y, letter.toUpperCase(), FRIENDLY_TEXT).setOrigin(0.5);
+                    
+                    let bubble = this.add.circle(x, y, Math.min(gapX, gapY) / 3.5, color).setInteractive();
+                    bubble.setStrokeStyle(4, 0xffffff); bubble.letter = letter;
+                    
+                    let text = this.add.text(x, y, letter, FRIENDLY_TEXT).setOrigin(0.5);
                     this.bubbles.push(bubble); this.lettersText.push(text);
-                    this.tweens.add({ targets: [bubble, text], y: y - 10, duration: 1000, yoyo: true, repeat: -1 });
+                    this.tweens.add({ targets: [bubble, text], y: y - 8, duration: Phaser.Math.Between(800, 1200), yoyo: true, repeat: -1 });
+                    
                     bubble.on("pointerdown", () => {
                         if (bubble.letter === this.targetLetter) {
                             bubble.destroy(); text.destroy();
                             this.foundCount++;
                             if (this.foundCount === bubbleCount / 2) {
                                 this.score++; this.scoreText.setText("Score: " + this.score);
-                                if (window.saveGameStats) window.saveGameStats(100, 20); // 100% accuracy for a perfect sequence
-                                this.time.delayedCall(2000, () => this.startRound());
+                                if (window.saveGameStats) window.saveGameStats(100, 20);
+                                this.time.delayedCall(1500, () => this.startRound());
                             }
+                        } else {
+                             // wrong selection punishment optional
                         }
                     });
                 }
             }
         }
 
-        let config = { type: Phaser.AUTO, width: window.innerWidth, height: window.innerHeight, transparent: true, scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }, scene: [LetterSequenceGame] };
+        let config = { 
+            type: Phaser.AUTO, 
+            width: window.innerWidth, 
+            height: window.innerHeight, 
+            transparent: true, 
+            scale: { mode: Phaser.Scale.RESIZE, autoCenter: Phaser.Scale.CENTER_BOTH }, 
+            scene: [LetterSequenceGame] 
+        };
         let game = new Phaser.Game(config);
     </script>
     <script type="module">
-        import { auth, db, doc, setDoc, increment } from "/firebase-config.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { auth, db, doc, setDoc, increment } from "../firebase-config.js";
 
         window.saveGameStats = async (accuracy, points) => {
             const user = auth.currentUser;
             if (!user) return;
-            await setDoc(doc(db, "users", user.uid), {
-                gamesPlayed: increment(1),
-                accuracy: accuracy,
-                totalPoints: increment(points)
-            }, { merge: true });
+            try {
+                await setDoc(doc(db, "users", user.uid), {
+                    gamesPlayed: increment(1),
+                    totalPoints: increment(points)
+                }, { merge: true });
+            } catch(e) {}
         };
     </script>
 </body>
-
 </html>
