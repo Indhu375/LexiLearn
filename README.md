@@ -40,13 +40,9 @@ Engaging daily task like letter tracer to encourage daily practice and maintain 
 ```text
 LexiLearn/
 ├── games/               # Interactive educational games
+├── pages/               # Application pages (Dashboard, Login, etc.)
 ├── firebase-config.js   # Firebase configuration and initialization
 ├── index.html           # Main landing page
-├── login.html           # User authentication
-├── Dashboard.html       # Student progress view
-├── ScreeningTest.html   # 7-day screening module
-├── DParentsGuideF.html  # Support resources for parents
-├── DViewAnalystF.html   # Detailed result analysis
 └── README.md            # Project documentation
 ```
 

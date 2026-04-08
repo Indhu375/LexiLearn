@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiLearn — Settings</title>
-  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="../theme.css">
   <style>
     .settings-row {
       display: flex;
@@ -53,7 +53,7 @@
     <header class="app-navbar">
         <div class="nav-brand">⚙️ Settings</div>
         <div class="nav-actions">
-            <button class="btn btn-outline" onclick="window.location.href='index.html'">⬅ Home</button>
+            <button class="btn btn-outline" onclick="window.location.href='../index.html'">⬅ Home</button>
         </div>
     </header>
 
@@ -100,7 +100,7 @@
   </div>
 
   <script type="module">
-    import { auth } from "./firebase-config.js";
+    import { auth } from "../firebase-config.js";
     import { onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     function toast(msg) {

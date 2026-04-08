@@ -109,7 +109,7 @@
         <button class="btn btn-primary" onclick="window.location.href='games/CombF.html'">
           🎯 PLAY GAMES
         </button>
-        <button class="btn btn-secondary" onclick="window.location.href='DailyCF.html'">
+        <button class="btn btn-secondary" onclick="window.location.href='pages/DailyCF.html'">
           🏆 DAILY CHALLENGE
         </button>
       </div>
@@ -151,7 +151,7 @@
     let unsubscribeStats = null;
 
     onAuthStateChanged(auth, (user) => {
-      if (!user) { window.location.href = "login.html"; return; }
+      if (!user) { window.location.href = "pages/login.html"; return; }
 
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("nickname", user.displayName || user.email);
@@ -188,14 +188,14 @@
       localStorage.removeItem("isLoggedIn");
       localStorage.removeItem("nickname");
       localStorage.removeItem("uid");
-      window.location.href = "login.html";
+      window.location.href = "pages/login.html";
     };
 
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("logoutBtn")?.addEventListener('click', () => window.logoutUser());
-      document.getElementById("dashBtn")?.addEventListener('click', () => window.location.href = 'Dashboard.html');
-      document.getElementById("profBtn")?.addEventListener('click', () => window.location.href = 'ProfileF.html');
-      document.getElementById("settBtn")?.addEventListener('click', () => window.location.href = 'SettingF.html');
+      document.getElementById("dashBtn")?.addEventListener('click', () => window.location.href = 'pages/Dashboard.html');
+      document.getElementById("profBtn")?.addEventListener('click', () => window.location.href = 'pages/ProfileF.html');
+      document.getElementById("settBtn")?.addEventListener('click', () => window.location.href = 'pages/SettingF.html');
     });
 
     function animateCount(id, target) {
